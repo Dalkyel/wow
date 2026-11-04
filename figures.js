@@ -210,7 +210,7 @@
     if (event.key === 'ArrowDown') { event.preventDefault(); $('reference-list').querySelector('button')?.focus(); }
   });
   $('btn-figures').addEventListener('click', () => open());
-  $('reference-close').addEventListener('click', () => dialog.close());
+  $('reference-close').addEventListener('click', () => { dialog.close(); if (returnTo) { const r = returnTo; returnTo = null; r(); } });
   window.openFigureReference = open;
 
   // Give the existing timeline search box actual, clickable results too.
