@@ -9,7 +9,7 @@ const { execFileSync } = require('node:child_process');
 const [volumeArg, sectionArg, baselineArg, specArg, ...options] = process.argv.slice(2);
 const volume = Number(volumeArg), section = Number(sectionArg);
 assert.ok(Number.isInteger(volume) && volume >= 1 && Number.isInteger(section) && section > 0 && baselineArg && specArg,
-  'Usage: node append-era.cjs VOLUME SECTION BASELINE_DIR SPEC_FILE [--replace-applied PREVIOUS_SPEC_FILE]');
+  'Usage: node append-lore.cjs VOLUME SECTION BASELINE_DIR SPEC_FILE [--replace-applied PREVIOUS_SPEC_FILE]');
 let previousSpec;
 for (let i = 0; i < options.length; i++) {
   if (options[i] === '--replace-applied' && !previousSpec && options[i + 1] && !options[i + 1].startsWith('--')) {
@@ -28,7 +28,7 @@ const kinds = ['nodes', 'links', 'timeline'];
 const variable = (kind, n) => (kind === 'timeline' ? 'timeline' : kind) + (n === 1 ? '' : `Volume${n}`);
 const parse = (source, kind, n) => new Function(source + `;return ${variable(kind, n)};`)();
 const root = process.cwd(), originals = new Map();
-const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'append-era-'));
+const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'append-lore-'));
 const run = (helper, args) => execFileSync(process.execPath, [path.join(__dirname, helper + '.cjs'), ...args],
   { cwd: scratch, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
 try {
@@ -47,11 +47,11 @@ try {
   if (previousSpec) {
     // Reproduce the applied manifest from the original baseline before replacing it.
     // Any hand edit, different manifest or later section must fail without publishing.
-    run('append-era', [volume, section, baseline, previousSpec]);
+    run('append-lore', [volume, section, baseline, previousSpec]);
     for (const kind of kinds) {
       const file = `volume${volume}/${kind}.js`;
       assert.deepEqual(fs.readFileSync(path.join(scratch, file)), originals.get(file),
-        `${kind}: current archive does not exactly match the previous manifest; no era files published`);
+        `${kind}: current archive does not exactly match the previous manifest; no lore files published`);
       fs.copyFileSync(path.join(baseline, `${kind}.js`), path.join(scratch, file));
     }
   }
@@ -71,10 +71,10 @@ try {
   const after = parse(fs.readFileSync(path.join(scratch, `volume${volume}/nodes.js`), 'utf8'), 'nodes', volume);
   for (const id of ids) assert.equal(after.filter(node => node.id === id).length,
     before.filter(node => node.id === id).length + 1, `${id}: expected exactly one appended revision`);
-  const verification = run('verify-era', [volume, section, baseline]);
+  const verification = run('verify-lore', [volume, section, baseline]);
   // Detect edits since the scratch copy, including earlier-volume changes.
   for (const [file, original] of originals) assert.deepEqual(fs.readFileSync(path.join(root, file)), original,
-    `${file}: changed during preparation; no era files published`);
+    `${file}: changed during preparation; no lore files published`);
   const written = [];
   try {
     for (const kind of kinds) {

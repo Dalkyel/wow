@@ -20,12 +20,10 @@
     <button id="btn-map" class="clue-button" type="button">🗺️ Map</button>
     <button id="btn-figures" class="clue-button" type="button">Figures &amp; Factions</button>
     <button id="btn-connections" class="clue-button" type="button">Explore Connections</button>
-    <button id="btn-lore-notes" class="clue-button" type="button">Lore Notes</button>
-    <button id="btn-bookmarks" class="clue-button" type="button">★ Bookmarks</button>
+    <button id="btn-stars" class="clue-button" type="button">★ Notable</button>
     <button id="btn-log" class="ctrl-btn" title="Open my journal" aria-label="My journal">📖</button>
     <button id="btn-quests" class="ctrl-btn" title="Open my quest log" aria-label="My quest log">📜</button>
   </header>
-  <div id="bookmark-feedback" class="sr-only" role="status" aria-live="polite"></div>
   <div class="main">
     <div id="welcome-screen">
       <div class="welcome-title">Dalkar Stonewalker</div>
@@ -59,7 +57,6 @@
       <div class="panel-body">
         <button id="p-reference" class="clue-button" type="button" hidden>Open figure profile</button>
         <button id="p-explore" class="clue-button" type="button">Explore its connections</button>
-        <div id="p-bookmark"></div>
         <div class="panel-desc" id="p-overview"></div>
         <details id="p-full-description"><summary>Full description</summary><div class="panel-desc" id="p-desc">Description</div></details>
         <div class="connections-title">Connections</div>
@@ -106,8 +103,23 @@
     <div class="quest-body" id="quest-body"></div>
   </dialog>
 
+  <dialog id="stars-panel" class="reference" aria-labelledby="stars-heading">
+    <div class="reference-header">
+      <div>
+        <h1 id="stars-heading">Notable Entries</h1>
+        <p>Everything flagged with a ★ note in the archive — foreshadowing, open questions, retcons.</p>
+      </div>
+      <button id="stars-close" type="button" aria-label="Close notable entries">Close ✕</button>
+    </div>
+    <div class="quest-body" id="stars-body"></div>
+  </dialog>
+
   <script src="groups.js"></script>
   <script src="shared/eras.js"></script>
+  <!-- Volume 0 data (in-game lore graph, not a book — see volume0/nodes.js) -->
+  <script src="volume0/nodes.js"></script>
+  <script src="volume0/links.js"></script>
+  <script src="volume0/timeline.js"></script>
   <!-- Volume 1 data -->
   <script src="volume1/nodes.js"></script>
   <script src="volume1/links.js"></script>
@@ -125,19 +137,17 @@
   <script src="volume4/links.js"></script>
   <script src="volume4/timeline.js"></script>
   <!-- Merge logic + visualization -->
-  <script src="lore-notes-core.js"></script>
+  <script src="stars-core.js"></script>
   <script src="quests-data.js"></script>
   <script src="quests-core.js"></script>
   <script src="figures-data.js"></script>
   <script src="figures-core.js"></script>
   <script src="data-core.js"></script>
   <script src="data-init.js"></script>
-  <script src="bookmarks-core.js"></script>
-  <script src="bookmarks.js"></script>
   <script src="timeline-core.js"></script>
   <script src="timeline.js"></script>
-  <script src="lore-notes.js"></script>
   <script src="quests.js"></script>
+  <script src="stars.js"></script>
   <script src="figures.js"></script>
   <script src="connections-core.js"></script>
   <script src="connections.js"></script>

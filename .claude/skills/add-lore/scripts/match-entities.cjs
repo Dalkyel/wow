@@ -6,13 +6,15 @@ const assert = require('node:assert/strict');
 const [volumeArg, ...names] = process.argv.slice(2);
 const volume = Number(volumeArg);
 const dumpAll = names.length === 1 && names[0] === '--all';
-assert.ok(Number.isInteger(volume) && volume >= 1 && (names.length || dumpAll),
-  'Usage: node .claude/skills/add-era/scripts/match-entities.cjs VOLUME NAME [NAME ...]\n' +
-  '   or: node .claude/skills/add-era/scripts/match-entities.cjs VOLUME --all');
+assert.ok(Number.isInteger(volume) && volume >= 0 && (names.length || dumpAll),
+  'Usage: node .claude/skills/add-lore/scripts/match-entities.cjs VOLUME NAME [NAME ...]\n' +
+  '   or: node .claude/skills/add-lore/scripts/match-entities.cjs VOLUME --all');
 
 // Keep all historical labels, including variants replaced in later sections.
+// Volume 0 (in-game lore) always exists and isn't gated by reading progress like the
+// book volumes are, so it's always included regardless of the requested cap.
 const inventory = new Map();
-for (let n = 1; n <= volume; n++) {
+for (let n = 0; n <= volume; n++) {
   const file = `volume${n}/nodes.js`;
   const variable = n === 1 ? 'nodes' : `nodesVolume${n}`;
   const entries = new Function(fs.readFileSync(file, 'utf8') + `; return ${variable};`)();

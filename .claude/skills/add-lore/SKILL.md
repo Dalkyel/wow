@@ -1,16 +1,17 @@
 ---
-name: add-era
+name: add-lore
 description: >
-  Use this after reading a section of World of Warcraft Chronicle to add its content to
-  the interactive timeline (index.html), or to validate reference material against it.
-  Trigger examples: "add Volume 1 section 4", "I just read about the War of the Ancients,
-  update the timeline", "log this section", "here are my notes from today's reading, add
-  them", "validate this timeline/index against what we have". Takes section notes, a
+  Use this after reading a section of a lore book — World of Warcraft Chronicle or a
+  novel — to add its content to Dalkar's journal (index.html), or to validate reference
+  material against it. Trigger examples: "add Volume 1 section 4", "I just read about
+  the War of the Ancients, update the journal", "log this section", "I finished a
+  chapter of the novel, add it", "here are my notes from today's reading, add them",
+  "validate this timeline/index against what we have". Takes section/chapter notes, a
   summary, raw text, or non-section reference material (an appendix, timeline chart,
-  index) as input.
+  index) as input. For in-game quest log entries, use the `log-quest` skill instead.
 ---
 
-# Adding a section to the Chronicle timeline
+# Adding a lore section (Chronicle or a novel) to the journal
 
 Volume 1's opening (the Void through the shaping of Azeroth) is the only rebuilt content
 so far. From Volume 1 Section 4 onward — and for Volumes 2–4 from their first section —
@@ -25,8 +26,8 @@ Before editing, read the baseline procedure, applicable node/link/timeline forma
 verification, and the source/entity and semantic-gate references. Read long references
 in separate bounded slices through EOF; retrieve any omitted content before proceeding.
 
-This project tracks figures, factions, places, and events across World of Warcraft
-Chronicle in a D3 timeline (`index.html`). Normal sessions append to the current volume's
+This project tracks figures, factions, places, and events across World of Warcraft lore
+— Chronicle and novels alike — in a D3 timeline (`index.html`). Normal sessions append to the current volume's
 own folder. `data-core.js` merges the full archive in volume order: the latest same-id
 entry wins, and all revisions remain available. The app does not hide data behind a
 reading cap. Reader helpers still accept a volume cap to bound source inspection; this is
@@ -43,7 +44,7 @@ not a display restriction.
   accurate, what's missing, and what's wrong. When asked to integrate the material, add
   confirmed missing facts directly to the current volume's nodes and links; preserve
   contradictions as qualified source notes (see step 4) — or as a lore note, if the
-  contradiction is between Chronicle and another source. Only add net-new entities it
+  contradiction is between this source and another one. Only add net-new entities it
   introduces as nodes if the user asks.
 
 ## Before writing anything
@@ -51,6 +52,21 @@ not a display restriction.
 Read [source-and-entity-workflow.md](references/source-and-entity-workflow.md) before
 section preflight, source retrieval, entity resolution or drafting. It contains the
 required identity checks, full-entry reads and safe append procedures.
+
+## Research source, and keeping the journal spoiler-free
+
+Use **https://warcraft.wiki.gg/** as the primary external source when fact-checking
+terminology, spellings, names, or resolving a retcon/ambiguity flagged by the
+lore-consistency gate — prefer it over unaided recall or a generic web search.
+
+That research must never leak forward into the journal itself. Dalkar's journal and
+quest log are written in his own present-tense voice — what he has actually read or
+experienced so far, not an omniscient wiki dump. When a wiki lookup turns up later
+lore (a future Chronicle volume, a later expansion's reveal, a quest-chain's eventual
+outcome) relative to the section currently being added, that information stays in the
+lore-note's evidence/background, never in the entry's narrated prose. When in doubt
+whether something counts as a spoiler for the current section, leave it out of the
+entry and record it as an open lore note instead.
 
 ## Mandatory semantic gates
 
@@ -70,8 +86,10 @@ Completion requires:
 Keep the manifest, three review files, and baseline beside the unique temporary run's
 `baseline/` through verification and completion. These are temporary working files; do
 not copy them into the repository. Persist new evidence, lore-note states and open
-ambiguities in the live nodes, links, and the browser-side lore-notes board so the next
-section can continue without past review files.
+ambiguities directly in the live nodes' own `star` fields (see the lore-consistency
+gate) so the next section can continue without past review files — there's no separate
+notes board; `star` text is the permanent record, surfaced read-only in the ★ Notable
+panel.
 
 ## Capture the baseline before editing
 
@@ -80,11 +98,11 @@ first mutation, even when Git is unavailable. Keep that directory path for verif
 do not reuse a fixed directory that may contain another run's baseline. For Volume 1:
 
 ```sh
-era_run=$(mktemp -d "${TMPDIR:-/tmp}/add-era.XXXXXX")
-era_baseline="$era_run/baseline"
-mkdir "$era_baseline"
-cp volume1/nodes.js volume1/links.js volume1/timeline.js "$era_baseline/"
-printf '%s\n' "$era_run" "$era_baseline"
+lore_run=$(mktemp -d "${TMPDIR:-/tmp}/add-lore.XXXXXX")
+lore_baseline="$lore_run/baseline"
+mkdir "$lore_baseline"
+cp volume1/nodes.js volume1/links.js volume1/timeline.js "$lore_baseline/"
+printf '%s\n' "$lore_run" "$lore_baseline"
 ```
 
 Use this snapshot for the preservation checks below; it is a pre-edit reference, not
@@ -224,18 +242,25 @@ revelations file.
 `volume2/`, `volume3/`, `volume4/` each already have empty `nodes.js`/`links.js`/
 `timeline.js` (declaring `nodesVolumeN`/`linksVolumeN`/`timelineVolumeN`) and are already
 registered in `data-init.js` and loaded by `index.html`. Starting a volume is just
-writing its first section — no new wiring needed. (If a fifth volume is ever announced,
-copy a `volumeN` folder's three files as a template, add its `<script>` tags to
-`index.html` next to Volume 4's, and register it in the array passed to
-`ArchiveData.merge` in `data-init.js`.)
+writing its first section — no new wiring needed. (If a fifth volume is ever needed —
+either a later Chronicle volume or the first novel being read — copy a `volumeN`
+folder's three files as a template, add its `<script>` tags to `index.html` next to
+Volume 4's, and register it in the array passed to `ArchiveData.merge` in
+`data-init.js`. A novel's "sections" are just its chapters; nothing else about the
+mechanics changes.)
+
+`volume0/` also exists, but it isn't a book — it's the in-game lore graph the
+`log-quest` skill grows (NPCs, locations Dalkar has actually met/visited). Numbering
+starts at 1 for books specifically so `volume0` never collides with a future Chronicle
+volume or novel; this skill never touches it.
 
 ## Verification
 
-Use the era verifier and semantic reviews while refining the draft, then run the test
+Use the lore verifier and semantic reviews while refining the draft, then run the test
 suite once the content is settled.
 
 ```sh
-node .claude/skills/add-era/scripts/verify-era.cjs 1 4 "$era_baseline" --review-links --review-summary --review-overlap
+node .claude/skills/add-lore/scripts/verify-lore.cjs 1 4 "$lore_baseline" --review-links --review-summary --review-overlap
 ```
 
 The verifier checks each volume's files separately for JavaScript syntax, resolves link
@@ -247,7 +272,7 @@ for the requested section. It also requires unique ids among appended nodes,
 full latest baseline `desc` and `star`, and complete mention matches for emphasized
 timeline terms. A failure is fatal: fix it before reporting success.
 
-For the node ownership review, run a separate `verify-era.cjs VOLUME SECTION BASELINE
+For the node ownership review, run a separate `verify-lore.cjs VOLUME SECTION BASELINE
 --review-nodes=1` call, then request each indicated page.
 
 **Completion requires the [ownership gate](references/review-gates.md#hard-gate--fact-ownership),

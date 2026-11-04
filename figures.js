@@ -101,7 +101,7 @@
       if (returnTo) { const reopen = returnTo; returnTo = null; dialog.close(); reopen(); }
     });
     previous.disabled = !visited.length && !returnTo;
-    nav.append(previous, BookmarkUI.button('node', node.id),
+    nav.append(previous,
       button('Explore its connections', () => { dialog.close(); window.openConnections(node.id, () => dialog.showModal()); }),
       button('View on timeline ↗', () => { dialog.close(); selectNode(node); }));
     pane.append(nav);

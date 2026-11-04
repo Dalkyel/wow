@@ -7,7 +7,7 @@ const assert = require('node:assert/strict');
 
 const [volumeArg, kind, specPath] = process.argv.slice(2);
 const volume = Number(volumeArg);
-assert.ok(Number.isInteger(volume) && volume >= 1 && ['links', 'timeline'].includes(kind) && specPath,
+assert.ok(Number.isInteger(volume) && volume >= 0 && ['links', 'timeline'].includes(kind) && specPath,
   'Usage: node append-entries.cjs VOLUME links|timeline SPEC_FILE');
 const spec = JSON.parse(fs.readFileSync(specPath, 'utf8'));
 assert.ok(Array.isArray(spec.entries) && spec.entries.length, 'spec.entries must be a nonempty array');
@@ -56,4 +56,4 @@ const after = readArray(candidate);
 assert.deepStrictEqual(after, [...before, ...spec.entries], 'Append must preserve every original entry');
 assert.ok(candidate.startsWith(prefix), 'Original file prefix must be preserved');
 fs.writeFileSync(file, candidate);
-console.log(`OK: appended ${spec.entries.length} ${kind} to ${file}; original prefix and entries preserved. Run verify-era for endpoints and semantic review.`);
+console.log(`OK: appended ${spec.entries.length} ${kind} to ${file}; original prefix and entries preserved. Run verify-lore for endpoints and semantic review.`);

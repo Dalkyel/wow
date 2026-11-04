@@ -1,7 +1,7 @@
 # Mandatory review gates
 
 Three hard gates. Each requires a short write-up in its own file in the run directory,
-ending with a bare `<Name> review: PASS` line. A verifier PASS (`verify-era.cjs`) is
+ending with a bare `<Name> review: PASS` line. A verifier PASS (`verify-lore.cjs`) is
 necessary but never sufficient — these are semantic judgments the script cannot make.
 
 ## Hard gate — Fact ownership
@@ -27,11 +27,11 @@ Every pivotal occurrence needs a discoverable `EVENT` node, actively linked to
 recording PASS in `event-review.md`:
 
 - For each major occurrence in the section, confirm an `EVENT` node exists (or was
-  created) for it, with an active `cat-events` arc link — `verify-era.cjs` checks the
+  created) for it, with an active `cat-events` arc link — `verify-lore.cjs` checks the
   link mechanically but not whether the right occurrences got one at all.
 - Watch for the duplication failure mode: narrating the same event's story twice, once
   on the `EVENT` node and once folded into a participant's own `desc`. Use
-  `verify-era.cjs --review-overlap` (12-word shingle detector) to flag candidates, then
+  `verify-lore.cjs --review-overlap` (12-word shingle detector) to flag candidates, then
   read the flagged passage yourself — it cannot judge whether an overlap is a real
   defect (some short boilerplate, like a "see EVENT-ID" pointer, is meant to repeat).
 
@@ -43,12 +43,19 @@ discrepancy noticed while drafting this section needs a tracked lore note, not a
 pick of one version. Before recording PASS in `lore-review.md`:
 
 - List every retcon, contradiction, or genuine ambiguity this section's content raises
-  against another known source or an earlier volume.
-- For each, either: confirm a lore note already exists and is still accurate (update it
-  if this section adds evidence), or create a new one via the lore-notes board's data
-  shape (a `source:` note auto-imports from a node's `star` field; anything else is a
-  `reader:` note — see `lore-notes-core.js`).
-- Mechanical completeness only: this gate's script support is limited to confirming the
-  structural shape of a note (`lore-notes-core.js`'s `validateBackup`); it never judges
-  whether the note's content is actually correct or resolved. Record the semantic
-  judgment yourself.
+  against another known source or an earlier volume — check **https://warcraft.wiki.gg/**
+  as the primary external source for this comparison.
+- Keep any spoiler surfaced by that research out of the journal entry's own prose (see
+  "Research source, and keeping the journal spoiler-free" in SKILL.md) — it belongs in
+  the lore note's evidence, not in Dalkar's narration.
+- For each, either: confirm a note already exists on the relevant node's `star` field
+  and is still accurate (append new evidence via the normal `desc`/`star` full-overwrite
+  rule), or add one — a short `★`/`★★`/`★★★` note on whichever existing node the
+  ambiguity is most centrally about, optionally ending with `STATUS: OPEN` or `STATUS:
+  RESOLVED` if it's been settled. There's no separate notes board anymore (removed for
+  being device-bound, browser-storage-only); the `star` field *is* the lore-note record,
+  and `stars.js`/`stars-core.js`'s `sourceEntries` is what surfaces every one of them in
+  the live app's ★ Notable panel.
+- Mechanical completeness only: `stars-core.js` just extracts non-empty `star` fields —
+  it never judges whether a note's content is actually correct or resolved. Record the
+  semantic judgment yourself.

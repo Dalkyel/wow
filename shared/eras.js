@@ -13,6 +13,10 @@
     { id: 'war-of-the-ancients', label: 'The War of the Ancients', order: 4, color: '#1a4a3a' },
     { id: 'troll-wars', label: 'The Troll Wars', order: 5, color: '#4a2010' },
     { id: 'first-war', label: 'The First War', order: 6, color: '#4a0a0a' },
+    // Deliberately high `order`: Chronicle/novel eras read between here and the
+    // present will slot in with their own order values above 6 and below this one —
+    // this era must always sort last, no matter how much history fills in later.
+    { id: 'the-present-day', label: 'The Present Day', order: 1000, color: '#2a3a4a' },
   ];
   const byId = Object.fromEntries(ERAS.map(e => [e.id, e]));
   const api = { ERAS, byId };

@@ -6,7 +6,7 @@ const assert = require('node:assert/strict');
 const [volumeArg, sectionArg] = process.argv.slice(2);
 const volume = Number(volumeArg), section = Number(sectionArg);
 assert.ok(Number.isInteger(volume) && volume >= 1 && Number.isInteger(section) && section >= 1,
-  'Usage: node .claude/skills/add-era/scripts/check-era.cjs VOLUME SECTION');
+  'Usage: node .claude/skills/add-lore/scripts/check-lore.cjs VOLUME SECTION');
 
 const timelineFile = `volume${volume}/timeline.js`;
 const variable = volume === 1 ? 'timeline' : `timelineVolume${volume}`;

@@ -5,7 +5,7 @@
 Before drafting anything, run the preflight check for the requested volume/section:
 
 ```sh
-node .claude/skills/add-era/scripts/check-era.cjs VOLUME SECTION
+node .claude/skills/add-lore/scripts/check-lore.cjs VOLUME SECTION
 ```
 
 If it reports `EXISTS OR PARTIAL`, stop and inspect the existing section before
@@ -18,9 +18,9 @@ Before minting a new node id, check whether the entity already exists — under 
 an alias, or a different romanization/spelling:
 
 ```sh
-node .claude/skills/add-era/scripts/match-entities.cjs VOLUME "Name One" "Name Two"
+node .claude/skills/add-lore/scripts/match-entities.cjs VOLUME "Name One" "Name Two"
 # or, to inspect the full inventory at once:
-node .claude/skills/add-era/scripts/match-entities.cjs VOLUME --all
+node .claude/skills/add-lore/scripts/match-entities.cjs VOLUME --all
 ```
 
 The matcher normalizes accents, hyphens, and spacing, and checks every historical label
@@ -46,14 +46,14 @@ garbling a sentence).
 - `scripts/append-node.cjs VOLUME ID SPEC_FILE` — one node at a time (new or update).
 - `scripts/append-entries.cjs VOLUME links|timeline SPEC_FILE` — a batch of links or
   exactly one timeline entry.
-- `scripts/append-era.cjs VOLUME SECTION BASELINE_DIR SPEC_FILE` — the full
+- `scripts/append-lore.cjs VOLUME SECTION BASELINE_DIR SPEC_FILE` — the full
   manifest-driven, transaction-like appener: copies the archive through the volume cap
   into a scratch directory, replays every node/link/timeline write there, re-verifies
   against the baseline, and only then publishes to the real files — rolling back on any
   write error. Prefer this for a normal multi-node section; use the single-entity
   scripts directly only for a small, isolated correction.
 
-**Correcting an already-published manifest:** rerun `append-era.cjs` with
+**Correcting an already-published manifest:** rerun `append-lore.cjs` with
 `--replace-applied PREVIOUS_SPEC_FILE` and the *original* (pre-that-manifest) baseline —
 it reproduces the previously-applied manifest from that baseline, requires a byte-exact
 match against the live files before touching anything, then applies your corrected
@@ -61,14 +61,14 @@ manifest in its place. This fails safely (publishing nothing) if the live files 
 since diverged from what that manifest actually produced — a hand edit, a different
 manifest, or a later section applied on top all block the replace.
 
-## 4. Manifest shape (`append-era.cjs`'s SPEC_FILE)
+## 4. Manifest shape (`append-lore.cjs`'s SPEC_FILE)
 
 ```json
 {
   "header": "// ── VOLUME 1, SECTION 4 — TITLE ──",
   "nodes": [ { "id": "...", "mode": "new", "label": "...", "group": "...", "type": "...", "era": "...", "chronOrder": 0, "section": 4, "desc": "...", "star": "" } ],
   "links": [ { "source": "...", "target": "...", "label": "...", "type": "rel" } ],
-  "summary": { "section": 4, "era": "...", "title": "Section 4 — Title", "summary": "..." }
+  "summary": { "section": 4, "era": "...", "title": "Entry 4 — Title", "summary": "..." }
 }
 ```
 

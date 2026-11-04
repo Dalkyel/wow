@@ -7,10 +7,10 @@
 
 const relationTypes = { rel: 'Relationship', conflict: 'Conflict', event: 'Event', magic: 'Magic',
   goal: 'Goal', lore: 'Lore', history: 'History', geo: 'Geography', trama: 'Plot thread', arc: 'Arc', cat: 'Category' };
-const LANE_ORDER = ['PANTHEON', 'TITAN', 'OLD_GOD', 'DRAGON_ASPECT', 'NAARU', 'FACTION', 'ORC_CLAN',
+const LANE_ORDER = ['PANTHEON', 'TITAN', 'OLD_GOD', 'DRAGON_ASPECT', 'NAARU', 'NPC', 'FACTION', 'ORC_CLAN',
   'HUMAN_KINGDOM', 'NIGHT_ELF', 'BURNING_LEGION', 'EVENT', 'LOCATION', 'ARTIFACT', 'COSMOS'];
 const LANE_LABELS = { PANTHEON: 'Pantheons', TITAN: 'Titans', OLD_GOD: 'Old Gods', DRAGON_ASPECT: 'Dragon Aspects',
-  NAARU: 'Naaru', FACTION: 'Factions', ORC_CLAN: 'Orc Clans', HUMAN_KINGDOM: 'Human Kingdoms',
+  NAARU: 'Naaru', NPC: 'People I\'ve Met', FACTION: 'Factions', ORC_CLAN: 'Orc Clans', HUMAN_KINGDOM: 'Human Kingdoms',
   NIGHT_ELF: 'Night Elves', BURNING_LEGION: 'Burning Legion', EVENT: 'Events', LOCATION: 'Locations',
   ARTIFACT: 'Artifacts', COSMOS: 'Cosmic Forces' };
 const UNIT = 16; // px per abstract position unit
@@ -171,8 +171,6 @@ function showPanel(d) {
   pDesc.textContent = d.desc;
   document.getElementById('p-overview').textContent = FigureReference.profile(d, figureSourceRevisions, FIGURE_GUIDES).intro;
   document.getElementById('p-full-description').open = false;
-  const bookmark = document.getElementById('p-bookmark'); bookmark.replaceChildren();
-  if (!['CENTER', 'CAT'].includes(d.group)) bookmark.append(BookmarkUI.button('node', d.id));
   const notes = document.querySelector('.panel-original-notes'); notes.hidden = !d.star; notes.open = false;
   pStar.replaceChildren();
   if (d.star) { const note = document.createElement('div'); note.className = 'star-note'; note.textContent = d.star; pStar.append(note); }

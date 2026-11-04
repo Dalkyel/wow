@@ -1,6 +1,6 @@
 (function (root) {
   'use strict';
-  const FIGURE_GROUPS = ['TITAN', 'OLD_GOD', 'DRAGON_ASPECT', 'NAARU'];
+  const FIGURE_GROUPS = ['TITAN', 'OLD_GOD', 'DRAGON_ASPECT', 'NAARU', 'NPC'];
   const FACTION_GROUPS = ['PANTHEON', 'ORC_CLAN', 'HUMAN_KINGDOM', 'NIGHT_ELF', 'BURNING_LEGION', 'FACTION'];
 
   function normalize(value) {

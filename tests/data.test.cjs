@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 const path = require('node:path');
 const archive = require('../data-core.js');
-const notes = require('../lore-notes-core.js');
+const notes = require('../stars-core.js');
 const context = vm.createContext({});
 for (const file of ['volume1/nodes.js', 'volume2/nodes.js', 'volume1/links.js', 'volume2/links.js', 'volume1/timeline.js', 'volume2/timeline.js']) {
   vm.runInContext(fs.readFileSync(path.join(__dirname, '..', file), 'utf8'), context);

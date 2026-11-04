@@ -26,8 +26,8 @@ const { execFileSync } = require('node:child_process');
 
 const [volumeArg, id, specPath] = process.argv.slice(2);
 const volume = Number(volumeArg);
-assert.ok(Number.isInteger(volume) && volume >= 1 && id && specPath,
-  'Usage: node .claude/skills/add-era/scripts/append-node.cjs VOLUME ID SPEC_FILE');
+assert.ok(Number.isInteger(volume) && volume >= 0 && id && specPath,
+  'Usage: node .claude/skills/add-lore/scripts/append-node.cjs VOLUME ID SPEC_FILE');
 
 const spec = JSON.parse(fs.readFileSync(specPath, 'utf8'));
 assert.ok(spec.mode === 'update' || spec.mode === 'new', 'spec.mode must be "update" or "new"');
@@ -41,7 +41,9 @@ let label, group, type, status, previousState, desc, star, era, chronOrder, sect
 
 if (spec.mode === 'update') {
   const latest = new Map();
-  for (let n = 1; n <= volume; n++) {
+  // Volume 0 (in-game lore) always exists and isn't gated by reading progress like
+  // the book volumes are, so it's always included regardless of the volume being edited.
+  for (let n = 0; n <= volume; n++) {
     const bfile = `volume${n}/nodes.js`;
     const bvar = n === 1 ? 'nodes' : `nodesVolume${n}`;
     const arr = n === volume ? currentArray : new Function(fs.readFileSync(bfile, 'utf8') + `; return ${bvar};`)();

@@ -10,6 +10,7 @@ const GROUPS = {
   PANTHEON: { color: '#6a5010', stroke: '#c9933a', r: 14 },
   DRAGON_ASPECT: { color: '#8b1a1a', stroke: '#e05050', r: 14 },
   NAARU: { color: '#1a5a6a', stroke: '#4ad0e0', r: 13 },
+  NPC: { color: '#3a4a5a', stroke: '#7a9ab0', r: 13 },
   ORC_CLAN: { color: '#4a2010', stroke: '#c06030', r: 13 },
   HUMAN_KINGDOM: { color: '#1a3a5c', stroke: '#4a8cbf', r: 13 },
   NIGHT_ELF: { color: '#1a4a3a', stroke: '#4ab08a', r: 13 },

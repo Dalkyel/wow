@@ -1,5 +1,6 @@
 // Load every recorded volume, update, connection, and timeline entry before building the UI.
 const archive = ArchiveData.merge([
+  { volume: 0, nodes: nodesVolume0, links: linksVolume0, timeline: timelineVolume0 },
   { volume: 1, nodes, links, timeline },
   { volume: 2, nodes: nodesVolume2, links: linksVolume2, timeline: timelineVolume2 },
   { volume: 3, nodes: nodesVolume3, links: linksVolume3, timeline: timelineVolume3 },

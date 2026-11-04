@@ -14,7 +14,7 @@ const nodeReviewOptions = options.filter(option => option.startsWith('--review-n
 assert.ok(nodeReviewOptions.length <= 1, 'Supply only one --review-nodes=PAGE option');
 const volume = Number(volumeArg), section = Number(sectionArg);
 assert.ok(Number.isInteger(volume) && volume >= 1 && Number.isInteger(section) && section > 0 && baseline,
-  'Usage: node .claude/skills/add-era/scripts/verify-era.cjs VOLUME SECTION BASELINE_DIR');
+  'Usage: node .claude/skills/add-lore/scripts/verify-lore.cjs VOLUME SECTION BASELINE_DIR');
 const kinds = ['nodes', 'links', 'timeline'];
 const variable = (kind, n) => (kind === 'timeline' ? 'timeline' : kind) + (n === 1 ? '' : `Volume${n}`);
 const load = (file, name) => new Function(fs.readFileSync(file, 'utf8') + `; return ${name};`)();

@@ -1,3 +1,3 @@
-// Volume 2 — not yet read. Populate via the add-era skill as you progress.
+// Volume 2 — not yet read. Populate via the add-lore skill as you progress.
 const nodesVolume2 = [
 ];
