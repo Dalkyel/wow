@@ -182,15 +182,25 @@ not recognized and is validated as a normal link instead.
 ## 3. Timeline entry — `volume{N}/timeline.js`
 
 ```js
-{ section: N, era: 'era-slug', title: "Section N — Title", summary: "..." }
+{ section: N, era: 'era-slug', title: "Entry N — Title", summary: "..." }
 ```
 
 English prose, `<br><br>` between paragraphs, `<strong>` for first-mention proper
-nouns/key terms, `<em>` for emphasis. This is what populates the "Volume N" tab in the
-timeline log — no other wiring needed, the tab appears automatically the first time this
-volume's `timeline.js` goes from empty to non-empty. `era` here is informational (which
-part of the cosmology spine this section mostly covers) — it does not have to match
-every node's own `era`.
+nouns/key terms, `<em>` for emphasis. This is what populates the "Volume N" tab in
+Dalkar's journal — no other wiring needed, the tab appears automatically the first time
+this volume's `timeline.js` goes from empty to non-empty. `era` here is informational
+(which part of the cosmology spine this section mostly covers) — it does not have to
+match every node's own `era`.
+
+**Voice:** the archive is framed as the personal journal of Dalkar Stonewalker — an Orc
+Warrior, Explorer, and future archaeologist, reading the actual Chronicle volumes and
+writing up what he learns. Write `title` as `"Entry N — Title"` (not `"Section N —
+Title"`), and write `summary` in Dalkar's first-person voice: his reaction to and
+understanding of what he just read, not a neutral third-person restatement. Keep every
+fact accurate to the source — the voice changes, not the content. `<strong>` terms
+should still resolve via the mention matcher where it comes naturally, but that's a
+nice-to-have for this voice, not a hard blocker the way it is for `--review-summary`'s
+own checks elsewhere.
 
 ## 4. Later-volume discoveries — integrate directly into nodes and links
 

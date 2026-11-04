@@ -312,7 +312,7 @@ function renderSectionList() {
     <button class="reference-result" type="button" data-section="${t.section}" aria-current="${t.section === activeSection}">
       <strong>${t.title}</strong>
     </button>`).join('');
-  if (!entries.length) chapterListEl.innerHTML = '<p class="reference-empty">No log entries yet for this volume.</p>';
+  if (!entries.length) chapterListEl.innerHTML = '<p class="reference-empty">I haven\'t written anything for this volume yet.</p>';
   chapterListEl.querySelectorAll('.reference-result').forEach(btn => {
     btn.addEventListener('click', () => showEntry(parseInt(btn.dataset.section, 10)));
   });
@@ -323,9 +323,9 @@ function showEntry(section) {
   activeSection = entry?.section ?? null;
   chapterListEl.querySelectorAll('.reference-result').forEach(btn =>
     btn.setAttribute('aria-current', parseInt(btn.dataset.section, 10) === activeSection));
-  if (!entry) { chapterPaneEl.innerHTML = '<p class="reference-empty">No log entries yet for this volume.</p>'; return; }
+  if (!entry) { chapterPaneEl.innerHTML = '<p class="reference-empty">I haven\'t written anything for this volume yet.</p>'; return; }
   chapterPaneEl.innerHTML = `
-    <p class="reference-eyebrow">Volume ${entry.volume || 1} · Section ${entry.section}</p>
+    <p class="reference-eyebrow">Volume ${entry.volume || 1} · Entry ${entry.section}</p>
     <h2 class="reference-name">${entry.title}</h2>
     <div class="chapter-text">${entry.summary}</div>`;
   linkifyMentions(chapterPaneEl.querySelector('.chapter-text'));
