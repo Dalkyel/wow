@@ -1,0 +1,11 @@
+{
+  "name": "wow",
+  "private": true,
+  "description": "Interactive timeline for a World of Warcraft Chronicle readthrough",
+  "scripts": {
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

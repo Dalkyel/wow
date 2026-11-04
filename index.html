@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>World of Warcraft Chronicle — Interactive Timeline</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"
+    integrity="sha384-su5kReKyYlIFrI62mbQRKXHzFobMa7BHp1cK6julLPbnYcCW9NIZKJiTODjLPeDh"
+    crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <header>
+    <div>
+      <div class="header-title">World of Warcraft Chronicle</div>
+      <div class="header-sub">Interactive Timeline · Volume 1</div>
+    </div>
+    <button id="btn-figures" class="clue-button" type="button">Figures &amp; Factions</button>
+    <button id="btn-connections" class="clue-button" type="button">Explore Connections</button>
+    <button id="btn-lore-notes" class="clue-button" type="button">Lore Notes</button>
+    <button id="btn-bookmarks" class="clue-button" type="button">★ Bookmarks</button>
+    <button id="btn-log" class="ctrl-btn" title="View the timeline log" aria-label="Timeline log">📖</button>
+  </header>
+  <div id="bookmark-feedback" class="sr-only" role="status" aria-live="polite"></div>
+  <div class="main">
+    <div id="graph-container">
+      <svg id="graph"></svg>
+      <div class="controls">
+        <input type="text" id="search-input" placeholder="Search a figure, place, event…" aria-label="Search">
+        <div class="axis-toggle" role="group" aria-label="Timeline axis">
+          <button class="ctrl-btn axis-btn active" id="btn-mode-chronology" type="button">Chronology</button>
+          <button class="ctrl-btn axis-btn" id="btn-mode-reading" type="button">Reading order</button>
+        </div>
+        <button class="ctrl-btn" id="btn-zoom-in" title="Zoom in" aria-label="Zoom in">+</button>
+        <button class="ctrl-btn" id="btn-zoom-out" title="Zoom out" aria-label="Zoom out">−</button>
+        <button class="ctrl-btn" id="btn-reset" title="Reset view" aria-label="Reset view">⟳</button>
+      </div>
+    </div>
+    <div id="detail-panel" class="hidden">
+      <div class="panel-header" style="position:relative">
+        <div class="panel-type" id="p-type">Figure</div>
+        <div class="panel-name" id="p-name">Name</div>
+        <button class="panel-close" id="panel-close" type="button" aria-label="Close detail panel">✕</button>
+      </div>
+      <div class="panel-body">
+        <button id="p-reference" class="clue-button" type="button" hidden>Open figure profile</button>
+        <button id="p-explore" class="clue-button" type="button">Explore its connections</button>
+        <div id="p-bookmark"></div>
+        <div class="panel-desc" id="p-overview"></div>
+        <details id="p-full-description"><summary>Full description</summary><div class="panel-desc" id="p-desc">Description</div></details>
+        <div class="connections-title">Connections</div>
+        <label class="sr-only" for="p-connection-search">Search connections</label>
+        <input id="p-connection-search" type="search" placeholder="Search by name or relationship…">
+        <label class="sr-only" for="p-connection-type">Relationship type</label>
+        <select id="p-connection-type"><option value="">All connections</option></select>
+        <p id="p-connection-count" role="status" aria-live="polite"></p>
+        <div id="p-connections"></div>
+        <details class="panel-original-notes"><summary>Original notes</summary><div id="p-star"></div></details>
+      </div>
+    </div>
+  </div>
+  <div class="tooltip" id="tooltip">
+    <strong id="tt-name"></strong>
+    <span id="tt-desc"></span>
+  </div>
+
+  <dialog id="summary-panel" class="reference" aria-labelledby="summary-heading">
+    <div class="reference-header">
+      <div>
+        <h1 id="summary-heading">Timeline Log</h1>
+        <p>A reminder of the history so far</p>
+      </div>
+      <button id="summary-close" type="button" aria-label="Close timeline log">Close ✕</button>
+    </div>
+    <div class="reference-layout">
+      <aside class="reference-index" aria-label="Volume index">
+        <div class="book-tabs" id="book-tabs"></div>
+        <div id="chapter-list"></div>
+      </aside>
+      <article id="chapter-pane" aria-label="Entry text"></article>
+    </div>
+  </dialog>
+
+  <script src="groups.js"></script>
+  <script src="shared/eras.js"></script>
+  <!-- Volume 1 data -->
+  <script src="volume1/nodes.js"></script>
+  <script src="volume1/links.js"></script>
+  <script src="volume1/timeline.js"></script>
+  <!-- Volume 2 data (empty until read) -->
+  <script src="volume2/nodes.js"></script>
+  <script src="volume2/links.js"></script>
+  <script src="volume2/timeline.js"></script>
+  <!-- Volume 3 data (empty until read) -->
+  <script src="volume3/nodes.js"></script>
+  <script src="volume3/links.js"></script>
+  <script src="volume3/timeline.js"></script>
+  <!-- Volume 4 data (empty until read) -->
+  <script src="volume4/nodes.js"></script>
+  <script src="volume4/links.js"></script>
+  <script src="volume4/timeline.js"></script>
+  <!-- Merge logic + visualization -->
+  <script src="lore-notes-core.js"></script>
+  <script src="figures-data.js"></script>
+  <script src="figures-core.js"></script>
+  <script src="data-core.js"></script>
+  <script src="data-init.js"></script>
+  <script src="bookmarks-core.js"></script>
+  <script src="bookmarks.js"></script>
+  <script src="timeline-core.js"></script>
+  <script src="timeline.js"></script>
+  <script src="lore-notes.js"></script>
+  <script src="figures.js"></script>
+  <script src="connections-core.js"></script>
+  <script src="connections.js"></script>
+  <script src="readability.js"></script>
+</body>
+</html>
