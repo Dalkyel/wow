@@ -17,6 +17,7 @@
       <div class="header-title">Dalkar Stonewalker's Journal</div>
       <div class="header-sub">Orc Warrior · Explorer · Future Archaeologist</div>
     </div>
+    <button id="btn-map" class="clue-button" type="button">🗺️ Map</button>
     <button id="btn-figures" class="clue-button" type="button">Figures &amp; Factions</button>
     <button id="btn-connections" class="clue-button" type="button">Explore Connections</button>
     <button id="btn-lore-notes" class="clue-button" type="button">Lore Notes</button>
@@ -26,9 +27,19 @@
   </header>
   <div id="bookmark-feedback" class="sr-only" role="status" aria-live="polite"></div>
   <div class="main">
-    <div id="graph-container">
+    <div id="welcome-screen">
+      <div class="welcome-title">Dalkar Stonewalker</div>
+      <div class="welcome-sub">Orc Warrior · Explorer · Future Archaeologist</div>
+      <p class="welcome-blurb">This is where I keep track of everything I've learned — the lore I've read, the quests I've done, and how it all connects. Pick a journal to open.</p>
+      <div class="welcome-actions">
+        <button id="btn-open-journal" class="clue-button welcome-cta" type="button">📖 My Journal</button>
+        <button id="btn-open-quests" class="clue-button welcome-cta" type="button">📜 My Quest Log</button>
+      </div>
+    </div>
+    <div id="graph-container" hidden>
       <svg id="graph"></svg>
       <div class="controls">
+        <button class="ctrl-btn" id="btn-home" title="Back to the welcome screen" aria-label="Back to the welcome screen">⌂</button>
         <input type="text" id="search-input" placeholder="Search a figure, place, event…" aria-label="Search">
         <div class="axis-toggle" role="group" aria-label="Timeline axis">
           <button class="ctrl-btn axis-btn active" id="btn-mode-chronology" type="button">Chronology</button>

@@ -11,4 +11,3 @@ const figureSourceRevisions = archive.revisions;
 nodes.splice(0, nodes.length, ...archive.nodes);
 links.splice(0, links.length, ...archive.links);
 timeline.splice(0, timeline.length, ...archive.timeline);
-document.querySelector('.header-sub').textContent = DATA_LABEL;

@@ -38,5 +38,6 @@
 
   function open() { render(); if (!dialog.open) dialog.showModal(); }
   btnQuests.addEventListener('click', open);
+  document.getElementById('btn-open-quests').addEventListener('click', open);
   questClose.addEventListener('click', () => dialog.close());
 })();

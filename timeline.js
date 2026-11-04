@@ -233,6 +233,7 @@ document.getElementById('p-connection-search').addEventListener('input', renderP
 document.getElementById('p-connection-type').addEventListener('change', renderPanelConnections);
 
 function selectNode(d) {
+  if (container.hidden) showMap();
   selectedNode = d;
   showPanel(d);
   const connectedIds = new Set([d.id]);
@@ -277,11 +278,26 @@ searchInput.addEventListener('input', e => {
   window.refreshTimelineReadability?.();
 });
 
-// ── Initial render ─────────────────────────────────────
-render(false);
-rescaleLabels(1);
-setTimeout(() => resetZoom(false), 50);
-window.addEventListener('resize', () => render(false));
+// ── Welcome screen / map toggle ─────────────────────────
+// The graph starts hidden: container.clientWidth/clientHeight would read 0
+// while `#graph-container` has the `hidden` attribute, so render()/resetZoom()
+// are deferred until the map is actually opened, not run unconditionally at load.
+const welcomeScreen = document.getElementById('welcome-screen');
+function showMap() {
+  welcomeScreen.hidden = true;
+  container.hidden = false;
+  render(false);
+  rescaleLabels(1);
+  setTimeout(() => resetZoom(false), 50);
+}
+function showWelcome() {
+  clearSelection();
+  container.hidden = true;
+  welcomeScreen.hidden = false;
+}
+document.getElementById('btn-map').addEventListener('click', showMap);
+document.getElementById('btn-home').addEventListener('click', showWelcome);
+window.addEventListener('resize', () => { if (!container.hidden) render(false); });
 
 // ── Timeline log ───────────────────────────────────────
 const summaryPanel = document.getElementById('summary-panel');
@@ -362,4 +378,5 @@ chapterPaneEl.addEventListener('click', event => {
 function loadLog() { renderVolumeTabs(); renderSectionList(); }
 function openLog() { if (bookTabsEl.innerHTML === '') loadLog(); if (!summaryPanel.open) summaryPanel.showModal(); }
 btnLog.addEventListener('click', openLog);
+document.getElementById('btn-open-journal').addEventListener('click', openLog);
 summaryClose.addEventListener('click', () => summaryPanel.close());
