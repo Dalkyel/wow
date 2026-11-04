@@ -8,6 +8,11 @@ const FIGURE_GUIDES = {
   aggramar: { intro: "The Pantheon's mightiest champion-at-arms.", aliases: ['Aggramar'] },
   sargeras: { intro: "Once the Pantheon's most relentless champion against corruption — not yet the Dark Titan he will become.", aliases: ['Sargeras'] },
   'the-old-gods': { intro: 'Ancient, alien horrors whispered into being by the Void itself.', aliases: ['the Old Gods'] },
+  eonar: { intro: "The Pantheon's Life-Binder, sworn to protect living things wherever possible.", aliases: ['Eonar'] },
+  'khaz-goroth': { intro: "The Pantheon's Shaper and Forger of Worlds.", aliases: ["Khaz'goroth"] },
+  norgannon: { intro: "The Pantheon's Keeper of Celestial Magics and Lore.", aliases: ['Norgannon'] },
+  golganneth: { intro: "The Pantheon's Lord of the Skies and Roaring Oceans.", aliases: ['Golganneth'] },
+  constellar: { intro: 'A celestial race that watches the Pantheon-ordered worlds for instability.', aliases: ['Constellar'] },
 };
 
 // A small set of useful starting points; every other connection stays available.
