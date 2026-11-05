@@ -47,7 +47,7 @@ pick of one version. Before recording PASS in `lore-review.md`:
   as the primary external source for this comparison.
 - Keep any spoiler surfaced by that research out of the journal entry's own prose (see
   "Research source, and keeping the journal spoiler-free" in SKILL.md) — it belongs in
-  the lore note's evidence, not in Dalkar's narration.
+  the lore note's evidence, not in Orken's narration.
 - For each, either: confirm a note already exists on the relevant node's `star` field
   and is still accurate (append new evidence via the normal `desc`/`star` full-overwrite
   rule), or add one — a short `★`/`★★`/`★★★` note on whichever existing node the

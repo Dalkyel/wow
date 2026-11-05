@@ -1,7 +1,7 @@
 ---
 name: log-quest
 description: >
-  Use this after completing an in-game World of Warcraft quest to add it to Dalkar's
+  Use this after completing an in-game World of Warcraft quest to add it to Orken's
   quest log (the 📜 panel in index.html), connecting any NPCs or locations it involves
   to the lore graph. Trigger examples: "I completed a quest, log it", "add 'Your Place
   in the World' to my quest log", "log this quest", "I just did a quest at the Valley of
@@ -17,7 +17,7 @@ location, npcs, note }` object per quest, no accumulated text, no baseline/appen
 machinery for the quest entry itself. What's new: the NPCs and locations a quest
 involves are real graph entities, backed by **`volume0/`** — a permanent, always-on
 lore source (not gated by reading progress the way Chronicle volumes are) that holds the
-in-game lore graph: things Dalkar has actually met or visited, as opposed to what he's
+in-game lore graph: things Orken has actually met or visited, as opposed to what he's
 read about. `volume0` reuses the exact same `nodes.js`/`links.js` mechanics as any book
 volume, with one structural difference worth knowing: it's permanently excluded from the
 reading-order axis (`TimelineCore.readingPositions` treats a falsy `volume`, and `0` is
@@ -84,17 +84,17 @@ a related node), and does the quest itself rise to needing its own `EVENT` node 
 quests don't; a pivotal one — a chain's climax, a first meeting with someone
 significant — might).
 
-## 4. Write the quest entry in Dalkar's voice, without spoilers
+## 4. Write the quest entry in Orken's voice, without spoilers
 
 ```js
 { id: 'kebab-case-slug', name: 'Exact Quest Name', location: 'Zone or sub-zone',
-  npcs: ['NPC Name', ...], note: 'A short first-person note from Dalkar.' }
+  npcs: ['NPC Name', ...], note: 'A short first-person note from Orken.' }
 ```
 
-- `note`: Dalkar Stonewalker's voice (Orc Warrior · Explorer · Future Archaeologist) —
+- `note`: Orken Stonewalker's voice (Orc Hunter · Explorer · Future Archaeologist) —
   first person, present-tense reaction to *this* quest, matching the style already
   established in `volume1/timeline.js`.
-- **No spoilers**: reflects only what Dalkar experienced finishing this quest — never
+- **No spoilers**: reflects only what Orken experienced finishing this quest — never
   the quest chain's eventual payoff, a zone's later story beat, or anything he (or the
   user, in-game) hasn't reached yet, even if the wiki page for this quest reveals it.
   When in doubt, leave it out. Same rule applies to any new node's `desc` — describe

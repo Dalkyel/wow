@@ -2,7 +2,7 @@
 name: add-lore
 description: >
   Use this after reading a section of a lore book — World of Warcraft Chronicle or a
-  novel — to add its content to Dalkar's journal (index.html), or to validate reference
+  novel — to add its content to Orken's journal (index.html), or to validate reference
   material against it. Trigger examples: "add Volume 1 section 4", "I just read about
   the War of the Ancients, update the journal", "log this section", "I finished a
   chapter of the novel, add it", "here are my notes from today's reading, add them",
@@ -59,7 +59,7 @@ Use **https://warcraft.wiki.gg/** as the primary external source when fact-check
 terminology, spellings, names, or resolving a retcon/ambiguity flagged by the
 lore-consistency gate — prefer it over unaided recall or a generic web search.
 
-That research must never leak forward into the journal itself. Dalkar's journal and
+That research must never leak forward into the journal itself. Orken's journal and
 quest log are written in his own present-tense voice — what he has actually read or
 experienced so far, not an omniscient wiki dump. When a wiki lookup turns up later
 lore (a future Chronicle volume, a later expansion's reveal, a quest-chain's eventual
@@ -205,15 +205,15 @@ not recognized and is validated as a normal link instead.
 
 English prose, `<br><br>` between paragraphs, `<strong>` for first-mention proper
 nouns/key terms, `<em>` for emphasis. This is what populates the "Volume N" tab in
-Dalkar's journal — no other wiring needed, the tab appears automatically the first time
+Orken's journal — no other wiring needed, the tab appears automatically the first time
 this volume's `timeline.js` goes from empty to non-empty. `era` here is informational
 (which part of the cosmology spine this section mostly covers) — it does not have to
 match every node's own `era`.
 
-**Voice:** the archive is framed as the personal journal of Dalkar Stonewalker — an Orc
+**Voice:** the archive is framed as the personal journal of Orken Stonewalker — an Orc
 Warrior, Explorer, and future archaeologist, reading the actual Chronicle volumes and
 writing up what he learns. Write `title` as `"Entry N — Title"` (not `"Section N —
-Title"`), and write `summary` in Dalkar's first-person voice: his reaction to and
+Title"`), and write `summary` in Orken's first-person voice: his reaction to and
 understanding of what he just read, not a neutral third-person restatement. Keep every
 fact accurate to the source — the voice changes, not the content. `<strong>` terms
 should still resolve via the mention matcher where it comes naturally, but that's a
@@ -250,7 +250,7 @@ Volume 4's, and register it in the array passed to `ArchiveData.merge` in
 mechanics changes.)
 
 `volume0/` also exists, but it isn't a book — it's the in-game lore graph the
-`log-quest` skill grows (NPCs, locations Dalkar has actually met/visited). Numbering
+`log-quest` skill grows (NPCs, locations Orken has actually met/visited). Numbering
 starts at 1 for books specifically so `volume0` never collides with a future Chronicle
 volume or novel; this skill never touches it.
 
