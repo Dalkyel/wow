@@ -48,19 +48,24 @@ name in the quest's `npcs`/`location` fields and the quest panel's own matcher w
 it automatically (same mechanism, and the same merged graph, that makes a Chronicle
 figure's name clickable in the journal).
 
-While you have the quest's wiki.gg page open, also read its **Objectives**,
-**Description**, **Progress**, and **Completion** sections, and foreverchanges.pro's
-matching **"When you come back"** (progress) and **"When you hand it in"** (completion)
-sections — pull both, don't settle for whichever one loaded first. Pulling only the
-quest name and NPC names here is how a quest entry ends up thin: the mechanical
-objective and the flavor of what each NPC actually said never make it into
-`quests-data.js`, and re-deriving them later means re-fetching the same pages. Jot down
-(mentally or literally) the one-line objective and anything in the dialogue worth
-carrying into Orken's voice before moving on to step 3.
+Fetch the wiki.gg page and the foreverchanges.pro page **in the same parallel batch** —
+they're independent lookups, and fetching them one after the other just adds a round
+trip for no benefit. From wiki.gg pull its **Objectives**, **Description**, **Progress**,
+and **Completion** sections; from foreverchanges.pro pull its matching **"When you come
+back"** (progress) and **"When you hand it in"** (completion) sections — pull both,
+don't settle for whichever one loaded first. Pulling only the quest name and NPC names
+here is how a quest entry ends up thin: the mechanical objective and the flavor of what
+each NPC actually said never make it into `quests-data.js`, and re-deriving them later
+means re-fetching the same pages. Jot down (mentally or literally) the one-line
+objective and anything in the dialogue worth carrying into Orken's voice before moving
+on to step 3.
 
 foreverchanges.pro is useful but not perfectly reliable for this (see
-[[reference_foreverchanges_quest_source]] — it's gotten a kill count wrong, and once
-returned "When you come back" dialogue for a different quest entirely). Cross-check its
+[[reference_foreverchanges_quest_source]] — it's gotten a kill/collect count wrong
+*twice* now, and once returned "When you come back" dialogue for a different quest
+entirely). **For numeric objective counts specifically, trust wiki.gg outright rather
+than treating the two sites as a 50/50 cross-check** — foreverchanges has a confirmed
+track record of getting the number wrong while wiki.gg hasn't yet. Still cross-check its
 dialogue against wiki.gg's own Progress/Completion text before trusting it, and don't
 assume a "When you come back" stage exists at all — a simple speak-to quest completes in
 one step and has no Progress text on either site; if both sites are silent on the second
