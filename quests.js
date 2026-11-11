@@ -38,15 +38,17 @@
       return;
     }
     QuestCore.groupByLocation(quests).forEach(({ location, quests: group }) => {
-      const heading = document.createElement('div');
+      const locationGroup = document.createElement('details');
+      locationGroup.className = 'quest-location-group';
+      const heading = document.createElement('summary');
       heading.className = 'quest-location';
-      heading.textContent = location;
+      heading.textContent = `${location} (${group.length})`;
       linkifyText(heading);
-      body.append(heading);
+      locationGroup.append(heading);
       group.forEach(q => {
-        const item = document.createElement('div');
+        const item = document.createElement('details');
         item.className = 'quest-item';
-        const name = document.createElement('h3');
+        const name = document.createElement('summary');
         name.textContent = q.name;
         item.append(name);
         if (q.npcs?.length) {
@@ -68,14 +70,16 @@
           note.textContent = q.note;
           item.append(note);
         }
-        body.append(item);
+        locationGroup.append(item);
       });
+      body.append(locationGroup);
     });
   }
 
   body.addEventListener('click', event => {
     const link = event.target.closest('.mention');
     if (!link) return;
+    event.preventDefault(); // mentions can sit inside a <summary>; don't let the click also toggle it
     const id = link.dataset.id;
     const reopen = () => { if (!dialog.open) dialog.showModal(); };
     if (FigureReference.kind(nodeMap[id])) window.openFigureReference(id, '', reopen);
