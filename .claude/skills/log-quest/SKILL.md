@@ -13,8 +13,8 @@ description: >
 # Logging an in-game quest, connected to the lore graph
 
 The quest log itself (`quests-data.js`) stays simple — a standalone `{ id, name,
-location, npcs, note }` object per quest, no accumulated text, no baseline/append-script
-machinery for the quest entry itself. What's new: the NPCs and locations a quest
+location, npcs, objective, note }` object per quest, no accumulated text, no
+baseline/append-script machinery for the quest entry itself. What's new: the NPCs and locations a quest
 involves are real graph entities, backed by **`volume0/`** — a permanent, always-on
 lore source (not gated by reading progress the way Chronicle volumes are) that holds the
 in-game lore graph: things Orken has actually met or visited, as opposed to what he's
@@ -47,6 +47,33 @@ reading-progress-gated. A match means nothing new needs creating: just use that 
 name in the quest's `npcs`/`location` fields and the quest panel's own matcher will link
 it automatically (same mechanism, and the same merged graph, that makes a Chronicle
 figure's name clickable in the journal).
+
+While you have the quest's wiki.gg page open, also read its **Objectives**,
+**Description**, **Progress**, and **Completion** sections, and foreverchanges.pro's
+matching **"When you come back"** (progress) and **"When you hand it in"** (completion)
+sections — pull both, don't settle for whichever one loaded first. Pulling only the
+quest name and NPC names here is how a quest entry ends up thin: the mechanical
+objective and the flavor of what each NPC actually said never make it into
+`quests-data.js`, and re-deriving them later means re-fetching the same pages. Jot down
+(mentally or literally) the one-line objective and anything in the dialogue worth
+carrying into Orken's voice before moving on to step 3.
+
+foreverchanges.pro is useful but not perfectly reliable for this (see
+[[reference_foreverchanges_quest_source]] — it's gotten a kill count wrong, and once
+returned "When you come back" dialogue for a different quest entirely). Cross-check its
+dialogue against wiki.gg's own Progress/Completion text before trusting it, and don't
+assume a "When you come back" stage exists at all — a simple speak-to quest completes in
+one step and has no Progress text on either site; if both sites are silent on the second
+section, don't fabricate one.
+
+**Watch who a short quote is actually about before writing it into `note` as fact.** A
+fetched summary can flip the subject of a sentence without looking wrong in isolation —
+"Cutting Teeth" once went into the log as Gornek saying the *boars* are "more useful to
+us alive than dead," when the quest's actual description has him saying that about
+*Orken* (he's explaining why he's not sending the recruit after dangerous kodo, not
+giving boar-conservation advice). For any pronoun-bearing quote ("you'll"/"they're"/etc.)
+pulled from a summarized fetch, re-fetch or re-read the surrounding sentence to confirm
+who "you" or "they" means before it goes in the log.
 
 ## 3. Mint a node for anything unmatched
 
@@ -84,21 +111,37 @@ a related node), and does the quest itself rise to needing its own `EVENT` node 
 quests don't; a pivotal one — a chain's climax, a first meeting with someone
 significant — might).
 
-## 4. Write the quest entry in Orken's voice, without spoilers
+## 4. Write the quest entry: objective plus Orken's voice, without spoilers
 
 ```js
 { id: 'kebab-case-slug', name: 'Exact Quest Name', location: 'Zone or sub-zone',
-  npcs: ['NPC Name', ...], note: 'A short first-person note from Orken.' }
+  npcs: ['NPC Name', ...],
+  objective: 'The concrete in-game goal, plainly stated.',
+  note: 'A short first-person note from Orken.' }
 ```
 
+- `objective`: the mechanical "what to do" — who to talk to, what to kill/fetch/escort
+  — paraphrased close to the wiki's own Objectives text (e.g. "Slay 6 Mottled Boars,
+  then return to Gornek."). Plain fact, not voiced, not spoiler-sensitive (it's always
+  about *this* quest, something the player just did) — this is what makes the quest
+  panel useful as a reference, not just a mood piece. Omit only if a quest genuinely has
+  no clear objective of its own (rare).
 - `note`: Orken Stonewalker's voice (Orc Hunter · Explorer · Future Archaeologist) —
   first person, present-tense reaction to *this* quest, matching the style already
-  established in `volume1/timeline.js`.
+  established in `volume1/timeline.js`. It must reflect **both ends of the quest**: the
+  hand-off (what the quest giver said/did when assigning it) and the turn-in (what
+  happened, and what was said, when Orken came back to complete it) — even when the NPC
+  who completes it isn't the one who gave it. A note that only covers the accept half and
+  skips the completion dialogue (Gornek's reaction on turn-in, Jen'shan's on turn-in,
+  etc.) is missing half the quest. Draw on the Description/Progress/Completion text and
+  dialogue you read in step 2 for both halves — don't just restate the objective in
+  fancier words.
 - **No spoilers**: reflects only what Orken experienced finishing this quest — never
   the quest chain's eventual payoff, a zone's later story beat, or anything he (or the
   user, in-game) hasn't reached yet, even if the wiki page for this quest reveals it.
-  When in doubt, leave it out. Same rule applies to any new node's `desc` — describe
-  what's known of this NPC/location *as of this encounter*, not their full future arc.
+  When in doubt, leave it out. Same rule applies to `objective`, and to any new node's
+  `desc` — describe what's known of this NPC/location *as of this encounter*, not their
+  full future arc.
 
 Append the object to the `quests` array in `quests-data.js` directly — there's no append
 script for this file; entries are standalone, not accumulated text, so hand-editing it

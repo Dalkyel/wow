@@ -153,6 +153,7 @@ svg:active{cursor:grabbing}
 .quest-item h3{font-size:16px;color:#f0e8d0;margin-bottom:4px}
 .quest-item p{font-size:14px;line-height:1.5;color:#b9c0d0}
 .quest-npcs{font-size:13px;color:#9aa4ba;font-style:italic}
+.quest-objective{font-size:13px;color:#efc77d;margin:4px 0}
 .reference-index{padding:20px 16px;overflow-y:auto;border-right:1px solid #2e3650;background:#141926}
 .reference-index>label{display:block;margin-bottom:7px;color:#c9d0e0}
 .reference-index>input,.reference-index>select{width:100%;margin-bottom:10px}

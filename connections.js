@@ -76,7 +76,7 @@
   let chosenEdge = null;
 
   function draw() {
-    $('connections-back').disabled = !history.length;
+    $('connections-back').disabled = !history.length && !onReturn;
     $('connections-forward').disabled = !future.length;
     const view = core.view(graph, state, preferred);
     $('focus-count').textContent = `${view.nodes.length} nodes shown · ${view.edges.length} connections`;
@@ -164,7 +164,10 @@
   }
   $('connections-kind').addEventListener('change', e => setFilter('nodeKind', e.target.value));
   $('connections-type').addEventListener('change', e => setFilter('linkType', e.target.value));
-  $('connections-back').addEventListener('click', () => { if (!history.length) return; future.push(state); state = history.pop(); draw(); });
+  $('connections-back').addEventListener('click', () => {
+    if (history.length) { future.push(state); state = history.pop(); draw(); return; }
+    if (onReturn) { const r = onReturn; onReturn = null; dialog.close(); r(); }
+  });
   $('connections-forward').addEventListener('click', () => { if (!future.length) return; history.push(state); state = future.pop(); draw(); });
   $('connections-recenter').addEventListener('click', () => recenter(state.selectedId));
   $('connections-collapse').addEventListener('click', () => collapseBranch(state.selectedId));
@@ -185,7 +188,7 @@
 
   function open(id, returnHandler) {
     onReturn = returnHandler || null;
-    history = []; future = [];
+    state = null; history = []; future = []; chosenEdge = null;
     $('connections-kind').value = ''; $('connections-type').value = '';
     recenter(id);
     dialog.showModal();

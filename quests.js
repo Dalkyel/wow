@@ -56,6 +56,13 @@
           linkifyText(npcs);
           item.append(npcs);
         }
+        if (q.objective) {
+          const objective = document.createElement('p');
+          objective.className = 'quest-objective';
+          objective.textContent = q.objective;
+          linkifyText(objective);
+          item.append(objective);
+        }
         if (q.note) {
           const note = document.createElement('p');
           note.textContent = q.note;
