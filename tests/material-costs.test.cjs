@@ -40,7 +40,7 @@ function page(snapshot, browser) {
   const context = vm.createContext({ document, Event: class { constructor(type) { this.type = type; } },
     ...browser });
   if (snapshot) context.auctionPriceSnapshot = snapshot;
-  for (const file of ["known-recipes-data.js", "material-costs.js", "profit.js", "known-recipes.js"]) {
+  for (const file of ["known-recipes-data.js", "material-costs.js", "profit.js", "known-recipes.js", "materials-reference.js"]) {
     vm.runInContext(readFileSync(join(__dirname, "../professions", file), "utf8"), context);
   }
   if (browser) vm.runInContext(readFileSync(join(__dirname, "../professions/auction-client.js"), "utf8"), context);
@@ -229,4 +229,82 @@ test("a live request failure keeps the saved prices and labels the fallback", as
   await ready;
   assert.equal(vm.runInContext('materialUnitCost("Thunder Lizard Tail")', context), 200);
   assert.match(document.querySelector("#auction-price-status").textContent, /refresh failed.*Using saved prices/);
+});
+
+test("the materials reference lists all unique ingredients and separates vendor, AH, and profit limits", () => {
+  const { context, document } = page({ materials: {
+    "Thunder Lizard Tail": { auctionCopper: 210, vendorCopper: null, purchaseCopper: 210,
+      status: "available", scannedAt: "2026-11-18T20:25:04Z", sourceUrl: "https://auctionhouse.tk.gg/" },
+    "Hot Spices": { auctionCopper: 49, vendorCopper: 40, purchaseCopper: 40,
+      status: "available", scannedAt: "2026-11-18T20:25:04Z", sourceUrl: "https://auctionhouse.tk.gg/" },
+  } });
+  const table = document.querySelector("#materials-reference");
+  const names = table.children.map(row => row.children[0].textContent);
+  const expected = JSON.parse(vm.runInContext("JSON.stringify([...materialValues.keys()].sort((a, b) => a.localeCompare(b)))", context));
+  assert.deepEqual(names, expected);
+  assert.equal(new Set(names).size, names.length);
+  const tail = () => table.children.find(row => row.children[0].textContent === "Thunder Lizard Tail");
+  assert.equal(tail().children[1].textContent, "Unknown");
+  assert.equal(tail().children[2].children[0].textContent, "2s 10c");
+  assert.equal(tail().children[3].textContent, "2s 9c");
+  assert.equal(tail().children[4].children[0].textContent, "Crispy Lizard Tail");
+  const spices = table.children.find(row => row.children[0].textContent === "Hot Spices");
+  assert.equal(spices.children[1].textContent, "40c");
+  assert.equal(spices.children[2].children[0].textContent, "49c");
+
+  vm.runInContext('materialValues.get("Hot Spices").source = "gathered"', context);
+  document.dispatchEvent({ type: "materialvalueschange" });
+  assert.equal(tail().children[3].textContent, "2s 49c");
+  const search = document.querySelector("#material-search");
+  search.value = "  LIZARD  ";
+  search.listeners.input();
+  assert.equal(table.children.length, 1);
+  assert.equal(table.children[0].children[0].textContent, "Thunder Lizard Tail");
+  search.value = "no such material";
+  search.listeners.input();
+  assert.equal(table.children[0].children[0].textContent, "No materials match your search.");
+});
+
+test("a shared material shows every known recipe's distinct quantity, purchase limit, and profit", () => {
+  const { context, document } = page();
+  vm.runInContext('materialValues.get("Wool Cloth").price = 20', context);
+  document.dispatchEvent({ type: "materialvalueschange" });
+  const materialRow = () => document.querySelector("#materials-reference").children.find(row =>
+    row.children[0].textContent === "Wool Cloth");
+  assert.equal(materialRow().children[3].textContent, "28c");
+  assert.equal(materialRow().children[4].children[0].textContent, "Heavy Wool Bandage");
+  const details = materialRow().children[4].children[1];
+  assert.equal(details.children[0].textContent, "Compare 3 recipes");
+  const rows = details.children[2].children[0].children[1].children;
+  const wool = rows.find(row => row.children[0].children[0].textContent === "Wool Bandage");
+  const heavy = rows.find(row => row.children[0].children[0].textContent === "Heavy Wool Bandage");
+  assert.equal(wool.children[0].children[1].textContent, "1 × material per craft");
+  assert.equal(wool.children[1].textContent, "27c");
+  assert.equal(wool.children[2].textContent, "8c");
+  assert.equal(heavy.children[0].children[1].textContent, "2 × material per craft");
+  assert.equal(heavy.children[1].textContent, "28c");
+  assert.equal(heavy.children[2].textContent, "17c");
+  assert.equal(heavy.children[2].children[0].textContent, "8.50c / material");
+  details.open = true;
+  details.listeners.toggle();
+  vm.runInContext('materialValues.get("Wool Cloth").price = 21', context);
+  document.dispatchEvent({ type: "materialvalueschange" });
+  assert.equal(materialRow().children[4].children[1].open, true);
+});
+
+test("the highest purchase limit can come from a recipe with a lower profit per craft", () => {
+  const { context, document } = page();
+  vm.runInContext('materialValues.get("Cured Light Hide").price = 10000', context);
+  document.dispatchEvent({ type: "materialvalueschange" });
+  const row = document.querySelector("#materials-reference").children.find(row =>
+    row.children[0].textContent === "Light Leather");
+  assert.equal(row.children[3].textContent, "22c");
+  assert.equal(row.children[4].children[0].textContent, "Rugged Leather Pants");
+  const comparisons = row.children[4].children[1].children[2].children[0].children[1].children;
+  const pants = comparisons.find(row => row.children[0].children[0].textContent === "Rugged Leather Pants");
+  const boots = comparisons.find(row => row.children[0].children[0].textContent === "Embossed Leather Boots");
+  assert.equal(pants.children[1].textContent, "22c");
+  assert.equal(pants.children[2].textContent, "1s 12c");
+  assert.equal(boots.children[1].textContent, "20c");
+  assert.equal(boots.children[2].textContent, "1s 67c");
 });

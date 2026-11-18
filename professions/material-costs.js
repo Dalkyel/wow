@@ -95,7 +95,8 @@ function recipePurchaseLimit(recipe, target) {
     ({ quantity: sum.quantity + part.quantity, cost: sum.cost + part.cost }), { quantity: 0, cost: 0 });
   if (!total.quantity) return null;
   const breakEven = (recipe.vendorCopper * recipe.unitsPerCraft - total.cost) / total.quantity;
-  return { recipe, breakEven, maximum: Math.ceil(breakEven) - 1 };
+  return { recipe, breakEven, maximum: Math.ceil(breakEven) - 1,
+    quantity: total.quantity, otherCost: total.cost, payout: recipe.vendorCopper * recipe.unitsPerCraft };
 }
 
 function renderMaterialValues(container, recipes) {
@@ -160,7 +161,7 @@ function renderMaterialValues(container, recipes) {
         quoteInfo.append(message, link);
       }
       const limits = recipes.map(recipe => recipePurchaseLimit(recipe, name))
-        .filter(Boolean).sort((a, b) => b.maximum - a.maximum);
+        .filter(Boolean).sort((a, b) => b.maximum - a.maximum || b.breakEven - a.breakEven);
       const best = limits[0];
       if (!best) {
         limit.textContent = "Set the other ingredient costs to calculate a profitable purchase price.";

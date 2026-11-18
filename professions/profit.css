@@ -96,6 +96,28 @@
 .profit-table thead th:nth-child(2) { text-align: left; }
 .profit-table .recipe-loss td:last-child { color: #f0aaa4; }
 
+.materials-reference { margin-top: 28px; }
+.materials-reference p { margin-bottom: 18px; color: #c2bfd0; }
+.material-search { display: grid; gap: 6px; width: min(100%, 360px); margin-bottom: 16px; }
+.material-search input { padding: 9px 12px; border: 1px solid #6c7288; border-radius: 4px; background: var(--bg2); color: var(--parch); font: inherit; color-scheme: dark; }
+.materials-table td:nth-child(2) { min-width: 0; text-align: right; white-space: nowrap; }
+.materials-table thead th:nth-child(2) { text-align: right; }
+.materials-table td:nth-child(4) { color: #b3ddab; font-weight: 600; }
+.materials-table td.material-price-unavailable { color: #c2bfd0; font-weight: 400; }
+.materials-table td:last-child { color: var(--parch); font-weight: 400; text-align: left; white-space: normal; min-width: 160px; }
+.materials-table thead th:last-child { text-align: left; }
+.materials-table > table > thead th:last-child { white-space: normal; }
+.material-comparison { margin-top: 8px; font-size: 14px; }
+.material-comparison summary { cursor: pointer; color: var(--gold-lt); }
+.material-comparison p { margin: 8px 0; font-size: 13px; }
+.comparison-scroll { max-width: min(75vw, 460px); overflow-x: auto; margin-top: 8px; }
+.material-comparison table { min-width: 420px; }
+.material-comparison th, .material-comparison td { padding: 8px; }
+.material-comparison th:first-child { min-width: 150px; white-space: normal; }
+.material-comparison td:last-child { min-width: 100px; text-align: right; }
+.material-comparison small { display: block; color: #c2bfd0; font-size: 12px; font-weight: 400; }
+.material-comparison td.comparison-loss { color: #f0aaa4; }
+
 @media (max-width: 630px) {
   .profit-planner { grid-template-columns: 1fr; }
 }
