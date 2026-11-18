@@ -1,0 +1,12 @@
+---
+name: add-crafting-recipe
+description: Add or update a known WoW Forever recipe in this project's Crafting Profit list from a recipe name or item link. Use when the user asks to save a craft or update its vendor profit.
+---
+
+# Add a crafting recipe
+
+1. Match the recipe by name and profession in `professions/recipes.csv`. Look up its output per craft there and join its ingredients by `recipe_id` in `professions/recipe-materials.csv`. If the catalog lacks the recipe or disagrees with the item page, verify the WoW Forever recipe before recording the relevant values.
+2. When given a PriceWatch Forever item link, use its market parameters. The usual market is US Normal Horde. Read the item's **Sell Price** for the vendor payout per unit and the **Crafted by** table for ingredient prices. Auction market value is only relevant to the cost of materials bought there. Wait for prices to load before treating a value as missing.
+3. Apply the user's material assumptions. Count gathered Ruined Leather Scraps and owned Light Leather at 0 copper, and Coarse Thread at 10 copper, unless the user specifies otherwise. When the user asks about buying scraps, use the verified purchase price for that calculation. Record bought Light Hide at 114 copper. The recipe table offers a gathered option at 0 copper. For other materials use the verified unit price or the user's stated crafting cost. Use `null` for unknown prices. Keep all coin values in copper.
+4. Add or update the record in `professions/known-recipes-data.js` by `recipeId`. Follow the existing structure. Record `name`, `unitsPerCraft`, `vendorCopper` per output item, `materials` as `[name, quantityPerCraft, copperPerUnit]` tuples, and `sourceUrl` for the item or other pricing source. Update only the values supported by the request or its sources. The page calculates and sorts profit using these records.
+5. Verify the recipe ID is unique, ingredient quantities and yield match the verified recipe, and displayed profit equals vendor proceeds minus ingredient costs. The per-craft table uses the lower cost when a known recipe can make an ingredient more cheaply than its recorded purchase price. Report the vendor payout, crafting cost, profit per craft, and any missing price or owned-material assumption. The planner creates inventory fields for ingredients whose names end in Leather, Hide, or Leather Scraps and uses those quantities when comparing known recipes.

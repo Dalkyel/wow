@@ -24,6 +24,7 @@ npm test
 - `figures.js`, `connections.js`, `stars.js` — feature panels (figures & factions reference, connection explorer, a read-only list of every ★-flagged entry), each paired with a `*-core.js` module holding the testable logic. No panel uses browser storage — bookmarks and the old reader-editable lore-notes board were both removed for being stuck on one device.
 - `volume1/` … `volume4/` — live per-volume `nodes.js`, `links.js`, `timeline.js` data. Only Volume 1 has real seed content so far; the rest are empty until read. A future volume slot can hold either the next Chronicle volume or a novel.
 - `quests-data.js` / `quests-core.js` / `quests.js` — the in-game quest log (name, location, a personal note), separate from the book-lore journal above.
+- [Recipe profit tracker](professions/README.md) — WoW Forever recipes, materials, and prices for Leatherworking, Cooking, and First Aid.
 - `shared/eras.js` — the ordered cosmology spine (the Void → the First War) both timeline axes key off of.
 - `.claude/skills/add-lore/` — source reading, entity matching, safe appenders and semantic checks for new book-lore sections (Chronicle or a novel).
 - `.claude/skills/log-quest/` — adding an in-game quest to the quest log.
