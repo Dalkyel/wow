@@ -37,6 +37,10 @@ function page(snapshot, browser) {
       });
     },
   };
+  const html = readFileSync(join(__dirname, "../professions/index.html"), "utf8");
+  for (const input of html.matchAll(/<input\b[^>]*id="([^"]+-profitable-only)"[^>]*>/g)) {
+    document.querySelector(`#${input[1]}`).checked = /\bchecked\b/.test(input[0]);
+  }
   const context = vm.createContext({ document, Event: class { constructor(type) { this.type = type; } },
     ...browser });
   if (snapshot) context.auctionPriceSnapshot = snapshot;
@@ -113,6 +117,9 @@ test("the planner can leave bought stock untouched and use a cheaper ingredient 
 
 test("a 210c bought lizard tail breaks even with 40c spices, while a gathered tail earns 210c", () => {
   const { document } = page();
+  const allRecipes = document.querySelector("#cooking-profitable-only");
+  allRecipes.checked = false;
+  allRecipes.listeners.change();
   const fields = document.querySelector("#cooking-inventory-fields").children;
   const label = fields.findIndex(field => field.textContent === "Thunder Lizard Tail");
   fields[label + 1].value = "1";
@@ -274,6 +281,10 @@ test("a shared material shows every known recipe's distinct quantity, purchase l
   assert.equal(materialRow().children[3].textContent, "28c");
   assert.equal(materialRow().children[4].children[0].textContent, "Heavy Wool Bandage");
   const details = materialRow().children[4].children[1];
+  const filter = details.children[1].children[0].children[0];
+  assert.equal(filter.checked, true);
+  filter.checked = false;
+  filter.listeners.change();
   assert.equal(details.children[0].textContent, "Compare 3 recipes");
   const rows = details.children[2].children[0].children[1].children;
   const wool = rows.find(row => row.children[0].children[0].textContent === "Wool Bandage");
@@ -307,4 +318,73 @@ test("the highest purchase limit can come from a recipe with a lower profit per 
   assert.equal(pants.children[2].textContent, "1s 12c");
   assert.equal(boots.children[1].textContent, "20c");
   assert.equal(boots.children[2].textContent, "1s 67c");
+});
+
+test("each profession can filter positive profits independently and react to changing costs", () => {
+  const { context, document } = page();
+  const names = selector => document.querySelector(selector).children.map(row => row.children[0].children[0]?.textContent);
+  const leather = document.querySelector("#leatherworking-profitable-only");
+  assert.equal(leather.checked, true);
+  leather.listeners.change();
+  assert.ok(names("#recipes").includes("Rugged Leather Pants"));
+  assert.ok(!names("#recipes").includes("Forceful Medium Armor Kit"));
+
+  const cooking = document.querySelector("#cooking-profitable-only");
+  assert.equal(cooking.checked, true);
+  cooking.listeners.change();
+  assert.ok(names("#cooking-recipes").includes("Crispy Lizard Tail"));
+  assert.ok(!names("#cooking-recipes").includes("Charred Wolf Meat"));
+  vm.runInContext('materialValues.get("Thunder Lizard Tail").price = 210', context);
+  document.dispatchEvent({ type: "materialvalueschange" });
+  assert.ok(!names("#cooking-recipes").includes("Crispy Lizard Tail"));
+  assert.ok(names("#cooking-recipes").includes("Smoked Sagefish"));
+  vm.runInContext('materialValues.get("Raw Sagefish").price = null', context);
+  document.dispatchEvent({ type: "materialvalueschange" });
+  assert.equal(document.querySelector("#cooking-recipes").children[0].children[0].textContent,
+    "No recipes have a positive profit at the selected costs.");
+
+  const firstAid = document.querySelector("#first-aid-profitable-only");
+  assert.equal(firstAid.checked, true);
+  vm.runInContext('materialValues.get("Wool Cloth").price = 20', context);
+  firstAid.checked = true;
+  firstAid.listeners.change();
+  assert.ok(names("#first-aid-recipes").includes("Wool Bandage"));
+  assert.ok(!names("#first-aid-recipes").includes("Healing Potion"));
+  cooking.checked = false;
+  cooking.listeners.change();
+  assert.ok(names("#cooking-recipes").includes("Crispy Lizard Tail"));
+  assert.ok(leather.checked && firstAid.checked);
+});
+
+test("each material comparison filters positive current profits and keeps its selection on updates", () => {
+  const { context, document } = page();
+  const materialRow = name => document.querySelector("#materials-reference").children.find(row =>
+    row.children[0].textContent === name);
+  const details = () => materialRow("Wool Cloth").children[4].children[1];
+  const body = () => details().children[2].children[0].children[1];
+  const filter = () => details().children[1].children[0].children[0];
+  vm.runInContext('materialValues.get("Wool Cloth").price = 20', context);
+  document.dispatchEvent({ type: "materialvalueschange" });
+  filter().checked = true;
+  filter().listeners.change();
+  assert.equal(body().children.length, 2);
+  assert.equal(details().children[0].textContent, "Compare 2 profitable recipes");
+  assert.equal(materialRow("Light Leather").children[4].children[1].children[1].children[0].children[0].checked, true);
+
+  vm.runInContext('materialValues.get("Wool Cloth").price = 28', context);
+  document.dispatchEvent({ type: "materialvalueschange" });
+  assert.equal(filter().checked, true);
+  assert.equal(body().children.length, 1);
+  assert.equal(body().children[0].children[0].children[0].textContent, "Heavy Wool Bandage");
+  assert.equal(details().children[0].textContent, "Compare 1 profitable recipe");
+  vm.runInContext('materialValues.get("Wool Cloth").price = 29', context);
+  document.dispatchEvent({ type: "materialvalueschange" });
+  assert.equal(body().children[0].children[0].textContent,
+    "No recipes have a positive profit at the selected costs.");
+  filter().checked = false;
+  filter().listeners.change();
+  assert.equal(body().children.length, 3);
+  document.dispatchEvent({ type: "materialvalueschange" });
+  assert.equal(filter().checked, false);
+  assert.equal(body().children.length, 3);
 });

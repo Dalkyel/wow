@@ -1,6 +1,7 @@
 const materialReference = document.querySelector("#materials-reference");
 const materialSearch = document.querySelector("#material-search");
 const openMaterialComparisons = new Set();
+const unfilteredMaterialComparisons = new Set();
 
 function requiredMaterialQuantity(recipe, target, chain = new Set()) {
   if (chain.has(recipe.name)) return 0;
@@ -23,10 +24,18 @@ function appendRecipeComparison(cell, name, comparisons) {
     else openMaterialComparisons.delete(name);
   });
   const summary = document.createElement("summary");
-  summary.textContent = `Compare ${comparisons.length} recipes`;
   const cost = document.createElement("p");
   const unitCost = materialUnitCost(name);
   cost.textContent = `Selected material cost ${formatPrice(unitCost)} each (${materialValues.get(name).source}).`;
+  const filterLabel = document.createElement("label");
+  filterLabel.className = "recipe-filter comparison-filter";
+  const profitableOnly = document.createElement("input");
+  profitableOnly.type = "checkbox";
+  profitableOnly.checked = !unfilteredMaterialComparisons.has(name);
+  const filterText = document.createElement("span");
+  filterText.textContent = "Profitable only";
+  filterLabel.append(profitableOnly, filterText);
+  cost.append(filterLabel);
   const scroll = document.createElement("div");
   scroll.className = "comparison-scroll";
   scroll.tabIndex = 0;
@@ -43,32 +52,50 @@ function appendRecipeComparison(cell, name, comparisons) {
   }
   head.append(headings);
   const body = document.createElement("tbody");
-  for (const { recipe, limit, quantity } of comparisons) {
-    const row = body.insertRow();
-    const title = document.createElement("th");
-    title.scope = "row";
-    const label = document.createElement(recipe.sourceUrl ? "a" : "span");
-    label.textContent = recipe.name;
-    if (recipe.sourceUrl) label.href = recipe.sourceUrl;
-    const amount = document.createElement("small");
-    amount.textContent = `${quantity} × material per craft`;
-    title.append(label, amount);
-    row.append(title);
-    const maximum = row.insertCell();
-    maximum.textContent = "Unknown";
-    if (limit) maximum.textContent = limit.maximum >= 0 ? coins(limit.maximum) : "None";
-    if (recipe.vendorCopper === 0) maximum.textContent = "Can't vendor";
-    const profit = limit && unitCost !== null ? limit.payout - limit.otherCost - quantity * unitCost : null;
-    const profitCell = row.insertCell();
-    profitCell.textContent = formatPrice(profit);
-    if (profit !== null) {
-      const perMaterial = document.createElement("small");
-      const unitProfit = profit / quantity;
-      perMaterial.textContent = `${Number.isInteger(unitProfit) ? coins(unitProfit) : `${unitProfit.toFixed(2)}c`} / material`;
-      profitCell.append(perMaterial);
-      if (profit < 0) profitCell.className = "comparison-loss";
+  function renderComparisons() {
+    body.replaceChildren();
+    const visible = comparisons.map(comparison => ({ ...comparison,
+      profit: comparison.limit && unitCost !== null
+        ? comparison.limit.payout - comparison.limit.otherCost - comparison.quantity * unitCost : null,
+    })).filter(comparison => !profitableOnly.checked || comparison.profit > 0);
+    summary.textContent = `Compare ${visible.length}${profitableOnly.checked ? " profitable" : ""} ${visible.length === 1 ? "recipe" : "recipes"}`;
+    for (const { recipe, limit, quantity, profit } of visible) {
+      const row = body.insertRow();
+      const title = document.createElement("th");
+      title.scope = "row";
+      const label = document.createElement(recipe.sourceUrl ? "a" : "span");
+      label.textContent = recipe.name;
+      if (recipe.sourceUrl) label.href = recipe.sourceUrl;
+      const amount = document.createElement("small");
+      amount.textContent = `${quantity} × material per craft`;
+      title.append(label, amount);
+      row.append(title);
+      const maximum = row.insertCell();
+      maximum.textContent = "Unknown";
+      if (limit) maximum.textContent = limit.maximum >= 0 ? coins(limit.maximum) : "None";
+      if (recipe.vendorCopper === 0) maximum.textContent = "Can't vendor";
+      const profitCell = row.insertCell();
+      profitCell.textContent = formatPrice(profit);
+      if (profit !== null) {
+        const perMaterial = document.createElement("small");
+        const unitProfit = profit / quantity;
+        perMaterial.textContent = `${Number.isInteger(unitProfit) ? coins(unitProfit) : `${unitProfit.toFixed(2)}c`} / material`;
+        profitCell.append(perMaterial);
+        if (profit < 0) profitCell.className = "comparison-loss";
+      }
+    }
+    if (!visible.length) {
+      const cell = body.insertRow().insertCell();
+      cell.colSpan = 3;
+      cell.textContent = "No recipes have a positive profit at the selected costs.";
     }
   }
+  profitableOnly.addEventListener("change", () => {
+    if (profitableOnly.checked) unfilteredMaterialComparisons.delete(name);
+    else unfilteredMaterialComparisons.add(name);
+    renderComparisons();
+  });
+  renderComparisons();
   table.append(head, body);
   scroll.append(table);
   details.append(summary, cost, scroll);

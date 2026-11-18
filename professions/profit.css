@@ -82,6 +82,9 @@
 .profit-recipes p { color: #c2bfd0; }
 .profit-recipes p { margin-top: 12px; font-size: 15px; }
 .recipe-settings { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; margin-bottom: 12px; }
+.recipe-filter { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; cursor: pointer; }
+.recipe-filter input { accent-color: var(--gold-lt); }
+.comparison-filter { margin-top: 8px; margin-bottom: 0; }
 .recipe-settings select { background: var(--bg2); color: var(--parch); font: inherit; padding: 6px 10px; border: 1px solid #6c7288; border-radius: 4px; color-scheme: dark; }
 .profit-table { overflow-x: auto; border: 1px solid #37394a; border-radius: 8px; }
 .profit-table table { width: 100%; border-collapse: collapse; background: var(--bg2); }
