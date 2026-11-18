@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Crafting Profit | Orken Stonewalker's Journal</title>
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="profit.css">
+  <script src="known-recipes-data.js" defer></script>
+  <script src="profit.js" defer></script>
+  <script src="known-recipes.js" defer></script>
+  <script src="profession-tabs.js" defer></script>
+</head>
+<body class="profit-page">
+  <header>
+    <a class="header-title" href="../index.html">Orken Stonewalker's Journal</a>
+    <a href="README.md">Recipe data &amp; sources</a>
+  </header>
+  <main>
+    <div class="profit-intro">
+      <h1>Crafting Profit</h1>
+      <p>Find what to craft and sell to a vendor with the materials you already have.</p>
+    </div>
+    <div class="profession-tabs" role="tablist" aria-label="Professions">
+      <button type="button" id="leatherworking-tab" role="tab" aria-controls="leatherworking" aria-selected="true">Leatherworking</button>
+      <button type="button" id="cooking-tab" role="tab" aria-controls="cooking" aria-selected="false" tabindex="-1">Cooking</button>
+    </div>
+    <div id="leatherworking" role="tabpanel" aria-labelledby="leatherworking-tab">
+      <div class="profit-planner">
+        <section aria-labelledby="inventory-title">
+          <h2 id="inventory-title">Your inventory</h2>
+          <div id="inventory-fields"></div>
+          <p id="cost-assumption">Enter the quantities you own. The planner counts owned materials at 0c, uses the listed prices for other ingredients, and can craft ingredients for later steps.</p>
+        </section>
+        <section class="profit-result" aria-labelledby="plan-title">
+          <h2 id="plan-title">Best vendor plan</h2>
+          <div id="result" aria-live="polite" aria-atomic="true"></div>
+        </section>
+      </div>
+      <section class="profit-recipes" aria-labelledby="known-title">
+        <h2 id="known-title">My recipes</h2>
+        <div class="recipe-settings">
+          <label for="light-hide-source">Light Hide source</label>
+          <select id="light-hide-source">
+            <option value="bought">Bought (1s 14c each)</option>
+            <option value="gathered">Gathered (0c each)</option>
+          </select>
+        </div>
+        <div class="profit-table" tabindex="0" role="region" aria-labelledby="known-title">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Recipe</th>
+                <th scope="col">Materials per craft</th>
+                <th scope="col">Craft cost</th>
+                <th scope="col">Vendor pays per craft</th>
+                <th scope="col">Profit per craft</th>
+              </tr>
+            </thead>
+            <tbody id="recipes"></tbody>
+          </table>
+        </div>
+        <p>Per-craft estimates use recorded prices or a cheaper known recipe for an ingredient. The inventory planner uses the quantities you enter.</p>
+      </section>
+    </div>
+    <section id="cooking" class="profession-empty" role="tabpanel" aria-labelledby="cooking-tab" tabindex="0" hidden>
+      <h2>My cooking recipes</h2>
+      <p>No known Cooking recipes have been added yet.</p>
+    </section>
+  </main>
+</body>
+</html>

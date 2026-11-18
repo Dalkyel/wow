@@ -57,4 +57,46 @@ const nodesVolume0 = [
         desc: "Galgar is an orc cook stationed in the Valley of Trials, Durotar, who hands young recruits an easy first task — gathering cactus apples for his signature cactus apple surprise — in exchange for a taste of the treat.",
         star: ""
     },
+    {
+        id: "foreman-thazzril", label: "Foreman Thazz'ril", group: "NPC", type: "Orc — Lumber Foreman, Valley of Trials",
+        era: "the-present-day", chronOrder: 0,
+        desc: "Foreman Thazz'ril is an orc overseeing lumber-gathering in the Valley of Trials, Durotar, who hands his blackjack to passing recruits to keep the peons under him from napping on the job.",
+        star: ""
+    },
+    {
+        id: "kzan-thornslash", label: "Kzan Thornslash", group: "NPC", type: "Weaponsmith, Valley of Trials",
+        era: "the-present-day", chronOrder: 0,
+        desc: "Kzan Thornslash is a weaponsmith stationed at the Den in the Valley of Trials, Durotar, who repairs training weapons recruits recover from failed trainees so the next wave of recruits can use them.",
+        star: ""
+    },
+    {
+        id: "zureetha-fargaze", label: "Zureetha Fargaze", group: "NPC", type: "Watcher, Valley of Trials",
+        era: "the-present-day", chronOrder: 0,
+        desc: "Zureetha Fargaze is stationed outside the Den in the Valley of Trials, Durotar, watching for trouble from the Burning Blade.",
+        star: ""
+    },
+    {
+        id: "burning-blade", label: "Burning Blade", group: "FACTION", type: "Demon-Worshipping Cult",
+        era: "the-present-day", chronOrder: 0,
+        desc: "The Burning Blade is a demon-worshipping cult. One of its members has camped in a cave near the Valley of Trials, Durotar, and his vile familiars have been spilling out of it to cause havoc.",
+        star: ""
+    },
+    {
+        id: "hanazua", label: "Hana'zua", group: "NPC", type: "Troll Hunter — dying, Valley of Trials",
+        era: "the-present-day", chronOrder: 0,
+        desc: "Hana'zua is a troll hunter found lying mortally wounded beneath a tree in the Valley of Trials, Durotar, after a vicious scorpid he calls Sarkoth tore into his chest with its stinger on the plateau to the south. He asks passing adventurers to finish the scorpid off and bring back its claw as proof.",
+        star: ""
+    },
+    {
+        id: "sarkoth", label: "Sarkoth", group: "CREATURE", type: "Scorpid — Plateau south of Valley of Trials",
+        era: "the-present-day", chronOrder: 0,
+        desc: "Sarkoth is a particularly vicious scorpid that mortally wounded the troll hunter Hana'zua on the plateau south of the Valley of Trials, Durotar, before Orken hunted it down and brought its claw back as proof.",
+        star: ""
+    },
+    {
+        id: "yarrog-baneshadow", label: "Yarrog Baneshadow", group: "NPC", type: "Orc — Burning Blade Cultist, Burning Blade Coven",
+        era: "the-present-day", chronOrder: 0,
+        desc: "Yarrog Baneshadow is the orc cultist camped in the Burning Blade Coven cave near the Valley of Trials, Durotar, whose vile familiars had been spilling out to cause havoc before Orken cleared them and hunted him down, taking his medallion as proof of the cult's rooting-out.",
+        star: ""
+    },
 ];
