@@ -59,8 +59,26 @@
 
 .profit-result strong { display: block; font-size: 30px; color: #b3ddab; }
 .profit-result ol { margin: 6px 0 10px 22px; }
+.profit-shopping { margin: 14px 0 10px; }
+.profit-shopping h3 { font-size: inherit; color: var(--gold-lt); }
+.profit-shopping ul { margin: 4px 0 0 22px; }
+.profit-breakdown { margin-top: 16px; }
+.profit-breakdown h3 { font-size: inherit; color: var(--gold-lt); }
+.profit-breakdown ul { margin: 6px 0 12px 20px; }
+.profit-breakdown li { margin-bottom: 10px; }
+.material-settings { margin-bottom: 24px; padding: 16px; border: 1px solid #37394a; border-radius: 8px; }
+.material-settings summary { cursor: pointer; color: var(--gold-lt); }
+.material-settings p { margin: 10px 0; color: #c2bfd0; }
+.material-value { display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: end; gap: 12px; padding: 10px 0; border-top: 1px solid #37394a; }
+.material-value label { display: grid; gap: 6px; }
+.purchase-limit { color: #c2bfd0; font-size: 13px; line-height: 1.4; }
+.auction-quote { display: block; color: #c2bfd0; font-size: 13px; line-height: 1.4; }
+.material-value input, .material-value select { width: 100%; padding: 8px; background: var(--bg2); color: var(--parch); border: 1px solid #6c7288; border-radius: 4px; font: inherit; color-scheme: dark; }
+@media (max-width: 630px) { .material-value { grid-template-columns: 1fr; } }
 .profit-result p,
 #cost-assumption,
+#cooking-cost-assumption,
+#first-aid-cost-assumption,
 .profit-recipes p { color: #c2bfd0; }
 .profit-recipes p { margin-top: 12px; font-size: 15px; }
 .recipe-settings { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; margin-bottom: 12px; }
@@ -109,6 +127,3 @@
   background: var(--bg2);
   color: var(--gold-lt);
 }
-
-.profession-empty { padding: 24px 0; }
-.profession-empty p { color: #c2bfd0; }

@@ -4,6 +4,16 @@ Open the [Crafting Profit calculator](index.html) to plan vendor sales with the 
 
 To add a recipe to **My recipes**, ask Codex to use the [add-crafting-recipe skill](../.claude/skills/add-crafting-recipe/SKILL.md) with the recipe name or item link. The skill records it in the project and the page ranks it by vendor profit per craft.
 
+## Refresh auction prices
+
+The planner reads [Auction House's public API](https://auctionhouse.tk.gg/data/) directly in your browser when the page opens. The US Normal Horde market is `us-2-114`. It caches the tracked material quotes for one hour in browser storage and reuses them on repeat visits. The provider permits cross-origin requests and requires no key. Prices come from hourly auction snapshots.
+
+The page recalculates recipes, purchase limits, and vendor plans when quotes arrive. Manual price edits and material source selections are preserved during a request. A failed request uses the older browser cache or the bundled snapshot and labels that fallback. The displayed scan time identifies the age of the data.
+
+Bought materials use the cheaper of the auction minimum and a known vendor price. Gathered materials cost 0c and crafted inputs use their ingredient costs. Listed quantities cover all price levels, so a larger purchase may cost more than the minimum.
+
+For an offline fallback snapshot, ask Codex to use [refresh-auction-prices](../.claude/skills/refresh-auction-prices/SKILL.md), or run `npm run prices:refresh`. This optional local process saves WoWAuctions quotes in [auction-prices.csv](auction-prices.csv) and [auction-prices.js](auction-prices.js). Add verified item IDs for newly introduced materials to [auction-materials.json](auction-materials.json), which both refresh processes read.
+
 ## Sources
 
 Imported from the WoWTBC.GG **All Recipes** tables on November 17, 2026. Each ingredient quantity is for one craft. A recipe's yield defaults to one unless the guide shows a different quantity.

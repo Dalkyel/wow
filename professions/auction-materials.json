@@ -1,0 +1,221 @@
+[
+  {
+    "name": "Boar Ribs",
+    "itemId": 2677
+  },
+  {
+    "name": "Bottle of Dalaran Noir",
+    "itemId": 2723,
+    "vendorCopper": 50
+  },
+  {
+    "name": "Briarthorn",
+    "itemId": 2450
+  },
+  {
+    "name": "Bruiseweed",
+    "itemId": 2453
+  },
+  {
+    "name": "Chunk of Boar Meat",
+    "itemId": 769
+  },
+  {
+    "name": "Clam Meat",
+    "itemId": 5503
+  },
+  {
+    "name": "Coarse Thread",
+    "itemId": 2320,
+    "vendorCopper": 10
+  },
+  {
+    "name": "Coyote Meat",
+    "itemId": 2673
+  },
+  {
+    "name": "Crawler Meat",
+    "itemId": 2674
+  },
+  {
+    "name": "Cured Light Hide",
+    "itemId": 4231
+  },
+  {
+    "name": "Cured Medium Hide",
+    "itemId": 4233
+  },
+  {
+    "name": "Elixir of Lesser Defense",
+    "itemId": 3389
+  },
+  {
+    "name": "Elixir of Minor Agility",
+    "itemId": 2457
+  },
+  {
+    "name": "Elixir of Minor Strength",
+    "itemId": 2454
+  },
+  {
+    "name": "Empty Vial",
+    "itemId": 3371,
+    "vendorCopper": 4
+  },
+  {
+    "name": "Fine Leather Belt",
+    "itemId": 4246
+  },
+  {
+    "name": "Fine Thread",
+    "itemId": 2321,
+    "vendorCopper": 100
+  },
+  {
+    "name": "Gray Dye",
+    "itemId": 4340,
+    "vendorCopper": 350
+  },
+  {
+    "name": "Hot Spices",
+    "itemId": 2692,
+    "vendorCopper": 40
+  },
+  {
+    "name": "Kodo Meat",
+    "itemId": 5467
+  },
+  {
+    "name": "Leaded Vial",
+    "itemId": 3372,
+    "vendorCopper": 40
+  },
+  {
+    "name": "Light Hide",
+    "itemId": 783
+  },
+  {
+    "name": "Light Leather",
+    "itemId": 2318
+  },
+  {
+    "name": "Linen Cloth",
+    "itemId": 2589
+  },
+  {
+    "name": "Long Tail Feather",
+    "itemId": 5116
+  },
+  {
+    "name": "Medium Armor Kit",
+    "itemId": 2313
+  },
+  {
+    "name": "Medium Hide",
+    "itemId": 4232
+  },
+  {
+    "name": "Medium Leather",
+    "itemId": 2319
+  },
+  {
+    "name": "Mild Spices",
+    "itemId": 2678,
+    "vendorCopper": 2
+  },
+  {
+    "name": "Peacebloom",
+    "itemId": 2447
+  },
+  {
+    "name": "Raptor Egg",
+    "itemId": 3685
+  },
+  {
+    "name": "Raw Brilliant Smallfish",
+    "itemId": 6291
+  },
+  {
+    "name": "Raw Bristle Whisker Catfish",
+    "itemId": 6308
+  },
+  {
+    "name": "Raw Longjaw Mud Snapper",
+    "itemId": 6289
+  },
+  {
+    "name": "Raw Rainbow Fin Albacore",
+    "itemId": 6361
+  },
+  {
+    "name": "Raw Sagefish",
+    "itemId": 21071
+  },
+  {
+    "name": "Raw Slitherskin Mackerel",
+    "itemId": 6303
+  },
+  {
+    "name": "Refreshing Spring Water",
+    "itemId": 159,
+    "vendorCopper": 5
+  },
+  {
+    "name": "Ruined Leather Scraps",
+    "itemId": 2934
+  },
+  {
+    "name": "Salt",
+    "itemId": 4289,
+    "vendorCopper": 50
+  },
+  {
+    "name": "Shiny Red Apple",
+    "itemId": 4536,
+    "vendorCopper": 5
+  },
+  {
+    "name": "Small Egg",
+    "itemId": 6889
+  },
+  {
+    "name": "Small Venom Sac",
+    "itemId": 1475
+  },
+  {
+    "name": "Spider Ichor",
+    "itemId": 3174
+  },
+  {
+    "name": "Spider's Silk",
+    "itemId": 3182
+  },
+  {
+    "name": "Strange Dust",
+    "itemId": 10940
+  },
+  {
+    "name": "Strider Meat",
+    "itemId": 5469
+  },
+  {
+    "name": "Stringy Wolf Meat",
+    "itemId": 2672
+  },
+  {
+    "name": "Tangy Clam Meat",
+    "itemId": 5504
+  },
+  {
+    "name": "Thin Kodo Leather",
+    "itemId": 5082
+  },
+  {
+    "name": "Thunder Lizard Tail",
+    "itemId": 5470
+  },
+  {
+    "name": "Wool Cloth",
+    "itemId": 2592
+  }
+]
