@@ -77,3 +77,10 @@ test("owned leather still works without a conversion step", () => {
     "Other materials cost 4s 0c · Vendor pays 12s 96c",
   ]);
 });
+
+test("a large scrap count still resolves quickly, by skipping unreachable conversions like Fine Leather Belt", () => {
+  const start = Date.now();
+  const [profit] = showInventory({ "Ruined Leather Scraps": 300 });
+  assert.ok(Date.now() - start < 1000, "bestPlan should not need to branch over unreachable conversions");
+  assert.equal(profit, "22s 40c profit");
+});

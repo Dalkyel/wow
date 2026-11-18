@@ -140,7 +140,7 @@ const knownRecipes = [
     name: "Toughened Leather Armor",
     unitsPerCraft: 1,
     vendorCopper: 743,
-    materials: [["Medium Leather", 10, 98], ["Cured Light Hide", 2, 171], ["Fine Thread", 2, 100]],
+    materials: [["Medium Leather", 10, 98], ["Cured Light Hide", 2, 172], ["Fine Thread", 2, 100]],
     sourceUrl: "https://pricewatchforever.com/items/2314?region=us&ruleset=normal&house=horde",
   },
   {
@@ -148,7 +148,7 @@ const knownRecipes = [
     name: "Fine Leather Tunic",
     unitsPerCraft: 1,
     vendorCopper: 461,
-    materials: [["Cured Light Hide", 3, 171], ["Light Leather", 6, 0], ["Coarse Thread", 4, 10]],
+    materials: [["Cured Light Hide", 3, 172], ["Light Leather", 6, 0], ["Coarse Thread", 4, 10]],
     sourceUrl: "https://pricewatchforever.com/items/4243?region=us&ruleset=normal&house=horde",
   },
   {

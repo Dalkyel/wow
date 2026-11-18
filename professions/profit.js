@@ -21,8 +21,41 @@ function bestPlan(inventory) {
     return [{ recipe, needed, cost, profit, output }];
   });
 
+  // A material is reachable if it's owned, or every input of some recipe making it is reachable.
+  const reachable = new Set(inventoryMaterials.filter((name, i) => inventory[i] > 0));
+  for (let grown = true; grown; ) {
+    grown = false;
+    for (const craft of candidates) {
+      if (craft.output < 0 || reachable.has(craft.recipe.name)) continue;
+      if (craft.needed.every((quantity, i) => !quantity || reachable.has(inventoryMaterials[i]))) {
+        reachable.add(craft.recipe.name);
+        grown = true;
+      }
+    }
+  }
+
+  // A crafted ingredient only needs its own craft count explored (as a "conversion") when
+  // something reachable and worth making actually consumes it. Otherwise a known recipe that
+  // merely happens to double as someone else's ingredient (e.g. Fine Leather Belt, consumed by
+  // Dark Leather Belt) is just another sale candidate, and the one-dimensional count search below
+  // would otherwise multiply with every other such recipe's count search in the common case where
+  // the consumer is currently unreachable (e.g. for lack of a hide nobody owns).
+  const worthwhile = new Set();
+  for (let grown = true; grown; ) {
+    grown = false;
+    for (const craft of candidates) {
+      if (craft.output < 0 || worthwhile.has(craft)) continue;
+      const runs = other => other.needed.every((quantity, i) => !quantity || reachable.has(inventoryMaterials[i]));
+      if (candidates.some(other => other !== craft && other.needed[craft.output] > 0 && runs(other) &&
+          (other.profit > 0 || (other.output >= 0 && worthwhile.has(other))))) {
+        worthwhile.add(craft);
+        grown = true;
+      }
+    }
+  }
+
   // Process ingredient recipes before any conversions that consume their output.
-  const pending = candidates.filter(craft => craft.output >= 0);
+  const pending = candidates.filter(craft => craft.output >= 0 && worthwhile.has(craft));
   const conversions = [];
   while (pending.length) {
     const index = pending.findIndex(craft => !pending.some(other => craft.needed[other.output]));
