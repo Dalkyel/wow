@@ -128,8 +128,11 @@ function renderMaterialReference() {
       const source = document.createElement("a");
       source.href = quote.sourceUrl;
       source.textContent = coins(quote.auctionCopper);
-      source.title = quote.scannedAt ? `Scanned ${new Date(quote.scannedAt).toLocaleString()}` : "Price source";
+      source.title = auctionQuoteLabel(quote);
       auction.append(source);
+      const provenance = document.createElement("small");
+      provenance.textContent = "AH snapshot";
+      auction.append(provenance);
     } else {
       auction.textContent = quote?.status === "unlisted" ? "Not listed" : "Unknown";
     }

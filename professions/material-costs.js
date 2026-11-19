@@ -44,6 +44,14 @@ function applyAuctionPrices(snapshot, source) {
   document.dispatchEvent(new Event("materialvalueschange"));
 }
 
+function auctionQuoteLabel(quote) {
+  const source = auctionPriceState.source;
+  const label = quote.status === "error" || ["saved", "loading", "error", "stale"].includes(source)
+    ? "Saved AH snapshot" : "AH snapshot";
+  return `${label}${quote.scannedAt ? ` · Scanned ${new Date(quote.scannedAt).toLocaleString()}` : ""}. ` +
+    "Listings may have changed; enter the available purchase price to plan accurately.";
+}
+
 function materialUnitCost(name, chain = new Set()) {
   const value = materialValues.get(name);
   if (!value || chain.has(name)) return null;
@@ -148,13 +156,12 @@ function renderMaterialValues(container, recipes) {
       const quote = auctionQuotes[name];
       quoteInfo.replaceChildren();
       if (quote) {
-        const auction = quote.auctionCopper === null ? "No current auction price"
-          : `${quote.status === "error" ? "Last known AH minimum" : "AH minimum"} ${coins(quote.auctionCopper)} each`;
+        const auction = quote.auctionCopper === null ? "No auction quote in this snapshot"
+          : `Snapshot AH minimum ${coins(quote.auctionCopper)} each`;
         const vendor = quote.vendorCopper === null ? "" : ` · Vendor ${coins(quote.vendorCopper)} each`;
-        const scanned = quote.scannedAt ? ` · Scanned ${new Date(quote.scannedAt).toLocaleString()}` : "";
         const message = document.createElement("span");
-        message.textContent = `${value.manual ? "Manual price · " : ""}${auction}${vendor}${scanned}` +
-          `${quote.status === "error" ? " · Refresh failed" : ""} `;
+        message.textContent = `${value.manual ? "Manual price · " : ""}${auction}${vendor} `;
+        message.title = auctionQuoteLabel(quote);
         const link = document.createElement("a");
         link.href = quote.sourceUrl;
         link.textContent = "Price source";
