@@ -395,6 +395,16 @@ const knownRecipes = [
 
 const cookingRecipes = [
   {
+    recipeId: "cooking:hot-lion-chops",
+    name: "Hot Lion Chops",
+    unitsPerCraft: 1,
+    vendorCopper: 125,
+    materials: [["Lion Meat", 1, null], ["Hot Spices", 1, 40]],
+    stockMaterials: ["Lion Meat", "Hot Spices"],
+    buyIfMissing: ["Hot Spices"],
+    sourceUrl: "https://www.foreverdb.app/en/forever/spells/3398/hot-lion-chops",
+  },
+  {
     recipeId: "cooking:boiled-clams",
     name: "Boiled Clams",
     unitsPerCraft: 1,

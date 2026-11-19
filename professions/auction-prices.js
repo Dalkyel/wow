@@ -4,7 +4,7 @@ const auctionPriceSnapshot = {
     "realm": "pve-forever-us",
     "faction": "horde"
   },
-  "refreshedAt": "2026-11-19T15:56:22.786Z",
+  "refreshedAt": "2026-11-19T17:25:17.012Z",
   "materials": {
     "Bleach": {
       "name": "Bleach",
@@ -356,6 +356,16 @@ const auctionPriceSnapshot = {
       "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
       "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/linen-cloth-2589",
+      "error": "fetch failed"
+    },
+    "Lion Meat": {
+      "name": "Lion Meat",
+      "itemId": 3731,
+      "vendorCopper": null,
+      "auctionCopper": null,
+      "purchaseCopper": null,
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/lion-meat-3731",
+      "status": "error",
       "error": "fetch failed"
     },
     "Long Tail Feather": {
