@@ -33,22 +33,6 @@
       <button type="button" id="materials-tab" role="tab" aria-controls="materials" aria-selected="false" tabindex="-1">Materials</button>
     </div>
     <div id="leatherworking" role="tabpanel" aria-labelledby="leatherworking-tab">
-      <div class="profit-planner">
-        <section aria-labelledby="inventory-title">
-          <h2 id="inventory-title">Your inventory</h2>
-          <div id="inventory-fields"></div>
-          <p id="cost-assumption">Enter the quantities you own, then set their sources and prices below. Profit subtracts their value and any purchases or ingredient crafts needed by the plan.</p>
-        </section>
-        <section class="profit-result" aria-labelledby="plan-title">
-          <h2 id="plan-title">Best vendor plan</h2>
-          <div id="result" aria-live="polite" aria-atomic="true"></div>
-        </section>
-      </div>
-      <details class="material-settings">
-        <summary>Material sources and prices</summary>
-        <p>Choose how you obtained your inventory. Gathered materials cost 0c. Bought materials use the purchase price. Crafted materials include their ingredients’ costs. Extra supplies in the shopping list use purchase prices.</p>
-        <div id="leatherworking-material-values"></div>
-      </details>
       <section class="profit-recipes" aria-labelledby="known-title">
         <h2 id="known-title">My recipes</h2>
         <label class="recipe-filter"><input type="checkbox" id="leatherworking-profitable-only" checked> Profitable only</label>
@@ -68,24 +52,24 @@
         </div>
         <p>Per-craft profit uses your selected material sources and prices. The plan also accounts for inventory limits and ingredient crafting steps.</p>
       </section>
-    </div>
-    <div id="cooking" role="tabpanel" aria-labelledby="cooking-tab" hidden>
       <div class="profit-planner">
-        <section aria-labelledby="cooking-inventory-title">
-          <h2 id="cooking-inventory-title">Your inventory</h2>
-          <div id="cooking-inventory-fields"></div>
-          <p id="cooking-cost-assumption">Enter the ingredients you have and set their sources below. Profit includes their costs and any extra water or spices to buy.</p>
+        <section aria-labelledby="inventory-title">
+          <h2 id="inventory-title">Your inventory</h2>
+          <div id="inventory-fields"></div>
+          <p id="cost-assumption">Enter the quantities you own, then set their sources and prices below. Profit subtracts their value and any purchases or ingredient crafts needed by the plan.</p>
         </section>
-        <section class="profit-result" aria-labelledby="cooking-plan-title">
-          <h2 id="cooking-plan-title">Best vendor plan</h2>
-          <div id="cooking-result" aria-live="polite" aria-atomic="true"></div>
+        <section class="profit-result" aria-labelledby="plan-title">
+          <h2 id="plan-title">Best vendor plan</h2>
+          <div id="result" aria-live="polite" aria-atomic="true"></div>
         </section>
       </div>
       <details class="material-settings">
         <summary>Material sources and prices</summary>
         <p>Choose how you obtained your inventory. Gathered materials cost 0c. Bought materials use the purchase price. Crafted materials include their ingredients’ costs. Extra supplies in the shopping list use purchase prices.</p>
-        <div id="cooking-material-values"></div>
+        <div id="leatherworking-material-values"></div>
       </details>
+    </div>
+    <div id="cooking" role="tabpanel" aria-labelledby="cooking-tab" hidden>
       <section class="profit-recipes" aria-labelledby="cooking-recipes-title">
         <h2 id="cooking-recipes-title">My cooking recipes</h2>
         <label class="recipe-filter"><input type="checkbox" id="cooking-profitable-only" checked> Profitable only</label>
@@ -105,24 +89,24 @@
         </div>
         <p>Per-craft profit uses your selected material sources and prices. The plan also accounts for the quantities you enter.</p>
       </section>
-    </div>
-    <div id="first-aid" role="tabpanel" aria-labelledby="first-aid-tab" hidden>
       <div class="profit-planner">
-        <section aria-labelledby="first-aid-inventory-title">
-          <h2 id="first-aid-inventory-title">Your inventory</h2>
-          <div id="first-aid-inventory-fields"></div>
-          <p id="first-aid-cost-assumption">Enter the materials you have and set their sources below. Profit includes their costs and any vendor supplies you still need to buy.</p>
+        <section aria-labelledby="cooking-inventory-title">
+          <h2 id="cooking-inventory-title">Your inventory</h2>
+          <div id="cooking-inventory-fields"></div>
+          <p id="cooking-cost-assumption">Enter the ingredients you have and set their sources below. Profit includes their costs and any extra water or spices to buy.</p>
         </section>
-        <section class="profit-result" aria-labelledby="first-aid-plan-title">
-          <h2 id="first-aid-plan-title">Best vendor plan</h2>
-          <div id="first-aid-result" aria-live="polite" aria-atomic="true"></div>
+        <section class="profit-result" aria-labelledby="cooking-plan-title">
+          <h2 id="cooking-plan-title">Best vendor plan</h2>
+          <div id="cooking-result" aria-live="polite" aria-atomic="true"></div>
         </section>
       </div>
       <details class="material-settings">
         <summary>Material sources and prices</summary>
         <p>Choose how you obtained your inventory. Gathered materials cost 0c. Bought materials use the purchase price. Crafted materials include their ingredients’ costs. Extra supplies in the shopping list use purchase prices.</p>
-        <div id="first-aid-material-values"></div>
+        <div id="cooking-material-values"></div>
       </details>
+    </div>
+    <div id="first-aid" role="tabpanel" aria-labelledby="first-aid-tab" hidden>
       <section class="profit-recipes" aria-labelledby="first-aid-recipes-title">
         <h2 id="first-aid-recipes-title">My First Aid recipes</h2>
         <label class="recipe-filter"><input type="checkbox" id="first-aid-profitable-only" checked> Profitable only</label>
@@ -142,6 +126,22 @@
         </div>
         <p>Per-craft profit uses your selected material sources and prices. The plan also accounts for the quantities you enter.</p>
       </section>
+      <div class="profit-planner">
+        <section aria-labelledby="first-aid-inventory-title">
+          <h2 id="first-aid-inventory-title">Your inventory</h2>
+          <div id="first-aid-inventory-fields"></div>
+          <p id="first-aid-cost-assumption">Enter the materials you have and set their sources below. Profit includes their costs and any vendor supplies you still need to buy.</p>
+        </section>
+        <section class="profit-result" aria-labelledby="first-aid-plan-title">
+          <h2 id="first-aid-plan-title">Best vendor plan</h2>
+          <div id="first-aid-result" aria-live="polite" aria-atomic="true"></div>
+        </section>
+      </div>
+      <details class="material-settings">
+        <summary>Material sources and prices</summary>
+        <p>Choose how you obtained your inventory. Gathered materials cost 0c. Bought materials use the purchase price. Crafted materials include their ingredients’ costs. Extra supplies in the shopping list use purchase prices.</p>
+        <div id="first-aid-material-values"></div>
+      </details>
     </div>
     <div id="materials" role="tabpanel" aria-labelledby="materials-tab" hidden>
       <section class="materials-reference" aria-labelledby="materials-title">

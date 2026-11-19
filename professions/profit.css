@@ -26,6 +26,7 @@
 
 .profit-page h1 { font-size: clamp(30px, 6vw, 48px); }
 .profit-page h2 { font-size: 20px; margin-bottom: 14px; }
+.profit-recipes { margin-top: 28px; }
 .profit-intro p { margin-top: 8px; color: #c2bfd0; }
 
 .profit-planner {
