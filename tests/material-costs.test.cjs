@@ -67,13 +67,13 @@ test("material source controls update the table and inventory plan together", ()
   source.value = "bought";
   source.listeners.change();
   assert.equal(vm.runInContext('materialUnitCost("Light Leather")', context), 20);
-  assert.equal(document.querySelector("#result").children[0].textContent, "48c profit");
+  assert.equal(document.querySelector("#result").children[0].textContent, "82c profit");
   const pants = document.querySelector("#recipes").children.find(row =>
     row.children[0].children[0].textContent === "Rugged Leather Pants");
   assert.equal(pants.children[2].textContent, "1s 50c");
   assert.equal(pants.children[4].textContent, "12c");
   assert.match(document.querySelector("#result").children[4].children[1].children[0].textContent,
-    /Materials 6s 0c.*Profit 48c/);
+    /Materials 3s 20c.*Profit 70c/);
 });
 
 test("crafted material values include gathered or purchased ingredients recursively", () => {
@@ -96,10 +96,10 @@ test("ingredient crafting costs reach the sold recipe without being charged twic
     const plan = bestPlan(stock, knownRecipes, inventoryMaterials, costs);
     return { plan, rows: recipeProfitBreakdown(plan, stock, inventoryMaterials, costs) };
   })())`, context));
-  assert.equal(answer.plan.profit, 436);
-  assert.equal(answer.plan.cost, 223);
-  assert.equal(answer.rows.reduce((sum, row) => sum + row.cost, 0), 223);
-  assert.equal(answer.rows.reduce((sum, row) => sum + row.profit, 0), 436);
+  assert.equal(answer.plan.profit, 457);
+  assert.equal(answer.plan.cost, 163);
+  assert.equal(answer.rows.reduce((sum, row) => sum + row.cost, 0), 163);
+  assert.equal(answer.rows.reduce((sum, row) => sum + row.profit, 0), 457);
 });
 
 test("the planner can leave bought stock untouched and use a cheaper ingredient craft", () => {
@@ -309,8 +309,8 @@ test("the highest purchase limit can come from a recipe with a lower profit per 
   document.dispatchEvent({ type: "materialvalueschange" });
   const row = document.querySelector("#materials-reference").children.find(row =>
     row.children[0].textContent === "Light Leather");
-  assert.equal(row.children[3].textContent, "22c");
-  assert.equal(row.children[4].children[0].textContent, "Rugged Leather Pants");
+  assert.equal(row.children[3].textContent, "24c");
+  assert.equal(row.children[4].children[0].textContent, "Fine Leather Boots");
   const comparisons = row.children[4].children[1].children[2].children[0].children[1].children;
   const pants = comparisons.find(row => row.children[0].children[0].textContent === "Rugged Leather Pants");
   const boots = comparisons.find(row => row.children[0].children[0].textContent === "Embossed Leather Boots");

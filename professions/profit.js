@@ -26,7 +26,7 @@ function bestPlan(inventory, recipes = knownRecipes, materials = inventoryMateri
     }, 0);
     return inventory[index] >= demand;
   }));
-  const candidates = recipes.flatMap(recipe => {
+  let candidates = recipes.flatMap(recipe => {
     // For ingredients you can buy or own, compare all ways to fill one craft.
     const sources = recipe.materials.reduce((options, [name, quantity, price]) => {
       const index = materials.indexOf(name);
@@ -57,6 +57,27 @@ function bestPlan(inventory, recipes = knownRecipes, materials = inventoryMateri
     });
   });
 
+  // Inline single-item equipment upgrades instead of enumerating every possible
+  // precursor stockpile. Keep the original variant for precursors already owned.
+  for (const supplier of [...candidates]) {
+    if (supplier.output < 0 || supplier.recipe.unitsPerCraft !== 1 ||
+        /\b(?:Leather|Hide|Leather Scraps)$/i.test(supplier.recipe.name) || supplier.expansion) continue;
+    const additions = [];
+    for (const consumer of candidates) {
+      if (consumer === supplier || consumer.needed[supplier.output] !== 1 || consumer.expansion ||
+          supplier.needed.some((quantity, i) => quantity && i === consumer.output)) continue;
+      consumer.ownedOnly = [...(consumer.ownedOnly ?? []), supplier.output];
+      additions.push({ ...consumer,
+        needed: consumer.needed.map((quantity, i) =>
+          quantity - Number(i === supplier.output) + supplier.needed[i]),
+        cost: consumer.cost + supplier.cost,
+        profit: consumer.profit - supplier.cost,
+        expansion: [{ recipe: supplier.recipe, count: 1, purchases: supplier.purchases, action: "Craft" }],
+      });
+    }
+    candidates.push(...additions);
+  }
+
   // A material is reachable if it's owned, or every input of some recipe making it is reachable.
   const reachable = new Set(materials.filter((name, i) => inventory[i] > 0));
   for (let grown = true; grown; ) {
@@ -82,7 +103,8 @@ function bestPlan(inventory, recipes = knownRecipes, materials = inventoryMateri
     for (const craft of candidates) {
       if (craft.output < 0 || worthwhile.has(craft)) continue;
       const runs = other => other.needed.every((quantity, i) => !quantity || reachable.has(materials[i]));
-      if (candidates.some(other => other !== craft && other.needed[craft.output] > 0 && runs(other) &&
+      if (candidates.some(other => other !== craft && other.needed[craft.output] > 0 &&
+          !other.ownedOnly?.includes(craft.output) && runs(other) &&
           (other.profit > 0 || (other.output >= 0 && worthwhile.has(other))))) {
         worthwhile.add(craft);
         grown = true;
@@ -284,8 +306,9 @@ function directSales(candidates, inventory, memoGroups = new Map(), valuation = 
     cost: plan.cost,
     remaining: inventory.map((quantity, i) =>
       crafts.reduce((left, craft, j) => left - craft.needed[i] * counts[j], quantity)),
-    steps: crafts.flatMap(({ recipe, saleOnly, purchases }, i) => counts[i]
-      ? [{ recipe, count: counts[i], purchases, action: saleOnly ? "Sell" : "Craft and sell" }]
+    steps: crafts.flatMap(({ recipe, saleOnly, purchases, expansion = [] }, i) => counts[i]
+      ? [...expansion.map(step => ({ ...step, count: step.count * counts[i] })),
+        { recipe, count: counts[i], purchases, action: saleOnly ? "Sell" : "Craft and sell" }]
       : []),
   };
 }

@@ -4,8 +4,18 @@ const auctionPriceSnapshot = {
     "realm": "pve-forever-us",
     "faction": "horde"
   },
-  "refreshedAt": "2026-11-19T02:53:55.730Z",
+  "refreshedAt": "2026-11-19T15:56:22.786Z",
   "materials": {
+    "Bleach": {
+      "name": "Bleach",
+      "itemId": 2324,
+      "vendorCopper": 25,
+      "auctionCopper": null,
+      "purchaseCopper": 25,
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/bleach-2324",
+      "status": "error",
+      "error": "fetch failed"
+    },
     "Boar Ribs": {
       "name": "Boar Ribs",
       "itemId": 2677,
@@ -13,9 +23,10 @@ const auctionPriceSnapshot = {
       "quantity": 225,
       "vendorCopper": null,
       "purchaseCopper": 290,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/boar-ribs-2677"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/boar-ribs-2677",
+      "error": "fetch failed"
     },
     "Bottle of Dalaran Noir": {
       "name": "Bottle of Dalaran Noir",
@@ -24,9 +35,10 @@ const auctionPriceSnapshot = {
       "quantity": 532,
       "vendorCopper": 50,
       "purchaseCopper": 50,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/bottle-of-dalaran-noir-2723"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/bottle-of-dalaran-noir-2723",
+      "error": "fetch failed"
     },
     "Briarthorn": {
       "name": "Briarthorn",
@@ -35,9 +47,10 @@ const auctionPriceSnapshot = {
       "quantity": 5863,
       "vendorCopper": null,
       "purchaseCopper": 88,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/briarthorn-2450"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/briarthorn-2450",
+      "error": "fetch failed"
     },
     "Bruiseweed": {
       "name": "Bruiseweed",
@@ -46,9 +59,10 @@ const auctionPriceSnapshot = {
       "quantity": 5970,
       "vendorCopper": null,
       "purchaseCopper": 87,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/bruiseweed-2453"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/bruiseweed-2453",
+      "error": "fetch failed"
     },
     "Chunk of Boar Meat": {
       "name": "Chunk of Boar Meat",
@@ -57,9 +71,10 @@ const auctionPriceSnapshot = {
       "quantity": 4103,
       "vendorCopper": null,
       "purchaseCopper": 112,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/chunk-of-boar-meat-769"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/chunk-of-boar-meat-769",
+      "error": "fetch failed"
     },
     "Clam Meat": {
       "name": "Clam Meat",
@@ -68,9 +83,10 @@ const auctionPriceSnapshot = {
       "quantity": 1943,
       "vendorCopper": null,
       "purchaseCopper": 118,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/clam-meat-5503"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/clam-meat-5503",
+      "error": "fetch failed"
     },
     "Coarse Thread": {
       "name": "Coarse Thread",
@@ -79,9 +95,10 @@ const auctionPriceSnapshot = {
       "quantity": 2546,
       "vendorCopper": 10,
       "purchaseCopper": 10,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/coarse-thread-2320"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/coarse-thread-2320",
+      "error": "fetch failed"
     },
     "Coyote Meat": {
       "name": "Coyote Meat",
@@ -90,9 +107,10 @@ const auctionPriceSnapshot = {
       "quantity": 969,
       "vendorCopper": null,
       "purchaseCopper": 900,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/coyote-meat-2673"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/coyote-meat-2673",
+      "error": "fetch failed"
     },
     "Crawler Meat": {
       "name": "Crawler Meat",
@@ -101,9 +119,10 @@ const auctionPriceSnapshot = {
       "quantity": 793,
       "vendorCopper": null,
       "purchaseCopper": 330,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/crawler-meat-2674"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/crawler-meat-2674",
+      "error": "fetch failed"
     },
     "Cured Light Hide": {
       "name": "Cured Light Hide",
@@ -112,9 +131,10 @@ const auctionPriceSnapshot = {
       "quantity": 915,
       "vendorCopper": null,
       "purchaseCopper": 164,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/cured-light-hide-4231"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/cured-light-hide-4231",
+      "error": "fetch failed"
     },
     "Cured Medium Hide": {
       "name": "Cured Medium Hide",
@@ -123,9 +143,10 @@ const auctionPriceSnapshot = {
       "quantity": 513,
       "vendorCopper": null,
       "purchaseCopper": 423,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/cured-medium-hide-4233"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/cured-medium-hide-4233",
+      "error": "fetch failed"
     },
     "Elixir of Lesser Defense": {
       "name": "Elixir of Lesser Defense",
@@ -134,9 +155,10 @@ const auctionPriceSnapshot = {
       "quantity": 131,
       "vendorCopper": null,
       "purchaseCopper": 300,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/elixir-of-lesser-defense-3389"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/elixir-of-lesser-defense-3389",
+      "error": "fetch failed"
     },
     "Elixir of Minor Agility": {
       "name": "Elixir of Minor Agility",
@@ -145,9 +167,10 @@ const auctionPriceSnapshot = {
       "quantity": 1065,
       "vendorCopper": null,
       "purchaseCopper": 388,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/elixir-of-minor-agility-2457"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/elixir-of-minor-agility-2457",
+      "error": "fetch failed"
     },
     "Elixir of Minor Strength": {
       "name": "Elixir of Minor Strength",
@@ -156,9 +179,20 @@ const auctionPriceSnapshot = {
       "quantity": 664,
       "vendorCopper": null,
       "purchaseCopper": 97,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/elixir-of-minor-strength-2454"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/elixir-of-minor-strength-2454",
+      "error": "fetch failed"
+    },
+    "Elixir of Wisdom": {
+      "name": "Elixir of Wisdom",
+      "itemId": 3383,
+      "vendorCopper": null,
+      "auctionCopper": null,
+      "purchaseCopper": null,
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/elixir-of-wisdom-3383",
+      "status": "error",
+      "error": "fetch failed"
     },
     "Empty Vial": {
       "name": "Empty Vial",
@@ -167,9 +201,10 @@ const auctionPriceSnapshot = {
       "quantity": 4932,
       "vendorCopper": 4,
       "purchaseCopper": 4,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/empty-vial-3371"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/empty-vial-3371",
+      "error": "fetch failed"
     },
     "Fine Leather Belt": {
       "name": "Fine Leather Belt",
@@ -178,9 +213,30 @@ const auctionPriceSnapshot = {
       "quantity": 369,
       "vendorCopper": null,
       "purchaseCopper": 230,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/fine-leather-belt-4246"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/fine-leather-belt-4246",
+      "error": "fetch failed"
+    },
+    "Fine Leather Gloves": {
+      "name": "Fine Leather Gloves",
+      "itemId": 2312,
+      "vendorCopper": null,
+      "auctionCopper": null,
+      "purchaseCopper": null,
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/fine-leather-gloves-2312",
+      "status": "error",
+      "error": "fetch failed"
+    },
+    "Fine Leather Tunic": {
+      "name": "Fine Leather Tunic",
+      "itemId": 4243,
+      "vendorCopper": null,
+      "auctionCopper": null,
+      "purchaseCopper": null,
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/fine-leather-tunic-4243",
+      "status": "error",
+      "error": "fetch failed"
     },
     "Fine Thread": {
       "name": "Fine Thread",
@@ -189,9 +245,10 @@ const auctionPriceSnapshot = {
       "quantity": 803,
       "vendorCopper": 100,
       "purchaseCopper": 100,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/fine-thread-2321"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/fine-thread-2321",
+      "error": "fetch failed"
     },
     "Gray Dye": {
       "name": "Gray Dye",
@@ -200,9 +257,10 @@ const auctionPriceSnapshot = {
       "quantity": 143,
       "vendorCopper": 350,
       "purchaseCopper": 296,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/gray-dye-4340"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/gray-dye-4340",
+      "error": "fetch failed"
     },
     "Heavy Hide": {
       "name": "Heavy Hide",
@@ -211,9 +269,10 @@ const auctionPriceSnapshot = {
       "quantity": 350,
       "vendorCopper": null,
       "purchaseCopper": 875,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/heavy-hide-4235"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/heavy-hide-4235",
+      "error": "fetch failed"
     },
     "Heavy Leather": {
       "name": "Heavy Leather",
@@ -222,9 +281,10 @@ const auctionPriceSnapshot = {
       "quantity": 12637,
       "vendorCopper": null,
       "purchaseCopper": 170,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/heavy-leather-4234"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/heavy-leather-4234",
+      "error": "fetch failed"
     },
     "Hot Spices": {
       "name": "Hot Spices",
@@ -233,9 +293,10 @@ const auctionPriceSnapshot = {
       "quantity": 894,
       "vendorCopper": 40,
       "purchaseCopper": 40,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/hot-spices-2692"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/hot-spices-2692",
+      "error": "fetch failed"
     },
     "Kodo Meat": {
       "name": "Kodo Meat",
@@ -244,9 +305,10 @@ const auctionPriceSnapshot = {
       "quantity": 1134,
       "vendorCopper": null,
       "purchaseCopper": 20,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/kodo-meat-5467"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/kodo-meat-5467",
+      "error": "fetch failed"
     },
     "Leaded Vial": {
       "name": "Leaded Vial",
@@ -255,9 +317,10 @@ const auctionPriceSnapshot = {
       "quantity": 1441,
       "vendorCopper": 40,
       "purchaseCopper": 40,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/leaded-vial-3372"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/leaded-vial-3372",
+      "error": "fetch failed"
     },
     "Light Hide": {
       "name": "Light Hide",
@@ -266,9 +329,10 @@ const auctionPriceSnapshot = {
       "quantity": 1960,
       "vendorCopper": null,
       "purchaseCopper": 65,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/light-hide-783"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/light-hide-783",
+      "error": "fetch failed"
     },
     "Light Leather": {
       "name": "Light Leather",
@@ -277,9 +341,10 @@ const auctionPriceSnapshot = {
       "quantity": 22290,
       "vendorCopper": null,
       "purchaseCopper": 32,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/light-leather-2318"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/light-leather-2318",
+      "error": "fetch failed"
     },
     "Linen Cloth": {
       "name": "Linen Cloth",
@@ -288,9 +353,10 @@ const auctionPriceSnapshot = {
       "quantity": 22172,
       "vendorCopper": null,
       "purchaseCopper": 23,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/linen-cloth-2589"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/linen-cloth-2589",
+      "error": "fetch failed"
     },
     "Long Tail Feather": {
       "name": "Long Tail Feather",
@@ -299,9 +365,10 @@ const auctionPriceSnapshot = {
       "quantity": 1590,
       "vendorCopper": null,
       "purchaseCopper": 289,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/long-tail-feather-5116"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/long-tail-feather-5116",
+      "error": "fetch failed"
     },
     "Medium Armor Kit": {
       "name": "Medium Armor Kit",
@@ -310,9 +377,10 @@ const auctionPriceSnapshot = {
       "quantity": 624,
       "vendorCopper": null,
       "purchaseCopper": 299,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/medium-armor-kit-2313"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/medium-armor-kit-2313",
+      "error": "fetch failed"
     },
     "Medium Hide": {
       "name": "Medium Hide",
@@ -321,9 +389,10 @@ const auctionPriceSnapshot = {
       "quantity": 447,
       "vendorCopper": null,
       "purchaseCopper": 349,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/medium-hide-4232"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/medium-hide-4232",
+      "error": "fetch failed"
     },
     "Medium Leather": {
       "name": "Medium Leather",
@@ -332,9 +401,10 @@ const auctionPriceSnapshot = {
       "quantity": 15844,
       "vendorCopper": null,
       "purchaseCopper": 93,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/medium-leather-2319"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/medium-leather-2319",
+      "error": "fetch failed"
     },
     "Mild Spices": {
       "name": "Mild Spices",
@@ -343,9 +413,10 @@ const auctionPriceSnapshot = {
       "quantity": 6827,
       "vendorCopper": 2,
       "purchaseCopper": 2,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/mild-spices-2678"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/mild-spices-2678",
+      "error": "fetch failed"
     },
     "Peacebloom": {
       "name": "Peacebloom",
@@ -354,9 +425,10 @@ const auctionPriceSnapshot = {
       "quantity": 1330,
       "vendorCopper": null,
       "purchaseCopper": 48,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/peacebloom-2447"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/peacebloom-2447",
+      "error": "fetch failed"
     },
     "Raptor Egg": {
       "name": "Raptor Egg",
@@ -365,9 +437,10 @@ const auctionPriceSnapshot = {
       "quantity": 2573,
       "vendorCopper": null,
       "purchaseCopper": 100,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/raptor-egg-3685"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/raptor-egg-3685",
+      "error": "fetch failed"
     },
     "Raw Brilliant Smallfish": {
       "name": "Raw Brilliant Smallfish",
@@ -376,9 +449,10 @@ const auctionPriceSnapshot = {
       "quantity": 1787,
       "vendorCopper": null,
       "purchaseCopper": 47,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/raw-brilliant-smallfish-6291"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/raw-brilliant-smallfish-6291",
+      "error": "fetch failed"
     },
     "Raw Bristle Whisker Catfish": {
       "name": "Raw Bristle Whisker Catfish",
@@ -387,9 +461,10 @@ const auctionPriceSnapshot = {
       "quantity": 3933,
       "vendorCopper": null,
       "purchaseCopper": 12,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/raw-bristle-whisker-catfish-6308"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/raw-bristle-whisker-catfish-6308",
+      "error": "fetch failed"
     },
     "Raw Longjaw Mud Snapper": {
       "name": "Raw Longjaw Mud Snapper",
@@ -398,9 +473,10 @@ const auctionPriceSnapshot = {
       "quantity": 8753,
       "vendorCopper": null,
       "purchaseCopper": 3,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/raw-longjaw-mud-snapper-6289"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/raw-longjaw-mud-snapper-6289",
+      "error": "fetch failed"
     },
     "Raw Rainbow Fin Albacore": {
       "name": "Raw Rainbow Fin Albacore",
@@ -409,9 +485,10 @@ const auctionPriceSnapshot = {
       "quantity": 2631,
       "vendorCopper": null,
       "purchaseCopper": 12,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/raw-rainbow-fin-albacore-6361"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/raw-rainbow-fin-albacore-6361",
+      "error": "fetch failed"
     },
     "Raw Sagefish": {
       "name": "Raw Sagefish",
@@ -420,9 +497,10 @@ const auctionPriceSnapshot = {
       "quantity": 1944,
       "vendorCopper": null,
       "purchaseCopper": 37,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/raw-sagefish-21071"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/raw-sagefish-21071",
+      "error": "fetch failed"
     },
     "Raw Slitherskin Mackerel": {
       "name": "Raw Slitherskin Mackerel",
@@ -431,9 +509,10 @@ const auctionPriceSnapshot = {
       "quantity": 4061,
       "vendorCopper": null,
       "purchaseCopper": 22,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/raw-slitherskin-mackerel-6303"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/raw-slitherskin-mackerel-6303",
+      "error": "fetch failed"
     },
     "Refreshing Spring Water": {
       "name": "Refreshing Spring Water",
@@ -442,9 +521,10 @@ const auctionPriceSnapshot = {
       "quantity": 1104,
       "vendorCopper": 5,
       "purchaseCopper": 5,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/refreshing-spring-water-159"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/refreshing-spring-water-159",
+      "error": "fetch failed"
     },
     "Ruined Leather Scraps": {
       "name": "Ruined Leather Scraps",
@@ -453,9 +533,10 @@ const auctionPriceSnapshot = {
       "quantity": 4196,
       "vendorCopper": null,
       "purchaseCopper": 9,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/ruined-leather-scraps-2934"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/ruined-leather-scraps-2934",
+      "error": "fetch failed"
     },
     "Salt": {
       "name": "Salt",
@@ -464,9 +545,10 @@ const auctionPriceSnapshot = {
       "quantity": 794,
       "vendorCopper": 50,
       "purchaseCopper": 50,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/salt-4289"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/salt-4289",
+      "error": "fetch failed"
     },
     "Shiny Red Apple": {
       "name": "Shiny Red Apple",
@@ -475,9 +557,10 @@ const auctionPriceSnapshot = {
       "quantity": 1139,
       "vendorCopper": 5,
       "purchaseCopper": 5,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/shiny-red-apple-4536"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/shiny-red-apple-4536",
+      "error": "fetch failed"
     },
     "Small Egg": {
       "name": "Small Egg",
@@ -486,9 +569,10 @@ const auctionPriceSnapshot = {
       "quantity": 119,
       "vendorCopper": null,
       "purchaseCopper": 180,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/small-egg-6889"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/small-egg-6889",
+      "error": "fetch failed"
     },
     "Small Venom Sac": {
       "name": "Small Venom Sac",
@@ -497,9 +581,10 @@ const auctionPriceSnapshot = {
       "quantity": 441,
       "vendorCopper": null,
       "purchaseCopper": 99,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/small-venom-sac-1475"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/small-venom-sac-1475",
+      "error": "fetch failed"
     },
     "Spider Ichor": {
       "name": "Spider Ichor",
@@ -508,9 +593,10 @@ const auctionPriceSnapshot = {
       "quantity": 2612,
       "vendorCopper": null,
       "purchaseCopper": 16,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/spider-ichor-3174"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/spider-ichor-3174",
+      "error": "fetch failed"
     },
     "Spider's Silk": {
       "name": "Spider's Silk",
@@ -519,9 +605,10 @@ const auctionPriceSnapshot = {
       "quantity": 480,
       "vendorCopper": null,
       "purchaseCopper": 825,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/spiders-silk-3182"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/spiders-silk-3182",
+      "error": "fetch failed"
     },
     "Strange Dust": {
       "name": "Strange Dust",
@@ -530,9 +617,10 @@ const auctionPriceSnapshot = {
       "quantity": 1954,
       "vendorCopper": null,
       "purchaseCopper": 108,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/strange-dust-10940"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/strange-dust-10940",
+      "error": "fetch failed"
     },
     "Strider Meat": {
       "name": "Strider Meat",
@@ -541,9 +629,10 @@ const auctionPriceSnapshot = {
       "quantity": 1696,
       "vendorCopper": null,
       "purchaseCopper": 19,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/strider-meat-5469"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/strider-meat-5469",
+      "error": "fetch failed"
     },
     "Stringy Wolf Meat": {
       "name": "Stringy Wolf Meat",
@@ -552,9 +641,10 @@ const auctionPriceSnapshot = {
       "quantity": 2197,
       "vendorCopper": null,
       "purchaseCopper": 100,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/stringy-wolf-meat-2672"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/stringy-wolf-meat-2672",
+      "error": "fetch failed"
     },
     "Tangy Clam Meat": {
       "name": "Tangy Clam Meat",
@@ -563,9 +653,10 @@ const auctionPriceSnapshot = {
       "quantity": 2181,
       "vendorCopper": null,
       "purchaseCopper": 69,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/tangy-clam-meat-5504"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/tangy-clam-meat-5504",
+      "error": "fetch failed"
     },
     "Thin Kodo Leather": {
       "name": "Thin Kodo Leather",
@@ -574,9 +665,10 @@ const auctionPriceSnapshot = {
       "quantity": 913,
       "vendorCopper": null,
       "purchaseCopper": 32,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/thin-kodo-leather-5082"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/thin-kodo-leather-5082",
+      "error": "fetch failed"
     },
     "Thunder Lizard Tail": {
       "name": "Thunder Lizard Tail",
@@ -585,9 +677,10 @@ const auctionPriceSnapshot = {
       "quantity": 548,
       "vendorCopper": null,
       "purchaseCopper": 100,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/thunder-lizard-tail-5470"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/thunder-lizard-tail-5470",
+      "error": "fetch failed"
     },
     "Wool Cloth": {
       "name": "Wool Cloth",
@@ -596,9 +689,10 @@ const auctionPriceSnapshot = {
       "quantity": 17852,
       "vendorCopper": null,
       "purchaseCopper": 155,
-      "status": "available",
+      "status": "error",
       "scannedAt": "2026-11-19T02:25:14.000Z",
-      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/wool-cloth-2592"
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/wool-cloth-2592",
+      "error": "fetch failed"
     }
   }
 };

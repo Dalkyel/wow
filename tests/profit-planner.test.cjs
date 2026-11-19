@@ -26,11 +26,12 @@ for (const script of ["known-recipes-data.js", "profit.js"]) {
   vm.runInContext(readFileSync(join(__dirname, "../professions", script), "utf8"), context);
 }
 
-function showInventory(stock) {
+function showInventory(stock, excludedRecipes = []) {
   context.stock = stock;
+  context.excludedRecipes = excludedRecipes;
   vm.runInContext(`
     inputs.forEach((input, i) => input.value = String(stock[inventoryMaterials[i]] ?? 0));
-    showPlan();
+    showPlan(inputs, result, knownRecipes.filter(recipe => !excludedRecipes.includes(recipe.name)), inventoryMaterials);
   `, context);
   return [
     result.children[0].textContent,
@@ -41,16 +42,16 @@ function showInventory(stock) {
 
 test("the vendor plan uses leather made from scraps, then sells only the surplus", () => {
   assert.deepEqual(showInventory({ "Ruined Leather Scraps": 108 }), [
-    "7s 99c profit",
+    "8s 90c profit",
     "Craft 36 × Light Leather",
-    "Craft and sell 7 × Rugged Leather Pants",
+    "Craft and sell 5 × Fine Leather Boots",
     "Sell 1 × Light Leather",
-    "Other materials cost 3s 50c · Vendor pays 11s 49c",
+    "Other materials cost 1s 0c · Vendor pays 9s 90c",
   ]);
 });
 
 test("the planner can combine two ingredient chains and charge for salt once", () => {
-  const [profit, ...lines] = showInventory({ "Ruined Leather Scraps": 48, "Medium Hide": 1 });
+  const [profit, ...lines] = showInventory({ "Ruined Leather Scraps": 48, "Medium Hide": 1 }, ["Fine Leather Boots"]);
   assert.equal(profit, "5s 9c profit");
   const sale = lines.indexOf("Craft and sell 1 × Hillman's Shoulders");
   assert.ok(sale >= 3);
@@ -76,17 +77,18 @@ test("the planner can sell a crafted ingredient but does not sell existing stock
 });
 
 test("the shopping list combines thread across different crafts", () => {
-  showInventory({ "Ruined Leather Scraps": 239 });
+  showInventory({ "Ruined Leather Scraps": 120 });
   assert.deepEqual(result.children[3].children[1].children.map(item => item.textContent), [
-    "75 × Coarse Thread · 7s 50c",
+    "15 × Coarse Thread · 1s 50c",
   ]);
 });
 
 test("owned leather still works without a conversion step", () => {
   assert.deepEqual(showInventory({ "Light Leather": 40 }), [
-    "8s 96c profit",
-    "Craft and sell 8 × Rugged Leather Pants",
-    "Other materials cost 4s 0c · Vendor pays 12s 96c",
+    "9s 87c profit",
+    "Craft and sell 5 × Fine Leather Boots",
+    "Craft and sell 1 × Rugged Leather Pants",
+    "Other materials cost 1s 50c · Vendor pays 11s 37c",
   ]);
 });
 
@@ -94,7 +96,7 @@ test("a large scrap count still resolves quickly, by skipping unreachable conver
   const start = Date.now();
   const [profit] = showInventory({ "Ruined Leather Scraps": 300 });
   assert.ok(Date.now() - start < 1000, "bestPlan should not need to branch over unreachable conversions");
-  assert.equal(profit, "22s 40c profit");
+  assert.equal(profit, "24s 80c profit");
 });
 
 test("51 Strider Stew crafts match the observed 918c vendor payout", () => {
@@ -124,19 +126,50 @@ test("owned apples remove the purchase cost from the same Strider Stew batch", (
 test("999 Light Leather resolves without repeating the sale search for each conversion", () => {
   const profit = vm.runInContext(`bestPlan(inventoryMaterials.map(name =>
     name === "Light Leather" ? 999 : 0)).profit`, context, { timeout: 2000 });
-  assert.equal(profit, 22358);
+  assert.equal(profit, 24962);
 });
 
 test("300 Light Leather and 300 Cured Light Hide produce a complete plan promptly", () => {
   const plan = JSON.parse(vm.runInContext(`JSON.stringify(bestPlan(inventoryMaterials.map(name =>
     ["Light Leather", "Cured Light Hide"].includes(name) ? 300 : 0)))`, context, { timeout: 2000 }));
-  assert.equal(plan.profit, 21050);
-  assert.equal(plan.cost, 2000);
-  assert.equal(plan.profit + plan.cost, 23050);
-  assert.deepEqual(plan.steps.map(step => [step.recipe.name, step.count]), [["Fine Leather Tunic", 50]]);
+  assert.equal(plan.profit, 33150);
+  assert.equal(plan.cost, 3000);
+  assert.equal(plan.profit + plan.cost, 36150);
+  assert.deepEqual(plan.steps.map(step => [step.recipe.name, step.count]),
+    [["Fine Leather Tunic", 50], ["Hillman's Leather Vest", 50]]);
   const materials = JSON.parse(vm.runInContext("JSON.stringify(inventoryMaterials)", context));
   assert.equal(plan.remaining[materials.indexOf("Light Leather")], 0);
-  assert.equal(plan.remaining[materials.indexOf("Cured Light Hide")], 150);
+  assert.equal(plan.remaining[materials.indexOf("Cured Light Hide")], 50);
+});
+
+test("equipment upgrade chains match exhaustive plans with owned precursors and paid resources", () => {
+  vm.runInContext(`
+    (() => {
+      const materials = ["Leather", "Hide", "Tunic"];
+      const recipes = [
+        {recipeId:"tunic", name:"Tunic", unitsPerCraft:1, vendorCopper:461,
+          materials:[["Leather",6,0],["Hide",3,0],["Thread",4,10]]},
+        {recipeId:"vest", name:"Vest", unitsPerCraft:1, vendorCopper:723,
+          materials:[["Tunic",1,500],["Hide",2,0],["Thread",2,10]]},
+      ];
+      for (const leather of [0,6,12,18]) for (const hide of [0,3,5,10])
+        for (const tunics of [0,1,2]) for (const price of [0,20]) {
+          let expected = 0;
+          for (let made=0; made<=Math.floor(leather/6); made++) {
+            for (let upgraded=0; upgraded<=made+tunics; upgraded++) {
+              if (3*made+2*upgraded>hide) continue;
+              const ownedUsed = Math.min(tunics,upgraded);
+              const sold = made-Math.max(0,upgraded-tunics);
+              expected = Math.max(expected, sold*461+upgraded*723-made*40-upgraded*20
+                -(made*6+made*3+upgraded*2+ownedUsed)*price);
+            }
+          }
+          const plan = bestPlan([leather,hide,tunics],recipes,materials,
+            {Leather:price,Hide:price,Tunic:price});
+          if (plan.profit!==expected) throw new Error(JSON.stringify({leather,hide,tunics,price,expected,plan}));
+        }
+    })();
+  `, context, {timeout:2000});
 });
 
 test("inventory state reuse and abundant-material removal match exhaustive small plans", () => {

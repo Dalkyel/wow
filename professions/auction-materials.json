@@ -1,5 +1,10 @@
 [
   {
+    "name": "Bleach",
+    "itemId": 2324,
+    "vendorCopper": 25
+  },
+  {
     "name": "Boar Ribs",
     "itemId": 2677
   },
@@ -58,6 +63,10 @@
     "itemId": 2454
   },
   {
+    "name": "Elixir of Wisdom",
+    "itemId": 3383
+  },
+  {
     "name": "Empty Vial",
     "itemId": 3371,
     "vendorCopper": 4
@@ -65,6 +74,14 @@
   {
     "name": "Fine Leather Belt",
     "itemId": 4246
+  },
+  {
+    "name": "Fine Leather Gloves",
+    "itemId": 2312
+  },
+  {
+    "name": "Fine Leather Tunic",
+    "itemId": 4243
   },
   {
     "name": "Fine Thread",
