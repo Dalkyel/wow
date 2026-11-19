@@ -77,6 +77,14 @@
     "vendorCopper": 350
   },
   {
+    "name": "Heavy Hide",
+    "itemId": 4235
+  },
+  {
+    "name": "Heavy Leather",
+    "itemId": 4234
+  },
+  {
     "name": "Hot Spices",
     "itemId": 2692,
     "vendorCopper": 40
