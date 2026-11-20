@@ -41,13 +41,15 @@ function renderRecipeTable(table, recipes, profitableOnly = false) {
       const ingredient = document.createElement("div");
       ingredient.className = "recipe-ingredient";
       const selected = document.createElement("span");
-      selected.textContent = `${quantity} × ${item} · ${source} at ${formatPrice(unitPrice)} each`;
+      selected.textContent = `${quantity} × ${item} · ${materialSourceLabel(item)} at ${formatPrice(unitPrice)} each`;
       const buying = document.createElement("small");
       buying.className = "recipe-buy-limit";
       const quote = auctionQuotes[item];
       const limit = recipePurchaseLimit(recipe, item);
       const maximum = !limit ? "Unknown" : limit.maximum < 0 ? "None" : coins(limit.maximum);
-      buying.textContent = `AH snapshot ${formatPrice(quote?.auctionCopper ?? null)} · Max buy ${maximum} each`;
+      const bestBuy = bestMaterialPurchase(item);
+      buying.textContent = `${bestBuy.source === "vendor" ? `Vendor ${formatPrice(bestBuy.price)}`
+        : `AH snapshot ${formatPrice(quote?.auctionCopper ?? null)}`} · Max buy ${maximum} each`;
       buying.title = "Maximum whole-copper unit price for a positive vendor profit with this recipe, " +
         "holding other selected material costs fixed. Each limit applies separately.";
       if (quote) buying.title += ` ${auctionQuoteLabel(quote)}`;

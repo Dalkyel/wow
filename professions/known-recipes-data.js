@@ -599,6 +599,16 @@ const cookingRecipes = [
 
 const firstAidRecipes = [
   {
+    recipeId: "first-aid:greater-healing-potion",
+    name: "Greater Healing Potion",
+    unitsPerCraft: 1,
+    vendorCopper: 125,
+    materials: [["Liferoot", 1, 279], ["Hot Spices", 3, 40], ["Leaded Vial", 1, 40]],
+    stockMaterials: ["Liferoot", "Hot Spices", "Leaded Vial"],
+    buyIfMissing: ["Hot Spices", "Leaded Vial"],
+    sourceUrl: "https://www.foreverdb.app/en/forever/spells/1244434/greater-healing-potion",
+  },
+  {
     recipeId: "first-aid:healing-potion",
     name: "Healing Potion",
     unitsPerCraft: 1,

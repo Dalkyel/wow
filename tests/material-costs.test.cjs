@@ -106,6 +106,38 @@ test("recipe rows show auction quotes and their own strict purchase limits along
     "AH snapshot Unknown · Max buy 24c each");
 });
 
+test("cheaper vendor supplies price recipes, hide limits and shared budgets, while cheaper AH quotes can replace them", () => {
+  const snapshot = {materials:{
+    "Fine Thread": {auctionCopper:150,purchaseCopper:150,vendorCopper:100,status:"available"},
+  }};
+  const { context, document } = page(snapshot);
+  vm.runInContext('materialValues.get("Light Leather").price=20; materialValues.get("Cured Light Hide").price=30', context);
+  document.dispatchEvent({type:"materialvalueschange"});
+  const recipe = () => document.querySelector("#recipes").children.find(row =>
+    row.children[0].children[0]?.textContent === "Light Leather Pants");
+  assert.equal(vm.runInContext('materialUnitCost("Fine Thread")',context),100);
+  assert.equal(recipe().children[2].textContent,"3s 30c");
+  assert.equal(recipe().children[1].children[2].children[0].textContent,
+    "1 × Fine Thread · vendor at 1s 0c each");
+  assert.match(recipe().children[1].children[2].children[1].textContent,/^Vendor 1s 0c/);
+  const thread = () => document.querySelector("#materials-reference").children.find(row =>
+    row.children[0].textContent === "Fine Thread");
+  assert.equal(thread().children[0].children[0].textContent,"Best buy: vendor 1s 0c each");
+  assert.equal(vm.runInContext('recipePurchaseLimit(knownRecipes.find(r=>r.name==="Light Leather Pants"),"Cured Light Hide").maximum',context),298);
+  const hide = document.querySelector("#materials-reference").children.find(row=>row.children[0].textContent==="Cured Light Hide");
+  const details = hide.children[4].children.find(child=>child.className==="material-comparison");
+  const pants = details.children[2].children[0].children[1].children.find(row=>
+    row.children[0].children[0].textContent==="Light Leather Pants");
+  assert.ok(pants.children[3].children.some(child=>child.textContent==="1 × Fine Thread at 1s 0c each (vendor)"));
+  context.incoming={materials:{"Fine Thread":{auctionCopper:80,purchaseCopper:80,vendorCopper:100,status:"available"}}};
+  vm.runInContext('applyAuctionPrices(incoming,"live")',context);
+  assert.equal(recipe().children[2].textContent,"3s 10c");
+  assert.equal(thread().children[0].children[0].textContent,"Best buy: AH snapshot 80c each");
+  vm.runInContext('materialValues.get("Fine Thread").manual=true; materialValues.get("Fine Thread").price=200; incoming.materials["Fine Thread"].auctionCopper=150; incoming.materials["Fine Thread"].purchaseCopper=150; applyAuctionPrices(incoming,"live")',context);
+  assert.equal(vm.runInContext('materialUnitCost("Fine Thread")',context),200);
+  assert.match(recipe().children[1].children[2].children[0].textContent,/manual purchase at 2s 0c/);
+});
+
 test("crafted material values include gathered or purchased ingredients recursively", () => {
   const { context } = page();
   vm.runInContext(`materialValues.set("Cured Light Hide", { source: "crafted", price: 172 });
@@ -360,6 +392,43 @@ test("material ranges include zero ceilings, exclude unknown and impossible limi
   vm.runInContext('materialValues.get("Test Other").price = 21', context);
   document.dispatchEvent({type:"materialvalueschange"});
   assert.equal(range().textContent, "None");
+});
+
+test("a single-recipe material shows one shared purchase budget for all quantities and crafted ingredients", () => {
+  const { context, document } = page();
+  vm.runInContext(`
+    materialValues.set("Budget A", {source:"bought",price:200});
+    materialValues.set("Budget B", {source:"bought",price:300});
+    materialValues.set("Budget Crafted", {source:"crafted",price:999});
+    materialSuppliers.set("Budget Crafted", {name:"Budget Crafted",unitsPerCraft:1,
+      materials:[["Budget A",2,200],["Budget B",1,300]]});
+    allKnownRecipes.push({recipeId:"test:budget",name:"Budget recipe",unitsPerCraft:1,vendorCopper:1000,
+      materials:[["Budget Crafted",1,999]]});
+  `, context);
+  document.dispatchEvent({type:"materialvalueschange"});
+  const details = () => document.querySelector("#materials-reference").children.find(row =>
+    row.children[0].textContent === "Budget A").children[4].children.find(child =>
+      child.className === "material-comparison");
+  const budget = () => details().children[2].children[0].children[1].children[0].children[3];
+  assert.equal(details().children[0].textContent, "Compare 1 profitable recipe");
+  assert.deepEqual(budget().children.map(child => child.textContent), [
+    "All purchases ≤ 9s 99c / craft",
+    "Selected total 7s 0c · Vendor pays 10s 0c",
+    "2s 99c shared budget remaining",
+    "2 × Budget A at 2s 0c each",
+    "1 × Budget B at 3s 0c each",
+  ]);
+  const filter = details().children[1].children[0].children[0];
+  filter.checked = false;
+  filter.listeners.change();
+  vm.runInContext('materialValues.get("Budget B").price = 600', context);
+  document.dispatchEvent({type:"materialvalueschange"});
+  assert.equal(budget().children[1].textContent, "Selected total 10s 0c · Vendor pays 10s 0c");
+  assert.equal(budget().children[2].textContent, "1c over budget");
+  vm.runInContext('materialValues.get("Budget B").price = null', context);
+  document.dispatchEvent({type:"materialvalueschange"});
+  assert.equal(budget().children[1].textContent, "Selected total Unknown · Vendor pays 10s 0c");
+  assert.equal(budget().children[2].textContent, "Budget remaining unknown");
 });
 
 test("the highest purchase limit can come from a recipe with a lower profit per craft", () => {

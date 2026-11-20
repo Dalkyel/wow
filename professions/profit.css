@@ -103,6 +103,7 @@
 .recipe-buy-limit { display: block; color: #c2bfd0; font-size: 12px; font-weight: 400; }
 
 .materials-reference { margin-top: 28px; }
+.material-best-buy { display: block; color: #c2bfd0; font-size: 12px; font-weight: 400; }
 .materials-reference p { margin-bottom: 18px; color: #c2bfd0; }
 .material-search { display: grid; gap: 6px; width: min(100%, 360px); margin-bottom: 16px; }
 .material-search input { padding: 9px 12px; border: 1px solid #6c7288; border-radius: 4px; background: var(--bg2); color: var(--parch); font: inherit; color-scheme: dark; }
@@ -123,6 +124,7 @@
 .material-comparison td:last-child { min-width: 100px; text-align: right; }
 .material-comparison small { display: block; color: #c2bfd0; font-size: 12px; font-weight: 400; }
 .material-comparison td.comparison-loss { color: #f0aaa4; }
+.material-comparison .combined-buy-budget { min-width: 240px; text-align: left; }
 
 @media (max-width: 630px) {
   .profit-planner { grid-template-columns: 1fr; }

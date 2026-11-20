@@ -3,9 +3,14 @@ const materialSuppliers = new Map(allKnownRecipes.map(recipe => [recipe.name, re
 const auctionQuotes = typeof auctionPriceSnapshot === "undefined" ? {} : { ...auctionPriceSnapshot.materials };
 let auctionPriceState = { source: "saved",
   snapshot: typeof auctionPriceSnapshot === "undefined" ? null : auctionPriceSnapshot };
+function defaultPurchasePrice(quote, fallback = null) {
+  const price = quote ? quote.purchaseCopper : fallback;
+  return quote?.vendorCopper == null ? price
+    : price == null ? quote.vendorCopper : Math.min(price, quote.vendorCopper);
+}
 const materialValues = new Map(allKnownRecipes.flatMap(recipe => recipe.materials)
   .map(([name, , price]) => [name, { source: "bought",
-    price: Object.hasOwn(auctionQuotes, name) ? auctionQuotes[name].purchaseCopper : price,
+    price: defaultPurchasePrice(auctionQuotes[name], price),
     manual: false }]));
 
 function setAuctionPriceState(state) {
@@ -38,7 +43,7 @@ function applyAuctionPrices(snapshot, source) {
   for (const name of Object.keys(auctionQuotes)) delete auctionQuotes[name];
   Object.assign(auctionQuotes, snapshot.materials);
   for (const [name, setting] of materialValues) {
-    if (!setting.manual && Object.hasOwn(auctionQuotes, name)) setting.price = auctionQuotes[name].purchaseCopper;
+    if (!setting.manual && Object.hasOwn(auctionQuotes, name)) setting.price = defaultPurchasePrice(auctionQuotes[name]);
   }
   setAuctionPriceState({ snapshot, source });
   document.dispatchEvent(new Event("materialvalueschange"));
@@ -50,6 +55,24 @@ function auctionQuoteLabel(quote) {
     ? "Saved AH snapshot" : "AH snapshot";
   return `${label}${quote.scannedAt ? ` · Scanned ${new Date(quote.scannedAt).toLocaleString()}` : ""}. ` +
     "Listings may have changed; enter the available purchase price to plan accurately.";
+}
+
+function bestMaterialPurchase(name) {
+  const quote = auctionQuotes[name];
+  if (quote?.vendorCopper != null &&
+      (quote.auctionCopper == null || quote.vendorCopper <= quote.auctionCopper)) {
+    return { source: "vendor", price: quote.vendorCopper };
+  }
+  if (quote?.auctionCopper != null) return { source: "AH snapshot", price: quote.auctionCopper };
+  return { source: "purchase", price: materialValues.get(name)?.price ?? null };
+}
+
+function materialSourceLabel(name) {
+  const value = materialValues.get(name);
+  if (value?.source !== "bought") return value?.source ?? "unknown";
+  if (value.manual) return "manual purchase";
+  const best = bestMaterialPurchase(name);
+  return best.price === value.price ? best.source : "bought";
 }
 
 function materialUnitCost(name, chain = new Set()) {

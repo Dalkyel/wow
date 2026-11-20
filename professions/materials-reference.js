@@ -15,7 +15,7 @@ function requiredMaterialQuantity(recipe, target, chain = new Set()) {
 }
 
 function appendRecipeComparison(cell, name, comparisons) {
-  if (comparisons.length < 2) return;
+  if (!comparisons.length) return;
   const details = document.createElement("details");
   details.className = "material-comparison";
   details.open = openMaterialComparisons.has(name);
@@ -44,7 +44,7 @@ function appendRecipeComparison(cell, name, comparisons) {
   const table = document.createElement("table");
   const head = document.createElement("thead");
   const headings = document.createElement("tr");
-  for (const text of ["Recipe", "Max buy / item", "Profit / craft"]) {
+  for (const text of ["Recipe", "Max buy / item", "Profit / craft", "Combined purchase budget"]) {
     const heading = document.createElement("th");
     heading.scope = "col";
     heading.textContent = text;
@@ -83,10 +83,54 @@ function appendRecipeComparison(cell, name, comparisons) {
         profitCell.append(perMaterial);
         if (profit < 0) profitCell.className = "comparison-loss";
       }
+      const budgetCell = row.insertCell();
+      budgetCell.className = "combined-buy-budget";
+      const payout = recipe.vendorCopper == null ? null : recipe.vendorCopper * recipe.unitsPerCraft;
+      const ceiling = payout > 0 ? Math.ceil(payout) - 1 : null;
+      const total = priceMaterials(recipe).reduce((sum, material) =>
+        sum === null || material.cost === null ? null : sum + material.cost, 0);
+      const budget = document.createElement("span");
+      budget.textContent = ceiling === null ? "No vendor budget" : `All purchases ≤ ${coins(ceiling)} / craft`;
+      budgetCell.append(budget);
+      const selected = document.createElement("small");
+      selected.textContent = `Selected total ${formatPrice(total)} · Vendor pays ${formatPrice(payout)}`;
+      budgetCell.append(selected);
+      const margin = document.createElement("small");
+      const remaining = ceiling === null || total === null ? null : ceiling - total;
+      margin.textContent = remaining === null ? "Budget remaining unknown"
+        : remaining < 0 ? `${coins(-remaining)} over budget` : `${coins(remaining)} shared budget remaining`;
+      budgetCell.append(margin);
+      const purchases = new Map();
+      function collect(item, quantity, chain = new Set()) {
+        const setting = materialValues.get(item);
+        if (setting?.source === "gathered") return;
+        const supplier = materialSuppliers.get(item);
+        if (setting?.source === "crafted" && supplier && !chain.has(item)) {
+          supplier.materials.forEach(([ingredient, amount]) =>
+            collect(ingredient, quantity * amount / supplier.unitsPerCraft, new Set([...chain, item])));
+        } else {
+          purchases.set(item, (purchases.get(item) ?? 0) + quantity);
+        }
+      }
+      recipe.materials.forEach(([item, quantity]) => collect(item, quantity));
+      for (const [item, quantity] of purchases) {
+        const material = document.createElement("small");
+        material.textContent = `${quantity} × ${item} at ${formatPrice(materialUnitCost(item))} each`;
+        const source = materialSourceLabel(item);
+        if (source === "vendor" || source === "manual purchase") material.textContent += ` (${source})`;
+        budgetCell.append(material);
+      }
+      if (!purchases.size) {
+        const none = document.createElement("small");
+        none.textContent = "All materials gathered";
+        budgetCell.append(none);
+      }
+      budgetCell.title = "One shared budget for all bought ingredients, including ingredients used to craft materials. " +
+        "Individual maximum buy prices cannot be combined. Uses your selected purchase prices, including bought inventory.";
     }
     if (!visible.length) {
       const cell = body.insertRow().insertCell();
-      cell.colSpan = 3;
+      cell.colSpan = 4;
       cell.textContent = "No recipes have a positive profit at the selected costs.";
     }
   }
@@ -123,6 +167,11 @@ function renderMaterialReference() {
     const label = document.createElement("th");
     label.scope = "row";
     label.textContent = name;
+    const bestBuy = bestMaterialPurchase(name);
+    const recommendation = document.createElement("small");
+    recommendation.className = "material-best-buy";
+    recommendation.textContent = `Best buy: ${bestBuy.source} ${formatPrice(bestBuy.price)} each`;
+    label.append(recommendation);
     row.append(label);
     row.insertCell().textContent = formatPrice(quote?.vendorCopper ?? null);
     const auction = row.insertCell();
