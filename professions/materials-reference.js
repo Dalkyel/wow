@@ -116,7 +116,9 @@ function renderMaterialReference() {
       .sort((a, b) => (b.limit?.maximum ?? -Infinity) - (a.limit?.maximum ?? -Infinity) ||
         (b.limit?.breakEven ?? -Infinity) - (a.limit?.breakEven ?? -Infinity) || a.recipe.name.localeCompare(b.recipe.name));
     const limits = comparisons.flatMap(comparison => comparison.limit ? [comparison.limit] : []);
-    const best = limits.find(limit => limit.maximum >= 0);
+    const profitableLimits = limits.filter(limit => limit.maximum >= 0);
+    const best = profitableLimits[0];
+    const lowest = profitableLimits.at(-1);
     const row = materialReference.insertRow();
     const label = document.createElement("th");
     label.scope = "row";
@@ -138,8 +140,12 @@ function renderMaterialReference() {
     }
     const maximum = row.insertCell();
     if (!best) maximum.className = "material-price-unavailable";
-    maximum.textContent = best ? coins(best.maximum) : limits.length ? "None" : "Unknown";
-    maximum.title = best ? "Highest whole-copper unit price that produces a positive vendor profit"
+    maximum.textContent = best ? lowest.maximum === best.maximum ? coins(best.maximum)
+      : `${coins(lowest.maximum)} – ${coins(best.maximum)}` : limits.length ? "None" : "Unknown";
+    maximum.title = best ? `Recipe purchase ceilings, not a minimum purchase price. ` +
+      `At ${coins(lowest.maximum)} or less, all ${profitableLimits.length} recipes with a nonnegative ceiling can profit. ` +
+      `The highest ceiling is ${coins(best.maximum)} with ${best.recipe.name}. ` +
+      "Other selected costs stay fixed; unknown limits and recipes that cannot profit even with a free material are excluded."
       : limits.length ? "Other ingredient costs leave no profit even if this material is free" : "Other material prices are missing";
     const recipe = row.insertCell();
     if (best) {

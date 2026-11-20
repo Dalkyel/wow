@@ -308,7 +308,7 @@ test("a shared material shows every known recipe's distinct quantity, purchase l
   document.dispatchEvent({ type: "materialvalueschange" });
   const materialRow = () => document.querySelector("#materials-reference").children.find(row =>
     row.children[0].textContent === "Wool Cloth");
-  assert.equal(materialRow().children[3].textContent, "28c");
+  assert.equal(materialRow().children[3].textContent, "27c – 28c");
   assert.equal(materialRow().children[4].children[0].textContent, "Heavy Wool Bandage");
   const details = materialRow().children[4].children[1];
   const filter = details.children[1].children[0].children[0];
@@ -333,13 +333,42 @@ test("a shared material shows every known recipe's distinct quantity, purchase l
   assert.equal(materialRow().children[4].children[1].open, true);
 });
 
+test("material ranges include zero ceilings, exclude unknown and impossible limits, and recalculate", () => {
+  const { context, document } = page();
+  vm.runInContext(`
+    materialValues.set("Test Material", {source:"bought",price:100});
+    materialValues.set("Test Other", {source:"bought",price:10});
+    materialValues.set("Test Missing", {source:"bought",price:null});
+    allKnownRecipes.push(
+      {recipeId:"test:low",name:"Low",unitsPerCraft:1,vendorCopper:11,
+        materials:[["Test Material",1,100],["Test Other",1,10]]},
+      {recipeId:"test:high",name:"High",unitsPerCraft:1,vendorCopper:21,
+        materials:[["Test Material",1,100],["Test Other",1,10]]},
+      {recipeId:"test:loss",name:"Loss",unitsPerCraft:1,vendorCopper:9,
+        materials:[["Test Material",1,100],["Test Other",1,10]]},
+      {recipeId:"test:unknown",name:"Unknown",unitsPerCraft:1,vendorCopper:1000,
+        materials:[["Test Material",1,100],["Test Missing",1,null]]});
+  `, context);
+  document.dispatchEvent({type:"materialvalueschange"});
+  const range = () => document.querySelector("#materials-reference").children.find(row =>
+    row.children[0].textContent === "Test Material").children[3];
+  assert.equal(range().textContent, "0c – 10c");
+  assert.match(range().title, /all 2 recipes/);
+  vm.runInContext('materialValues.get("Test Other").price = 20', context);
+  document.dispatchEvent({type:"materialvalueschange"});
+  assert.equal(range().textContent, "0c");
+  vm.runInContext('materialValues.get("Test Other").price = 21', context);
+  document.dispatchEvent({type:"materialvalueschange"});
+  assert.equal(range().textContent, "None");
+});
+
 test("the highest purchase limit can come from a recipe with a lower profit per craft", () => {
   const { context, document } = page();
   vm.runInContext('materialValues.get("Cured Light Hide").price = 10000', context);
   document.dispatchEvent({ type: "materialvalueschange" });
   const row = document.querySelector("#materials-reference").children.find(row =>
     row.children[0].textContent === "Light Leather");
-  assert.equal(row.children[3].textContent, "24c");
+  assert.equal(row.children[3].textContent, "1c – 24c");
   assert.equal(row.children[4].children[0].textContent, "Fine Leather Boots");
   const comparisons = row.children[4].children[1].children[2].children[0].children[1].children;
   const pants = comparisons.find(row => row.children[0].children[0].textContent === "Rugged Leather Pants");

@@ -146,7 +146,7 @@
     <div id="materials" role="tabpanel" aria-labelledby="materials-tab" hidden>
       <section class="materials-reference" aria-labelledby="materials-title">
         <h2 id="materials-title">Materials for my known recipes</h2>
-        <p>Prices are per item. The maximum buy price uses the highest profitable purchase limit across your known recipes and your selected costs for other ingredients. Expand a recipe comparison to see quantities, purchase limits, and profit at your selected material cost. Vendor purchase prices appear where verified.</p>
+        <p>Prices are per item. Max buy range shows the lowest and highest profitable purchase ceilings across your known recipes, keeping other selected costs fixed. Buying below the low end supports every recipe included in the range; the high end supports the recipe with the highest limit. Expand a comparison for each recipe’s limit and profit. Unknown limits and recipes that cannot profit even with this material free are excluded.</p>
         <label class="material-search" for="material-search">Find material
           <input type="search" id="material-search" placeholder="Search material names" autocomplete="off">
         </label>
@@ -157,7 +157,7 @@
                 <th scope="col">Material</th>
                 <th scope="col">Vendor buy price</th>
                 <th scope="col">AH minimum buyout</th>
-                <th scope="col">Max buy for profit</th>
+                <th scope="col">Max buy range</th>
                 <th scope="col">Highest buy limit recipe</th>
               </tr>
             </thead>
