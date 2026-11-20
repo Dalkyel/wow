@@ -36,8 +36,24 @@ function renderRecipeTable(table, recipes, profitableOnly = false) {
     name.append(title);
     row.append(name);
 
-    row.insertCell().textContent = materials.map(({ item, quantity, unitPrice, source }) =>
-      `${quantity} × ${item} · ${source} at ${formatPrice(unitPrice)} each`).join(", ");
+    const ingredientCell = row.insertCell();
+    for (const { item, quantity, unitPrice, source } of materials) {
+      const ingredient = document.createElement("div");
+      ingredient.className = "recipe-ingredient";
+      const selected = document.createElement("span");
+      selected.textContent = `${quantity} × ${item} · ${source} at ${formatPrice(unitPrice)} each`;
+      const buying = document.createElement("small");
+      buying.className = "recipe-buy-limit";
+      const quote = auctionQuotes[item];
+      const limit = recipePurchaseLimit(recipe, item);
+      const maximum = !limit ? "Unknown" : limit.maximum < 0 ? "None" : coins(limit.maximum);
+      buying.textContent = `AH snapshot ${formatPrice(quote?.auctionCopper ?? null)} · Max buy ${maximum} each`;
+      buying.title = "Maximum whole-copper unit price for a positive vendor profit with this recipe, " +
+        "holding other selected material costs fixed. Each limit applies separately.";
+      if (quote) buying.title += ` ${auctionQuoteLabel(quote)}`;
+      ingredient.append(selected, buying);
+      ingredientCell.append(ingredient);
+    }
     row.insertCell().textContent = formatPrice(cost);
     row.insertCell().textContent = payout === 0 ? "Can't be sold" : formatPrice(payout);
     row.insertCell().textContent = payout === 0 ? "—" : formatPrice(net);

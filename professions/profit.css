@@ -99,6 +99,8 @@
 .profit-table td:nth-child(2) { min-width: 220px; text-align: left; white-space: normal; }
 .profit-table thead th:nth-child(2) { text-align: left; }
 .profit-table .recipe-loss td:last-child { color: #f0aaa4; }
+.recipe-ingredient + .recipe-ingredient { margin-top: 10px; }
+.recipe-buy-limit { display: block; color: #c2bfd0; font-size: 12px; font-weight: 400; }
 
 .materials-reference { margin-top: 28px; }
 .materials-reference p { margin-bottom: 18px; color: #c2bfd0; }

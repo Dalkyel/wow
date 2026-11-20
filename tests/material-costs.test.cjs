@@ -76,6 +76,36 @@ test("material source controls update the table and inventory plan together", ()
     /Materials 3s 20c.*Profit 70c/);
 });
 
+test("recipe rows show auction quotes and their own strict purchase limits alongside selected costs", () => {
+  const { context, document } = page({ materials: {
+    "Thunder Lizard Tail": { auctionCopper: 170, purchaseCopper: 201, vendorCopper: null,
+      status: "available", scannedAt: "2026-11-19T02:25:14Z" },
+  } });
+  const cookingRow = () => document.querySelector("#cooking-recipes").children.find(row =>
+    row.children[0].children[0]?.textContent === "Crispy Lizard Tail");
+  let tail = cookingRow().children[1].children[0];
+  assert.match(tail.children[0].textContent, /bought at 2s 1c each/);
+  assert.equal(tail.children[1].textContent, "AH snapshot 1s 70c · Max buy 2s 9c each");
+  assert.match(tail.children[1].title, /Each limit applies separately/);
+  assert.equal(cookingRow().children[4].textContent, "9c");
+
+  vm.runInContext('materialValues.get("Hot Spices").source = "gathered"', context);
+  document.dispatchEvent({type:"materialvalueschange"});
+  tail = cookingRow().children[1].children[0];
+  assert.equal(tail.children[1].textContent, "AH snapshot 1s 70c · Max buy 2s 49c each");
+
+  vm.runInContext('materialValues.get("Hot Spices").source = "bought"; materialValues.get("Hot Spices").price = null', context);
+  document.querySelector("#cooking-profitable-only").checked = false;
+  document.dispatchEvent({type:"materialvalueschange"});
+  assert.equal(cookingRow().children[1].children[0].children[1].textContent,
+    "AH snapshot 1s 70c · Max buy Unknown each");
+
+  const boots = document.querySelector("#recipes").children.find(row =>
+    row.children[0].children[0]?.textContent === "Fine Leather Boots");
+  assert.equal(boots.children[1].children[0].children[1].textContent,
+    "AH snapshot Unknown · Max buy 24c each");
+});
+
 test("crafted material values include gathered or purchased ingredients recursively", () => {
   const { context } = page();
   vm.runInContext(`materialValues.set("Cured Light Hide", { source: "crafted", price: 172 });

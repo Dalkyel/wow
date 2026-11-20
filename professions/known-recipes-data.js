@@ -1,5 +1,13 @@
 const knownRecipes = [
   {
+    recipeId: "leatherworking:dark-leather-tunic",
+    name: "Dark Leather Tunic",
+    unitsPerCraft: 1,
+    vendorCopper: 689,
+    materials: [["Medium Leather", 6, 98], ["Fine Thread", 1, 100], ["Gray Dye", 1, 350]],
+    sourceUrl: "https://db.icy-veins.com/wow-forever/items/2317",
+  },
+  {
     recipeId: "leatherworking:hillmans-belt",
     name: "Hillman's Belt",
     unitsPerCraft: 1,
