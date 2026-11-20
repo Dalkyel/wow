@@ -4,11 +4,13 @@ An interactive timeline (D3) tracking figures, factions, places, and events for 
 
 ## Running locally
 
-This is a static site — no build step. Either open `index.html` directly in a browser, or serve it locally:
+No build step is needed. For automatic character updates, start the local server:
 
 ```sh
-npx serve .
+npm start
 ```
+
+Open [Orken's Journal](http://127.0.0.1:8788). Each page load requests the current character from Blizzard. Opening `index.html` directly or using a generic static server still supports the journal, but displays the saved character profile.
 
 ## Tests
 
@@ -17,6 +19,16 @@ Pure data/logic modules (the `*-core.js` files) are covered by Node's built-in t
 ```sh
 npm test
 ```
+
+## Character on the welcome screen
+
+The welcome screen shows the saved [Orken Stonewalker Armory](https://worldofwarcraft.blizzard.com/en-us/forever/us/armory/character/orken-stonewalker) profile immediately, then automatically replaces it with the latest response on each page load. The card includes level, specialization, guild, item level, health, mana, professions, companion, and Blizzard's character render. The snapshot also preserves equipped item names and IDs in `character-data.js`. Images are served by Blizzard; the saved text works offline.
+
+`npm start` serves the site and a fixed `/api/character` endpoint on loopback port 8788. The browser requests this endpoint without caching; the endpoint fetches Blizzard on every request, bypassing its cache when supported. Blizzard's own Armory update timing still applies. A failed refresh keeps the saved profile visible and labels it as saved. No credentials are required. The server is needed because Blizzard's Armory response does not grant cross-origin browser access.
+
+The optional `npm run character:refresh` command updates the offline fallback. If necessary, download the public page as HTML and run `npm run character:refresh -- /absolute/path/armory.html`. A failed fetch or parse leaves the existing snapshot intact.
+
+The source is JSON assigned to `characterProfileInitialState` inside the page's `character-profile-mount-initial-state` script. The refresh code parses JSON without executing the page's JavaScript. This is website data rather than a documented public API, so Blizzard layout changes can require parser updates. The page also links item and item-media resources under `partner-us.api.blizzard.net/GameDataService/v1/wow/` with `namespace=static-forever-us`; direct access to those partner endpoints has not been verified.
 
 ## Project layout
 

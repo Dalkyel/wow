@@ -29,6 +29,7 @@
     <div id="welcome-screen">
       <div class="welcome-title">Orken Stonewalker</div>
       <div class="welcome-sub">Orc Hunter · Explorer · Future Archaeologist</div>
+      <section id="character-profile" class="character-profile" aria-label="Orken's Armory profile" hidden></section>
       <p class="welcome-blurb">This is where I keep track of everything I've learned — the lore I've read, the quests I've done, and how it all connects. Pick a journal to open.</p>
       <div class="welcome-actions">
         <button id="btn-open-journal" class="clue-button welcome-cta" type="button">📖 My Journal</button>
@@ -116,6 +117,8 @@
     <div class="quest-body" id="stars-body"></div>
   </dialog>
 
+  <script src="character-data.js"></script>
+  <script src="character.js"></script>
   <script src="groups.js"></script>
   <script src="shared/eras.js"></script>
   <!-- Volume 0 data (in-game lore graph, not a book — see volume0/nodes.js) -->
