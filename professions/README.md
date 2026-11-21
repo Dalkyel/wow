@@ -6,9 +6,9 @@ Open the [Crafting Profit calculator](index.html) to plan vendor sales with the 
 
 ## Refresh auction prices
 
-The planner reads [Auction House's public API](https://auctionhouse.tk.gg/data/) directly in your browser when the page opens. The US Normal Horde market is `us-2-114`. It caches the tracked material quotes for one hour in browser storage and reuses them on repeat visits. The provider permits cross-origin requests and requires no key. Prices come from hourly auction snapshots.
+The planner reads [Auction House's public API](https://auctionhouse.tk.gg/data/) directly in your browser every time the page opens, so prices are always a fresh live fetch rather than a cached copy. The US Normal Horde market is `us-2-114`. The provider permits cross-origin requests and requires no key. Prices come from hourly auction snapshots.
 
-The page recalculates recipes, purchase limits, and vendor plans when quotes arrive. Manual price edits and material source selections are preserved during a request. A failed request uses the older browser cache or the bundled snapshot and labels that fallback. The displayed scan time identifies the age of the data.
+The page recalculates recipes, purchase limits, and vendor plans when quotes arrive. Manual price edits and material source selections are preserved during a request. A failed request falls back to the last successful fetch saved in browser storage, or the bundled snapshot, and labels that fallback. The displayed scan time identifies the age of the data.
 
 Bought materials use the cheaper of the auction minimum and a known vendor price. Gathered materials cost 0c and crafted inputs use their ingredient costs. Listed quantities cover all price levels, so a larger purchase may cost more than the minimum.
 

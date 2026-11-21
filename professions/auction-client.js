@@ -3,7 +3,6 @@ const auctionProvider = {
   url: "https://auctionhouse.tk.gg/api/m/us-2-114",
   marketUrl: "https://auctionhouse.tk.gg/m/us-2-114",
   cacheKey: "wow-auctionhouse-us-normal-horde-v1",
-  cacheMilliseconds: 60 * 60 * 1000,
 };
 
 function parseMarketSnapshot(data, definitions, now = Date.now()) {
@@ -75,10 +74,6 @@ function readAuctionCache(storage, definitions) {
 }
 
 async function loadAuctionPrices(definitions, { fetchImpl = fetch, storage, now = Date.now() } = {}) {
-  const cached = readAuctionCache(storage, definitions);
-  if (cached && now >= cached.fetchedAt && now - cached.fetchedAt < auctionProvider.cacheMilliseconds) {
-    return { snapshot: cached.snapshot, source: "cache" };
-  }
   try {
     const response = await fetchImpl(auctionProvider.url, {
       credentials: "omit", signal: AbortSignal.timeout(20000),
@@ -92,6 +87,7 @@ async function loadAuctionPrices(definitions, { fetchImpl = fetch, storage, now 
     }
     return { snapshot, source: "live" };
   } catch (error) {
+    const cached = readAuctionCache(storage, definitions);
     if (cached) return { snapshot: cached.snapshot, source: "stale", error: error.message };
     throw error;
   }

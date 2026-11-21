@@ -24,7 +24,6 @@ function setAuctionPriceState(state) {
     loading: "Loading live auction prices… Using saved prices while loading.",
     saved: "Using saved auction prices.",
     live: "Auction prices loaded.",
-    cache: "Using browser-cached auction prices (checked within the last hour).",
     stale: "Auction refresh failed. Using older browser-cached prices.",
     error: "Auction refresh failed. Using saved prices.",
   };

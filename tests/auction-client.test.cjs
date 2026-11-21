@@ -40,7 +40,7 @@ test("the client reads named minimum-price fields, validates the market, and kee
   assert.throws(() => context.parseMarketSnapshot(invalid, definitions, now), /Invalid price/);
 });
 
-test("repeated visits reuse one hour of cached quotes and refresh after expiry", async () => {
+test("every call fetches live prices instead of reusing a cached quote", async () => {
   const context = client();
   const cache = storage();
   let requests = 0;
@@ -51,9 +51,7 @@ test("repeated visits reuse one hour of cached quotes and refresh after expiry",
     return { ok: true, json: async () => market() };
   };
   assert.equal((await context.loadAuctionPrices(definitions, { fetchImpl, storage: cache, now })).source, "live");
-  assert.equal((await context.loadAuctionPrices(definitions, { fetchImpl, storage: cache, now: now + 3599999 })).source, "cache");
-  assert.equal(requests, 1);
-  assert.equal((await context.loadAuctionPrices(definitions, { fetchImpl, storage: cache, now: now + 3600000 })).source, "live");
+  assert.equal((await context.loadAuctionPrices(definitions, { fetchImpl, storage: cache, now: now + 1 })).source, "live");
   assert.equal(requests, 2);
 });
 
