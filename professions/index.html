@@ -50,7 +50,7 @@
             <tbody id="recipes"></tbody>
           </table>
         </div>
-        <p>Per-craft profit uses your selected material sources and prices. Max buy is per item for this recipe, changing one material price at a time. The plan also accounts for inventory limits and ingredient crafting steps.</p>
+        <p>Per-craft profit uses your selected material sources and prices. Max buy is the highest current per-item purchase ceiling across all known recipes using that material. It is the same in every recipe; check this recipe’s profit before crafting. Leather-and-hide side notes show both ways to profit: cheaper leather with the selected hide price, or cheaper hide with the selected leather price. Uncheck Profitable only to see these alternatives for recipes that currently lose money. The plan also accounts for inventory limits and ingredient crafting steps.</p>
       </section>
       <div class="profit-planner">
         <section aria-labelledby="inventory-title">
@@ -87,7 +87,7 @@
             <tbody id="cooking-recipes"></tbody>
           </table>
         </div>
-        <p>Per-craft profit uses your selected material sources and prices. Max buy is per item for this recipe, changing one material price at a time. The plan also accounts for the quantities you enter.</p>
+        <p>Per-craft profit uses your selected material sources and prices. Max buy is the highest current per-item purchase ceiling across all known recipes using that material. It is the same in every recipe; check this recipe’s profit before crafting. The plan also accounts for the quantities you enter.</p>
       </section>
       <div class="profit-planner">
         <section aria-labelledby="cooking-inventory-title">
@@ -124,7 +124,7 @@
             <tbody id="first-aid-recipes"></tbody>
           </table>
         </div>
-        <p>Per-craft profit uses your selected material sources and prices. Max buy is per item for this recipe, changing one material price at a time. The plan also accounts for the quantities you enter.</p>
+        <p>Per-craft profit uses your selected material sources and prices. Max buy is the highest current per-item purchase ceiling across all known recipes using that material. It is the same in every recipe; check this recipe’s profit before crafting. The plan also accounts for the quantities you enter.</p>
       </section>
       <div class="profit-planner">
         <section aria-labelledby="first-aid-inventory-title">
@@ -146,7 +146,7 @@
     <div id="materials" role="tabpanel" aria-labelledby="materials-tab" hidden>
       <section class="materials-reference" aria-labelledby="materials-title">
         <h2 id="materials-title">Materials for my known recipes</h2>
-        <p>Prices are per item. Max buy range shows the lowest and highest profitable purchase ceilings across your known recipes, keeping other selected costs fixed. Buying below the low end supports every recipe included in the range; the high end supports the recipe with the highest limit. Expand a comparison to see all purchases against one shared budget. Individual maximum prices cannot be combined. Unknown limits and recipes that cannot profit even with this material free are excluded.</p>
+        <p>Prices are per item. Max buy shows the highest profitable purchase ceiling across all known recipes using that material, keeping other selected costs fixed. For example, recipe ceilings of 30c and 45c give a shared max buy of 45c. The recipe ceiling range is shown underneath; only the recipe with the highest ceiling can profit at the maximum. Limits update when ingredient prices or sources change. Expand a comparison to see all purchases against one shared budget. Individual maximum prices cannot be combined. Unknown limits and recipes that cannot profit even with this material free are excluded.</p>
         <label class="material-search" for="material-search">Find material
           <input type="search" id="material-search" placeholder="Search material names" autocomplete="off">
         </label>
@@ -157,7 +157,7 @@
                 <th scope="col">Material</th>
                 <th scope="col">Vendor buy price</th>
                 <th scope="col">AH minimum buyout</th>
-                <th scope="col">Max buy range</th>
+                <th scope="col">Max buy / item</th>
                 <th scope="col">Recipes &amp; combined budgets</th>
               </tr>
             </thead>

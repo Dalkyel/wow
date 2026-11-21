@@ -34,6 +34,31 @@ function renderRecipeTable(table, recipes, profitableOnly = false) {
     if (recipe.sourceUrl) title.href = recipe.sourceUrl;
     title.textContent = recipe.name;
     name.append(title);
+    for (const leather of [...materialValues.keys()].filter(item => /\bLeather$/.test(item))) {
+      for (const hide of [...materialValues.keys()].filter(item => /\bHide$/.test(item))) {
+        for (const tradeoff of [recipePurchaseTradeoff(recipe, leather, hide),
+          recipePurchaseTradeoff(recipe, hide, leather)]) {
+          if (!tradeoff) continue;
+          const cheaper = tradeoff.leather;
+          const dearer = tradeoff.hide;
+          const note = document.createElement("aside");
+          note.className = "recipe-tradeoff";
+          const scenario = document.createElement("p");
+          scenario.textContent = `Buy ${tradeoff.leatherQuantity} × ${cheaper} at ${coins(tradeoff.maximumLeather)} each or less ` +
+            `to afford ${tradeoff.hideQuantity} × ${dearer} at ${coins(tradeoff.hidePrice)} each ` +
+            `and earn ${formatPrice(tradeoff.profit)} or more per craft.`;
+          const ratio = document.createElement("p");
+          const increase = tradeoff.extraHidePerCopperSaved;
+          ratio.textContent = `Every 1c less per ${cheaper} adds ${Number.isInteger(increase) ? coins(increase) : `${increase.toFixed(2)}c`} ` +
+            `to the allowance per ${dearer}. Other ingredients stay at ${formatPrice(tradeoff.otherCost)} per craft.`;
+          note.append(scenario, ratio);
+          note.title = "A hypothetical purchase of both materials, including ingredients of selected crafting steps. " +
+            "Holds the second material at its selected purchase price and uses current costs for all other ingredients. " +
+            "The recipe's displayed profit still uses your current selected sources and prices.";
+          name.append(note);
+        }
+      }
+    }
     row.append(name);
 
     const ingredientCell = row.insertCell();
@@ -45,13 +70,11 @@ function renderRecipeTable(table, recipes, profitableOnly = false) {
       const buying = document.createElement("small");
       buying.className = "recipe-buy-limit";
       const quote = auctionQuotes[item];
-      const limit = recipePurchaseLimit(recipe, item);
-      const maximum = !limit ? "Unknown" : limit.maximum < 0 ? "None" : coins(limit.maximum);
+      const maximum = materialMaximumBuyLabel(item);
       const bestBuy = bestMaterialPurchase(item);
       buying.textContent = `${bestBuy.source === "vendor" ? `Vendor ${formatPrice(bestBuy.price)}`
         : `AH snapshot ${formatPrice(quote?.auctionCopper ?? null)}`} · Max buy ${maximum} each`;
-      buying.title = "Maximum whole-copper unit price for a positive vendor profit with this recipe, " +
-        "holding other selected material costs fixed. Each limit applies separately.";
+      buying.title = materialMaximumBuyExplanation;
       if (quote) buying.title += ` ${auctionQuoteLabel(quote)}`;
       ingredient.append(selected, buying);
       ingredientCell.append(ingredient);

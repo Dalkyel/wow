@@ -44,3 +44,11 @@ The leveling guides supply prices for 42 of the 284 materials, enough to calcula
 4. Sort by `profit_copper_per_craft` descending once you have prices. The CSV files store values, so totals and rankings need to be recalculated after price edits.
 
 For example, Simple Poultice uses one Spider Ichor, one Mild Spices, and one Bottle of Dalaran Noir to produce three poultices. The guide prices put the material cost at 72 copper per craft, or 24 copper per poultice before selling fees.
+
+## Shared material max buy
+
+Max buy is the highest whole-copper purchase ceiling across all known recipes that use a material, with positive vendor profit and current selected costs for other ingredients. If two recipes allow 30c and 45c, the shared maximum is 45c everywhere that material appears. The Materials tab also shows the smallest and largest eligible recipe ceilings and the recipe supporting the maximum. Filters and inventory do not affect the shared limit. Live price updates, manual price edits, and source changes recalculate it.
+
+Individual recipe comparisons retain their own ceilings. A shared maximum only supports the recipe with that ceiling; check current recipe profit before crafting. Other ingredient costs must stay at their selected values, and individual maximum prices cannot all be combined. Unknown and negative ceilings are excluded; 0c is valid.
+
+Leather-and-hide recipes also include purchase tradeoff side notes. These show both directions: the highest whole-copper leather price when buying the hide at its selected purchase price, and the highest whole-copper hide price when buying leather at its selected purchase price. Other ingredient costs stay fixed and each scenario leaves positive profit. They show the quantities, achievable profit, and how each 1c saved on one material changes the allowance for the other. Both target materials are treated as purchases in the scenario, even if currently selected as gathered or crafted; other crafted ingredients follow selected crafting chains. Missing prices, unsupported vendor payouts, and scenarios impossible even with the discounted material free produce no note for that direction. Turn off Profitable only to see alternatives for recipes currently making a loss. Notes recalculate with price and source changes.

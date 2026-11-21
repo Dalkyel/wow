@@ -44,7 +44,7 @@ function appendRecipeComparison(cell, name, comparisons) {
   const table = document.createElement("table");
   const head = document.createElement("thead");
   const headings = document.createElement("tr");
-  for (const text of ["Recipe", "Max buy / item", "Profit / craft", "Combined purchase budget"]) {
+  for (const text of ["Recipe", "This recipe’s ceiling / item", "Profit / craft", "Combined purchase budget"]) {
     const heading = document.createElement("th");
     heading.scope = "col";
     heading.textContent = text;
@@ -159,10 +159,7 @@ function renderMaterialReference() {
     }).filter(comparison => comparison.quantity > 0)
       .sort((a, b) => (b.limit?.maximum ?? -Infinity) - (a.limit?.maximum ?? -Infinity) ||
         (b.limit?.breakEven ?? -Infinity) - (a.limit?.breakEven ?? -Infinity) || a.recipe.name.localeCompare(b.recipe.name));
-    const limits = comparisons.flatMap(comparison => comparison.limit ? [comparison.limit] : []);
-    const profitableLimits = limits.filter(limit => limit.maximum >= 0);
-    const best = profitableLimits[0];
-    const lowest = profitableLimits.at(-1);
+    const { limits, count, highest: best, lowest } = materialPurchaseRange(name);
     const row = materialReference.insertRow();
     const label = document.createElement("th");
     label.scope = "row";
@@ -189,10 +186,14 @@ function renderMaterialReference() {
     }
     const maximum = row.insertCell();
     if (!best) maximum.className = "material-price-unavailable";
-    maximum.textContent = best ? lowest.maximum === best.maximum ? coins(best.maximum)
-      : `${coins(lowest.maximum)} – ${coins(best.maximum)}` : limits.length ? "None" : "Unknown";
+    maximum.textContent = materialMaximumBuyLabel(name);
+    if (best && lowest.maximum !== best.maximum) {
+      const range = document.createElement("small");
+      range.textContent = `Recipe ceilings ${coins(lowest.maximum)} – ${coins(best.maximum)}`;
+      maximum.append(range);
+    }
     maximum.title = best ? `Recipe purchase ceilings, not a minimum purchase price. ` +
-      `At ${coins(lowest.maximum)} or less, all ${profitableLimits.length} recipes with a nonnegative ceiling can profit. ` +
+      `At ${coins(lowest.maximum)} or less, all ${count} recipes with a nonnegative ceiling can profit. ` +
       `The highest ceiling is ${coins(best.maximum)} with ${best.recipe.name}. ` +
       "Other selected costs stay fixed; unknown limits and recipes that cannot profit even with a free material are excluded."
       : limits.length ? "Other ingredient costs leave no profit even if this material is free" : "Other material prices are missing";

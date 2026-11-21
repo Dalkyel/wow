@@ -130,6 +130,64 @@ function recipePurchaseLimit(recipe, target) {
     quantity: total.quantity, otherCost: total.cost, payout: recipe.vendorCopper * recipe.unitsPerCraft };
 }
 
+const materialPurchaseRanges = new Map();
+document.addEventListener("materialvalueschange", () => materialPurchaseRanges.clear());
+
+function materialPurchaseRange(name) {
+  if (materialPurchaseRanges.has(name)) return materialPurchaseRanges.get(name);
+  const limits = allKnownRecipes.map(recipe => recipePurchaseLimit(recipe, name)).filter(Boolean);
+  const eligible = limits.filter(limit => limit.maximum >= 0)
+    .sort((a, b) => a.maximum - b.maximum || a.recipe.name.localeCompare(b.recipe.name));
+  const range = { lowest: eligible[0], highest: eligible.at(-1), count: eligible.length, limits };
+  materialPurchaseRanges.set(name, range);
+  return range;
+}
+
+function materialMaximumBuyLabel(name) {
+  const { highest, limits } = materialPurchaseRange(name);
+  return highest ? coins(highest.maximum) : limits.length ? "None" : "Unknown";
+}
+
+const materialMaximumBuyExplanation = "Highest positive-profit purchase ceiling across all known recipes, " +
+  "using current selected costs for other ingredients. The same material has the same max buy in every recipe. " +
+  "At this price, the recipe with the highest ceiling can profit; other recipes may lose money. " +
+  "Each ingredient limit applies separately.";
+
+function recipePurchaseTradeoff(recipe, leather, hide) {
+  const hidePrice = materialValues.get(hide)?.price;
+  if (!(recipe.vendorCopper > 0) || hidePrice == null) return null;
+  function ingredient(name, chain = new Set()) {
+    if (name === leather) return { leather: 1, hide: 0, cost: 0 };
+    if (name === hide) return { leather: 0, hide: 1, cost: 0 };
+    if (chain.has(name)) return null;
+    if (materialValues.get(name)?.source !== "crafted") {
+      const cost = materialUnitCost(name);
+      return cost == null ? null : { leather: 0, hide: 0, cost };
+    }
+    const supplier = materialSuppliers.get(name);
+    return supplier ? combine(supplier.materials, new Set([...chain, name]), supplier.unitsPerCraft) : null;
+  }
+  function combine(materials, chain = new Set(), yieldCount = 1) {
+    const total = { leather: 0, hide: 0, cost: 0 };
+    for (const [name, quantity] of materials) {
+      const part = ingredient(name, chain);
+      if (!part) return null;
+      for (const key of ["leather", "hide", "cost"]) total[key] += part[key] * quantity / yieldCount;
+    }
+    return total;
+  }
+  const parts = combine(recipe.materials);
+  if (!parts || !parts.leather || !parts.hide) return null;
+  const payout = recipe.vendorCopper * recipe.unitsPerCraft;
+  const budget = payout - parts.cost;
+  const maximumLeather = Math.ceil((budget - parts.hide * hidePrice) / parts.leather) - 1;
+  if (maximumLeather < 0) return null;
+  return { leather, hide, leatherQuantity: parts.leather, hideQuantity: parts.hide,
+    hidePrice, maximumLeather, otherCost: parts.cost, budget,
+    profit: budget - parts.leather * maximumLeather - parts.hide * hidePrice,
+    extraHidePerCopperSaved: parts.leather / parts.hide };
+}
+
 function renderMaterialValues(container, recipes) {
   const names = new Set();
   function include(name) {
@@ -190,19 +248,19 @@ function renderMaterialValues(container, recipes) {
         link.textContent = "Price source";
         quoteInfo.append(message, link);
       }
-      const limits = recipes.map(recipe => recipePurchaseLimit(recipe, name))
-        .filter(Boolean).sort((a, b) => b.maximum - a.maximum || b.breakEven - a.breakEven);
-      const best = limits[0];
+      const range = materialPurchaseRange(name);
+      const best = range.highest;
       if (!best) {
-        limit.textContent = "Set the other ingredient costs to calculate a profitable purchase price.";
-      } else if (best.maximum < 0) {
-        limit.textContent = "Other ingredient costs leave no vendor profit, even if this material is free.";
+        limit.textContent = range.limits.length
+          ? "Other ingredient costs leave no vendor profit, even if this material is free."
+          : "Set the other ingredient costs to calculate a profitable purchase price.";
       } else {
         const breakEven = Number.isInteger(best.breakEven) ? coins(best.breakEven)
           : `${best.breakEven.toFixed(2)}c`;
         limit.textContent = `Buy at ${coins(best.maximum)} each or less for profit with ${best.recipe.name}. ` +
           `Break-even at ${breakEven} each, using your selected costs for other ingredients.`;
       }
+      limit.title = materialMaximumBuyExplanation;
     };
     const update = (manual = false) => {
       const amount = price.valueAsNumber;

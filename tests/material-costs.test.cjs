@@ -76,7 +76,7 @@ test("material source controls update the table and inventory plan together", ()
     /Materials 3s 20c.*Profit 70c/);
 });
 
-test("recipe rows show auction quotes and their own strict purchase limits alongside selected costs", () => {
+test("recipe rows show auction quotes and the shared highest purchase limit alongside selected costs", () => {
   const { context, document } = page({ materials: {
     "Thunder Lizard Tail": { auctionCopper: 170, purchaseCopper: 201, vendorCopper: null,
       status: "available", scannedAt: "2026-11-19T02:25:14Z" },
@@ -86,7 +86,7 @@ test("recipe rows show auction quotes and their own strict purchase limits along
   let tail = cookingRow().children[1].children[0];
   assert.match(tail.children[0].textContent, /bought at 2s 1c each/);
   assert.equal(tail.children[1].textContent, "AH snapshot 1s 70c · Max buy 2s 9c each");
-  assert.match(tail.children[1].title, /Each limit applies separately/);
+  assert.match(tail.children[1].title, /Each ingredient limit applies separately/);
   assert.equal(cookingRow().children[4].textContent, "9c");
 
   vm.runInContext('materialValues.get("Hot Spices").source = "gathered"', context);
@@ -103,7 +103,7 @@ test("recipe rows show auction quotes and their own strict purchase limits along
   const boots = document.querySelector("#recipes").children.find(row =>
     row.children[0].children[0]?.textContent === "Fine Leather Boots");
   assert.equal(boots.children[1].children[0].children[1].textContent,
-    "AH snapshot Unknown · Max buy 24c each");
+    "AH snapshot Unknown · Max buy 32c each");
 });
 
 test("cheaper vendor supplies price recipes, hide limits and shared budgets, while cheaper AH quotes can replace them", () => {
@@ -340,7 +340,8 @@ test("a shared material shows every known recipe's distinct quantity, purchase l
   document.dispatchEvent({ type: "materialvalueschange" });
   const materialRow = () => document.querySelector("#materials-reference").children.find(row =>
     row.children[0].textContent === "Wool Cloth");
-  assert.equal(materialRow().children[3].textContent, "27c – 28c");
+  assert.equal(materialRow().children[3].textContent, "28c");
+  assert.equal(materialRow().children[3].children[0].textContent, "Recipe ceilings 27c – 28c");
   assert.equal(materialRow().children[4].children[0].textContent, "Heavy Wool Bandage");
   const details = materialRow().children[4].children[1];
   const filter = details.children[1].children[0].children[0];
@@ -384,7 +385,8 @@ test("material ranges include zero ceilings, exclude unknown and impossible limi
   document.dispatchEvent({type:"materialvalueschange"});
   const range = () => document.querySelector("#materials-reference").children.find(row =>
     row.children[0].textContent === "Test Material").children[3];
-  assert.equal(range().textContent, "0c – 10c");
+  assert.equal(range().textContent, "10c");
+  assert.equal(range().children[0].textContent, "Recipe ceilings 0c – 10c");
   assert.match(range().title, /all 2 recipes/);
   vm.runInContext('materialValues.get("Test Other").price = 20', context);
   document.dispatchEvent({type:"materialvalueschange"});
@@ -392,6 +394,138 @@ test("material ranges include zero ceilings, exclude unknown and impossible limi
   vm.runInContext('materialValues.get("Test Other").price = 21', context);
   document.dispatchEvent({type:"materialvalueschange"});
   assert.equal(range().textContent, "None");
+});
+
+test("30c and 45c recipe ceilings give one shared 45c maximum that updates with live ingredient prices", () => {
+  const { context, document } = page();
+  vm.runInContext(`
+    materialValues.set("Shared Leather", { source: "bought", price: 5, manual: false });
+    materialValues.set("Shared Thread", { source: "bought", price: 10, manual: false });
+    const examples = [
+      { name: "Thirty recipe", vendorCopper: 41, unitsPerCraft: 1,
+        materials: [["Shared Leather", 1, 5], ["Shared Thread", 1, 10]] },
+      { name: "Forty-five recipe", vendorCopper: 56, unitsPerCraft: 1,
+        materials: [["Shared Leather", 1, 5], ["Shared Thread", 1, 10]] },
+    ];
+    knownRecipes.push(...examples);
+    allKnownRecipes.push(...examples);
+  `, context);
+  document.dispatchEvent({ type: "materialvalueschange" });
+  const material = () => document.querySelector("#materials-reference").children.find(row =>
+    row.children[0].textContent === "Shared Leather");
+  function assertSharedMaximum(expected) {
+    assert.equal(material().children[3].textContent, expected);
+    const recipes = document.querySelector("#recipes").children.filter(row =>
+      ["Thirty recipe", "Forty-five recipe"].includes(row.children[0].children[0]?.textContent));
+    assert.equal(recipes.length, 2);
+    for (const recipe of recipes) {
+      assert.match(recipe.children[1].children[0].children[1].textContent,
+        new RegExp(`Max buy ${expected} each`));
+    }
+  }
+  assertSharedMaximum("45c");
+  assert.equal(material().children[3].children[0].textContent, "Recipe ceilings 30c – 45c");
+  assert.equal(material().children[4].children[0].textContent, "Forty-five recipe");
+  vm.runInContext(`applyAuctionPrices({ materials: {
+    "Shared Thread": { auctionCopper: 20, purchaseCopper: 20, vendorCopper: null, status: "available" }
+  } }, "live")`, context);
+  assertSharedMaximum("35c");
+  assert.equal(material().children[3].children[0].textContent, "Recipe ceilings 20c – 35c");
+  vm.runInContext('materialValues.get("Shared Thread").source = "gathered"', context);
+  document.dispatchEvent({ type: "materialvalueschange" });
+  assertSharedMaximum("55c");
+  const filter = document.querySelector("#leatherworking-profitable-only");
+  filter.checked = false;
+  filter.listeners.change();
+  assertSharedMaximum("55c");
+});
+
+test("leather-and-hide notes solve the combined purchase budget and update without changing selected prices", () => {
+  const { context, document } = page({ materials: {
+    "Light Leather": { auctionCopper: 36, purchaseCopper: 36, vendorCopper: null, status: "available" },
+    "Cured Light Hide": { auctionCopper: 152, purchaseCopper: 152, vendorCopper: null, status: "available" },
+    "Fine Thread": { auctionCopper: 150, purchaseCopper: 150, vendorCopper: 100, status: "available" },
+  } });
+  const calculate = () => JSON.parse(vm.runInContext(`JSON.stringify(recipePurchaseTradeoff(
+    knownRecipes.find(r => r.name === "Light Leather Pants"), "Light Leather", "Cured Light Hide"))`, context));
+  const scenario = calculate();
+  assert.equal(scenario.maximumLeather, 34);
+  assert.equal(scenario.profit, 7);
+  assert.equal(scenario.otherCost, 100);
+  assert.equal(scenario.extraHidePerCopperSaved, 10);
+  assert.equal(vm.runInContext('materialUnitCost("Light Leather")', context), 36);
+  const filter = document.querySelector("#leatherworking-profitable-only");
+  filter.checked = false;
+  filter.listeners.change();
+  const note = () => document.querySelector("#recipes").children.find(row =>
+    row.children[0].children[0]?.textContent === "Light Leather Pants").children[0].children.find(child =>
+      child.className === "recipe-tradeoff");
+  assert.match(note().children[0].textContent, /10 × Light Leather at 34c each or less.*1 × Cured Light Hide at 1s 52c each.*7c or more/);
+  assert.match(note().children[1].textContent, /Every 1c less.*adds 10c.*1s 0c per craft/);
+  vm.runInContext('materialValues.get("Cured Light Hide").price = 198', context);
+  document.dispatchEvent({ type: "materialvalueschange" });
+  assert.equal(calculate().maximumLeather, 30);
+  assert.equal(calculate().profit, 1);
+  assert.match(note().children[0].textContent, /at 30c each or less.*at 1s 98c each.*1c or more/);
+  vm.runInContext('materialValues.get("Cured Light Hide").price = 199', context);
+  document.dispatchEvent({ type: "materialvalueschange" });
+  assert.equal(calculate().maximumLeather, 29); // 30c would only break even.
+});
+
+test("tradeoffs respect multiple hides, selected crafting chains, and unsupported scenarios", () => {
+  const { context } = page();
+  vm.runInContext('materialValues.get("Cured Light Hide").price = 100', context);
+  const tradeoff = recipe => JSON.parse(vm.runInContext(`JSON.stringify(recipePurchaseTradeoff(
+    knownRecipes.find(r => r.name === ${JSON.stringify(recipe)}), "Light Leather", "Cured Light Hide"))`, context));
+  const tunic = tradeoff("Fine Leather Tunic");
+  assert.equal(tunic.leatherQuantity, 6);
+  assert.equal(tunic.hideQuantity, 3);
+  assert.equal(tunic.maximumLeather, 20);
+  assert.equal(tunic.profit, 1);
+  assert.equal(tunic.extraHidePerCopperSaved, 2);
+  vm.runInContext('materialValues.get("Fine Leather Tunic").source = "crafted"', context);
+  const vest = tradeoff("Hillman's Leather Vest");
+  assert.equal(vest.leatherQuantity, 6);
+  assert.equal(vest.hideQuantity, 5);
+  assert.equal(vest.otherCost, 60);
+  assert.equal(vest.maximumLeather, 27);
+  assert.equal(vest.profit, 1);
+  assert.equal(tradeoff("Fine Leather Boots"), null); // No hide in this recipe.
+  vm.runInContext('materialValues.get("Cured Light Hide").price = 500', context);
+  assert.equal(tradeoff("Light Leather Pants"), null); // Free leather still cannot help.
+  vm.runInContext('materialValues.get("Cured Light Hide").price = null', context);
+  assert.equal(tradeoff("Fine Leather Tunic"), null);
+  vm.runInContext('materialValues.get("Cured Light Hide").price = 100; materialValues.get("Fine Thread").price = null', context);
+  assert.equal(tradeoff("Light Leather Pants"), null);
+});
+
+test("reverse side notes price the hide against current leather and remain available when the other direction is impossible", () => {
+  const { context, document } = page({ materials: {
+    "Light Leather": { auctionCopper: 36, purchaseCopper: 36, vendorCopper: null, status: "available" },
+    "Cured Light Hide": { auctionCopper: 152, purchaseCopper: 152, vendorCopper: null, status: "available" },
+    "Fine Thread": { auctionCopper: 150, purchaseCopper: 150, vendorCopper: 100, status: "available" },
+  } });
+  const filter = document.querySelector("#leatherworking-profitable-only");
+  filter.checked = false;
+  filter.listeners.change();
+  const notes = () => document.querySelector("#recipes").children.find(row =>
+    row.children[0].children[0]?.textContent === "Light Leather Pants").children[0].children
+    .filter(child => child.className === "recipe-tradeoff");
+  const reverse = () => JSON.parse(vm.runInContext(`JSON.stringify(recipePurchaseTradeoff(
+    knownRecipes.find(r => r.name === "Light Leather Pants"), "Cured Light Hide", "Light Leather"))`, context));
+  assert.equal(notes().length, 2);
+  assert.match(notes()[1].children[0].textContent, /1 × Cured Light Hide at 1s 38c each or less.*10 × Light Leather at 36c each.*1c or more/);
+  assert.equal(reverse().maximumLeather, 138);
+  assert.equal(reverse().profit, 1);
+  assert.equal(reverse().extraHidePerCopperSaved, 0.1);
+  vm.runInContext('materialValues.get("Light Leather").price = 30', context);
+  document.dispatchEvent({ type: "materialvalueschange" });
+  assert.equal(reverse().maximumLeather, 198);
+  assert.match(notes()[1].children[0].textContent, /Hide at 1s 98c each or less.*Leather at 30c each/);
+  vm.runInContext('materialValues.get("Cured Light Hide").price = 500', context);
+  document.dispatchEvent({ type: "materialvalueschange" });
+  assert.equal(notes().length, 1);
+  assert.match(notes()[0].children[0].textContent, /Buy 1 × Cured Light Hide at 1s 98c/);
 });
 
 test("a single-recipe material shows one shared purchase budget for all quantities and crafted ingredients", () => {
@@ -437,7 +571,8 @@ test("the highest purchase limit can come from a recipe with a lower profit per 
   document.dispatchEvent({ type: "materialvalueschange" });
   const row = document.querySelector("#materials-reference").children.find(row =>
     row.children[0].textContent === "Light Leather");
-  assert.equal(row.children[3].textContent, "1c – 24c");
+  assert.equal(row.children[3].textContent, "24c");
+  assert.equal(row.children[3].children[0].textContent, "Recipe ceilings 1c – 24c");
   assert.equal(row.children[4].children[0].textContent, "Fine Leather Boots");
   const comparisons = row.children[4].children[1].children[2].children[0].children[1].children;
   const pants = comparisons.find(row => row.children[0].children[0].textContent === "Rugged Leather Pants");

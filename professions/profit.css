@@ -101,6 +101,8 @@
 .profit-table .recipe-loss td:last-child { color: #f0aaa4; }
 .recipe-ingredient + .recipe-ingredient { margin-top: 10px; }
 .recipe-buy-limit { display: block; color: #c2bfd0; font-size: 12px; font-weight: 400; }
+.recipe-tradeoff { margin-top: 10px; max-width: 320px; padding: 10px 12px; border-left: 2px solid var(--gold); background: #c9933a0d; color: #e0d3b5; white-space: normal; font-size: 13px; font-weight: 400; line-height: 1.5; }
+.recipe-tradeoff p + p { margin-top: 6px; color: #c2bfd0; }
 
 .materials-reference { margin-top: 28px; }
 .material-best-buy { display: block; color: #c2bfd0; font-size: 12px; font-weight: 400; }
