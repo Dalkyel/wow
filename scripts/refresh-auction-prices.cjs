@@ -42,8 +42,9 @@ function parseAuctionPage(html, material) {
     auctionCopper: price,
     quantity: available ? row.quantity : 0,
     vendorCopper: material.vendorCopper ?? null,
-    purchaseCopper: price === null ? material.vendorCopper ?? null
-      : Math.min(price, material.vendorCopper ?? Infinity),
+    // A vendor-sold reagent's price never truly moves; an auction ask below it reflects one
+    // fleeting undercut listing, not a reliably buyable price. Always prefer the vendor.
+    purchaseCopper: material.vendorCopper ?? price,
     status: available ? "available" : "unlisted",
     scannedAt,
     sourceUrl: itemUrl(material),
@@ -73,11 +74,11 @@ async function refreshPrices(materials, previous = {}, readPage = fetchPage, rep
         entries[material.name] = parseAuctionPage(await readPage(itemUrl(material)), material);
       } catch (error) {
         const older = previous[material.name]?.itemId === material.itemId ? previous[material.name] : undefined;
-        const purchase = Math.min(older?.auctionCopper ?? Infinity, material.vendorCopper ?? Infinity);
+        const purchase = material.vendorCopper ?? older?.auctionCopper ?? null;
         entries[material.name] = { ...older, name: material.name, itemId: material.itemId,
           vendorCopper: material.vendorCopper ?? null,
           auctionCopper: older?.auctionCopper ?? null,
-          purchaseCopper: Number.isFinite(purchase) ? purchase : null,
+          purchaseCopper: purchase,
           sourceUrl: itemUrl(material), status: "error", error: error.message };
       }
       report(entries[material.name]);

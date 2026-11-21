@@ -33,8 +33,10 @@ function parseMarketSnapshot(data, definitions, now = Date.now()) {
       itemId: definition.itemId,
       auctionCopper,
       vendorCopper,
-      purchaseCopper: auctionCopper === null ? vendorCopper
-        : Math.min(auctionCopper, vendorCopper ?? Infinity),
+      // A vendor-sold reagent's price never truly moves; an auction "ask" briefly below it
+      // reflects one fleeting undercut listing, not a reliably buyable price. Always prefer
+      // the vendor when one exists.
+      purchaseCopper: vendorCopper !== null ? vendorCopper : auctionCopper,
       quantity,
       status: auctionCopper === null ? "unlisted" : "available",
       scannedAt: new Date(data.t).toISOString(),
@@ -61,8 +63,7 @@ function readAuctionCache(storage, definitions) {
           (record.purchaseCopper !== null && (!Number.isSafeInteger(record.purchaseCopper) || record.purchaseCopper < 0)) ||
           (record.auctionCopper !== null && (!Number.isSafeInteger(record.auctionCopper) || record.auctionCopper <= 0)) ||
           !Number.isFinite(Date.parse(record.scannedAt))) return null;
-      const expectedPurchase = record.auctionCopper === null ? record.vendorCopper
-        : Math.min(record.auctionCopper, record.vendorCopper ?? Infinity);
+      const expectedPurchase = record.vendorCopper !== null ? record.vendorCopper : record.auctionCopper;
       if (record.purchaseCopper !== expectedPurchase ||
           (record.status === "available" && (record.auctionCopper === null || !record.quantity)) ||
           (record.status === "unlisted" && record.auctionCopper !== null)) return null;

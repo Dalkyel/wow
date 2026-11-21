@@ -106,7 +106,7 @@ test("recipe rows show auction quotes and the shared highest purchase limit alon
     "AH snapshot Unknown · Max buy 32c each");
 });
 
-test("cheaper vendor supplies price recipes, hide limits and shared budgets, while cheaper AH quotes can replace them", () => {
+test("a vendor-sold material always prices recipes and hide limits, even when the AH quote is cheaper", () => {
   const snapshot = {materials:{
     "Fine Thread": {auctionCopper:150,purchaseCopper:150,vendorCopper:100,status:"available"},
   }};
@@ -131,8 +131,8 @@ test("cheaper vendor supplies price recipes, hide limits and shared budgets, whi
   assert.ok(pants.children[3].children.some(child=>child.textContent==="1 × Fine Thread at 1s 0c each (vendor)"));
   context.incoming={materials:{"Fine Thread":{auctionCopper:80,purchaseCopper:80,vendorCopper:100,status:"available"}}};
   vm.runInContext('applyAuctionPrices(incoming,"live")',context);
-  assert.equal(recipe().children[2].textContent,"3s 10c");
-  assert.equal(thread().children[0].children[0].textContent,"Best buy: AH snapshot 80c each");
+  assert.equal(recipe().children[2].textContent,"3s 30c");
+  assert.equal(thread().children[0].children[0].textContent,"Best buy: vendor 1s 0c each");
   vm.runInContext('materialValues.get("Fine Thread").manual=true; materialValues.get("Fine Thread").price=200; incoming.materials["Fine Thread"].auctionCopper=150; incoming.materials["Fine Thread"].purchaseCopper=150; applyAuctionPrices(incoming,"live")',context);
   assert.equal(vm.runInContext('materialUnitCost("Fine Thread")',context),200);
   assert.match(recipe().children[1].children[2].children[0].textContent,/manual purchase at 2s 0c/);

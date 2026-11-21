@@ -38,6 +38,10 @@ test("the client reads named minimum-price fields, validates the market, and kee
   assert.throws(() => context.parseMarketSnapshot(wrong, definitions, now), /Unexpected auction market/);
   const invalid = market(); invalid.items[0].o[2] = -10;
   assert.throws(() => context.parseMarketSnapshot(invalid, definitions, now), /Invalid price/);
+  const dearVendor = [{ name: "Hot Spices", itemId: 2692, vendorCopper: 300 }];
+  const dear = context.parseMarketSnapshot(market(), dearVendor, now).materials["Hot Spices"];
+  assert.equal(dear.auctionCopper, 49);
+  assert.equal(dear.purchaseCopper, 300);
 });
 
 test("every call fetches live prices instead of reusing a cached quote", async () => {

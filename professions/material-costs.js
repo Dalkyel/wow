@@ -4,9 +4,8 @@ const auctionQuotes = typeof auctionPriceSnapshot === "undefined" ? {} : { ...au
 let auctionPriceState = { source: "saved",
   snapshot: typeof auctionPriceSnapshot === "undefined" ? null : auctionPriceSnapshot };
 function defaultPurchasePrice(quote, fallback = null) {
-  const price = quote ? quote.purchaseCopper : fallback;
-  return quote?.vendorCopper == null ? price
-    : price == null ? quote.vendorCopper : Math.min(price, quote.vendorCopper);
+  if (quote?.vendorCopper != null) return quote.vendorCopper;
+  return quote ? quote.purchaseCopper : fallback;
 }
 const materialValues = new Map(allKnownRecipes.flatMap(recipe => recipe.materials)
   .map(([name, , price]) => [name, { source: "bought",
@@ -58,10 +57,9 @@ function auctionQuoteLabel(quote) {
 
 function bestMaterialPurchase(name) {
   const quote = auctionQuotes[name];
-  if (quote?.vendorCopper != null &&
-      (quote.auctionCopper == null || quote.vendorCopper <= quote.auctionCopper)) {
-    return { source: "vendor", price: quote.vendorCopper };
-  }
+  // A vendor-sold reagent's price never truly moves; an auction "ask" below it reflects one
+  // fleeting undercut listing, not a reliably buyable price. Always prefer the vendor.
+  if (quote?.vendorCopper != null) return { source: "vendor", price: quote.vendorCopper };
   if (quote?.auctionCopper != null) return { source: "AH snapshot", price: quote.auctionCopper };
   return { source: "purchase", price: materialValues.get(name)?.price ?? null };
 }

@@ -32,6 +32,13 @@ test("a cheaper known vendor price is retained alongside the auction quote", () 
   assert.equal(quote.purchaseCopper, 40);
 });
 
+test("a known vendor price is used even when the auction quote is momentarily cheaper", () => {
+  const spice = { name: "Hot Spices", itemId: 2692, vendorCopper: 300 };
+  const quote = parseAuctionPage(fixture(spice), spice);
+  assert.equal(quote.auctionCopper, 210);
+  assert.equal(quote.purchaseCopper, 300);
+});
+
 test("unlisted materials have an unknown auction cost instead of a zero or previous buyout", () => {
   const quote = parseAuctionPage(fixture(tail, {
     v2: { row: { min_buyout: 210, quantity: 0, in_latest_scan: false } },
