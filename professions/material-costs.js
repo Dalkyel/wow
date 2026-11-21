@@ -153,6 +153,22 @@ const materialMaximumBuyExplanation = "Highest positive-profit purchase ceiling 
   "At this price, the recipe with the highest ceiling can profit; other recipes may lose money. " +
   "Each ingredient limit applies separately.";
 
+// A recipe's own materials, plus the materials of any ingredient currently selected as "crafted",
+// expanded recursively. Mirrors the chain recipePurchaseTradeoff and materialUnitCost already follow,
+// so every pair tried here is one that function can actually resolve a tradeoff for.
+function recipeIngredientNames(recipe, chain = new Set()) {
+  const names = new Set();
+  for (const [name] of recipe.materials) {
+    if (chain.has(name)) continue;
+    names.add(name);
+    const supplier = materialSuppliers.get(name);
+    if (supplier && materialValues.get(name)?.source === "crafted") {
+      recipeIngredientNames(supplier, new Set([...chain, name])).forEach(sub => names.add(sub));
+    }
+  }
+  return names;
+}
+
 function recipePurchaseTradeoff(recipe, leather, hide) {
   const hidePrice = materialValues.get(hide)?.price;
   if (!(recipe.vendorCopper > 0) || hidePrice == null) return null;

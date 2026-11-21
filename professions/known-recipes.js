@@ -34,10 +34,19 @@ function renderRecipeTable(table, recipes, profitableOnly = false) {
     if (recipe.sourceUrl) title.href = recipe.sourceUrl;
     title.textContent = recipe.name;
     name.append(title);
-    for (const leather of [...materialValues.keys()].filter(item => /\bLeather$/.test(item))) {
-      for (const hide of [...materialValues.keys()].filter(item => /\bHide$/.test(item))) {
-        for (const tradeoff of [recipePurchaseTradeoff(recipe, leather, hide),
-          recipePurchaseTradeoff(recipe, hide, leather)]) {
+    // A material with a known vendor price has an effectively fixed cost: a vendor is always
+    // there to undercut a pricier auction listing, and outbidding the vendor price is never
+    // worthwhile. Solving for "how high could this go" is only informative for a material whose
+    // real purchase price can actually move, so skip offering a fixed-vendor-price material as
+    // the side being solved for (it can still anchor the other side of the tradeoff).
+    const hasVendorPrice = name => auctionQuotes[name]?.vendorCopper != null;
+    const ingredientNames = [...recipeIngredientNames(recipe)];
+    for (let a = 0; a < ingredientNames.length; a++) {
+      for (let b = a + 1; b < ingredientNames.length; b++) {
+        for (const tradeoff of [
+          hasVendorPrice(ingredientNames[a]) ? null : recipePurchaseTradeoff(recipe, ingredientNames[a], ingredientNames[b]),
+          hasVendorPrice(ingredientNames[b]) ? null : recipePurchaseTradeoff(recipe, ingredientNames[b], ingredientNames[a]),
+        ]) {
           if (!tradeoff) continue;
           const cheaper = tradeoff.leather;
           const dearer = tradeoff.hide;

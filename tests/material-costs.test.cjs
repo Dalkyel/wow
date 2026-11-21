@@ -472,6 +472,25 @@ test("leather-and-hide notes solve the combined purchase budget and update witho
   assert.equal(calculate().maximumLeather, 29); // 30c would only break even.
 });
 
+test("a material with a known vendor price is never offered as the one being solved for", () => {
+  const { document } = page({ materials: {
+    "Light Leather": { auctionCopper: 36, purchaseCopper: 36, vendorCopper: null, status: "available" },
+    "Cured Light Hide": { auctionCopper: 152, purchaseCopper: 152, vendorCopper: null, status: "available" },
+    "Fine Thread": { auctionCopper: 150, purchaseCopper: 150, vendorCopper: 100, status: "available" },
+  } });
+  const filter = document.querySelector("#leatherworking-profitable-only");
+  filter.checked = false;
+  filter.listeners.change();
+  const notes = document.querySelector("#recipes").children.find(row =>
+    row.children[0].children[0]?.textContent === "Light Leather Pants").children[0].children
+    .filter(child => child.className === "recipe-tradeoff");
+  assert.ok(notes.length > 0);
+  assert.ok(notes.every(note => !/^Buy \d+ × Fine Thread/.test(note.children[0].textContent)),
+    "Fine Thread has a fixed 100c vendor price; a ceiling solved for it is never actionable");
+  assert.ok(notes.some(note => /to afford \d+ × Fine Thread/.test(note.children[0].textContent)),
+    "Fine Thread should still anchor the other side of a tradeoff");
+});
+
 test("tradeoffs respect multiple hides, selected crafting chains, and unsupported scenarios", () => {
   const { context } = page();
   vm.runInContext('materialValues.get("Cured Light Hide").price = 100', context);
@@ -513,7 +532,9 @@ test("reverse side notes price the hide against current leather and remain avail
     .filter(child => child.className === "recipe-tradeoff");
   const reverse = () => JSON.parse(vm.runInContext(`JSON.stringify(recipePurchaseTradeoff(
     knownRecipes.find(r => r.name === "Light Leather Pants"), "Cured Light Hide", "Light Leather"))`, context));
-  assert.equal(notes().length, 2);
+  // Every pair of this recipe's three priced ingredients, both directions (6), minus the two
+  // directions that would solve for Fine Thread's ceiling — it has a fixed vendor price (100c).
+  assert.equal(notes().length, 4);
   assert.match(notes()[1].children[0].textContent, /1 × Cured Light Hide at 1s 38c each or less.*10 × Light Leather at 36c each.*1c or more/);
   assert.equal(reverse().maximumLeather, 138);
   assert.equal(reverse().profit, 1);
@@ -524,7 +545,7 @@ test("reverse side notes price the hide against current leather and remain avail
   assert.match(notes()[1].children[0].textContent, /Hide at 1s 98c each or less.*Leather at 30c each/);
   vm.runInContext('materialValues.get("Cured Light Hide").price = 500', context);
   document.dispatchEvent({ type: "materialvalueschange" });
-  assert.equal(notes().length, 1);
+  assert.equal(notes().length, 2); // Only directions that solve for Cured Light Hide's own ceiling survive its 500c price.
   assert.match(notes()[0].children[0].textContent, /Buy 1 × Cured Light Hide at 1s 98c/);
 });
 
