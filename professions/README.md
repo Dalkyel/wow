@@ -16,13 +16,13 @@ For an offline fallback snapshot, ask Codex to use [refresh-auction-prices](../.
 
 ## Sources
 
-Imported from the WoWTBC.GG **All Recipes** tables on November 17, 2026. Each ingredient quantity is for one craft. A recipe's yield defaults to one unless the guide shows a different quantity.
+This project started from a bulk import of the WoWTBC.GG **All Recipes** tables on November 17, 2026, but [known-recipes-data.js](known-recipes-data.js) now holds only the curated **known recipes** list — recipes actually added one at a time via the [add-crafting-recipe skill](../.claude/skills/add-crafting-recipe/SKILL.md), not every recipe in a profession. Each ingredient quantity is for one craft. A recipe's yield defaults to one unless its source shows a different quantity.
 
-| Profession | Recipes | Guide |
+| Profession | Recipes tracked | Guide |
 | --- | ---: | --- |
-| Leatherworking | 511 | [WoWTBC.GG Leatherworking](https://wowtbc.gg/warcraftforever/professions/leatherworking/) |
-| Cooking | 123 | [WoWTBC.GG Cooking](https://wowtbc.gg/warcraftforever/professions/cooking/) |
-| First Aid | 32 | [WoWTBC.GG First Aid](https://wowtbc.gg/warcraftforever/professions/first-aid/) |
+| Leatherworking | 50 | [WoWTBC.GG Leatherworking](https://wowtbc.gg/warcraftforever/professions/leatherworking/) |
+| Cooking | 21 | [WoWTBC.GG Cooking](https://wowtbc.gg/warcraftforever/professions/cooking/) |
+| First Aid | 11 | [WoWTBC.GG First Aid](https://wowtbc.gg/warcraftforever/professions/first-aid/) |
 
 For cross-checking reagents, skill thresholds, and where recipes are learned, see the [ConquestCapped WoW Forever Recipe Database](https://conquestcapped.com/guides/wow-forever/wow-forever-recipes/). It covers all eight crafting professions, including the three tracked here.
 
