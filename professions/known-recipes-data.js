@@ -1,5 +1,13 @@
 const knownRecipes = [
   {
+    recipeId: "leatherworking:heavy-leather-ball",
+    name: "Heavy Leather Ball",
+    unitsPerCraft: 1,
+    vendorCopper: 5,
+    materials: [["Heavy Leather", 2, 204], ["Fine Thread", 1, 100]],
+    sourceUrl: "https://pricewatchforever.com/items/18662?region=us&ruleset=normal&house=horde",
+  },
+  {
     recipeId: "leatherworking:dark-leather-tunic",
     name: "Dark Leather Tunic",
     unitsPerCraft: 1,
@@ -60,7 +68,7 @@ const knownRecipes = [
     name: "Heavy Armor Kit",
     unitsPerCraft: 1,
     vendorCopper: 650,
-    materials: [["Heavy Leather", 5, 170], ["Fine Thread", 1, 100]],
+    materials: [["Heavy Leather", 5, 204], ["Fine Thread", 1, 100]],
     sourceUrl: "https://db.icy-veins.com/wow-forever/items/4265",
   },
   {
@@ -68,7 +76,7 @@ const knownRecipes = [
     name: "Hillman's Cloak",
     unitsPerCraft: 1,
     vendorCopper: 1027,
-    materials: [["Heavy Leather", 5, 170], ["Fine Thread", 2, 100]],
+    materials: [["Heavy Leather", 5, 204], ["Fine Thread", 2, 100]],
     sourceUrl: "https://db.icy-veins.com/wow-forever/items/3719",
   },
   {
@@ -76,7 +84,7 @@ const knownRecipes = [
     name: "Heavy Quiver",
     unitsPerCraft: 1,
     vendorCopper: 500,
-    materials: [["Heavy Leather", 8, 170], ["Fine Thread", 2, 100]],
+    materials: [["Heavy Leather", 8, 204], ["Fine Thread", 2, 100]],
     sourceUrl: "https://www.foreverdb.app/en/forever/items/7371/heavy-quiver",
   },
   {
@@ -84,7 +92,7 @@ const knownRecipes = [
     name: "Heavy Leather Ammo Pouch",
     unitsPerCraft: 1,
     vendorCopper: 500,
-    materials: [["Heavy Leather", 8, 170], ["Fine Thread", 2, 100]],
+    materials: [["Heavy Leather", 8, 204], ["Fine Thread", 2, 100]],
     sourceUrl: "https://www.foreverdb.app/en/forever/items/7372/heavy-leather-ammo-pouch",
   },
   {
@@ -402,6 +410,16 @@ const knownRecipes = [
 ];
 
 const cookingRecipes = [
+  {
+    recipeId: "cooking:sagefish-delight",
+    name: "Sagefish Delight",
+    unitsPerCraft: 1,
+    vendorCopper: 125,
+    materials: [["Raw Greater Sagefish", 1, 132], ["Hot Spices", 1, 40]],
+    stockMaterials: ["Raw Greater Sagefish", "Hot Spices"],
+    buyIfMissing: ["Hot Spices"],
+    sourceUrl: "https://pricewatchforever.com/items/21217?region=us&ruleset=normal&house=horde",
+  },
   {
     recipeId: "cooking:scorpid-surprise",
     name: "Scorpid Surprise",
