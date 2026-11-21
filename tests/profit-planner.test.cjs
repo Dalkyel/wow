@@ -99,6 +99,19 @@ test("a large scrap count still resolves quickly, by skipping unreachable conver
   assert.equal(profit, "24s 80c profit");
 });
 
+test("a large scrap count still resolves quickly even when unrelated materials carry an owned cost", () => {
+  const unitCosts = JSON.parse(vm.runInContext(`JSON.stringify(Object.fromEntries(inventoryMaterials.map(name =>
+    [name, name === "Ruined Leather Scraps" ? 0 : 50])))`, context));
+  context.unitCosts = unitCosts;
+  const start = Date.now();
+  const profit = vm.runInContext(`bestPlan(inventoryMaterials.map(name =>
+    name === "Ruined Leather Scraps" ? 999 : 0), knownRecipes, inventoryMaterials, unitCosts).profit`,
+    context, { timeout: 2000 });
+  assert.ok(Date.now() - start < 1000,
+    "an owned cost on an unrelated material should not disable the exclusive-conversion shortcut");
+  assert.equal(profit, 8291);
+});
+
 test("51 Strider Stew crafts match the observed 918c vendor payout", () => {
   const plan = JSON.parse(vm.runInContext(`JSON.stringify(bestPlan(
     [51, 0],

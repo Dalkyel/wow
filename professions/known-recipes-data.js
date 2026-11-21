@@ -403,6 +403,15 @@ const knownRecipes = [
 
 const cookingRecipes = [
   {
+    recipeId: "cooking:scorpid-surprise",
+    name: "Scorpid Surprise",
+    unitsPerCraft: 1,
+    vendorCopper: 10,
+    materials: [["Scorpid Stinger", 1, 24]],
+    stockMaterials: ["Scorpid Stinger"],
+    sourceUrl: "https://db.icy-veins.com/wow-forever/items/5473",
+  },
+  {
     recipeId: "cooking:hot-lion-chops",
     name: "Hot Lion Chops",
     unitsPerCraft: 1,

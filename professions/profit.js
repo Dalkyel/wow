@@ -134,7 +134,8 @@ function bestPlan(inventory, recipes = knownRecipes, materials = inventoryMateri
 
   let best = { profit: 0, cost: 0, steps: [], remaining: inventory };
   const salesMemo = new Map();
-  const exclusive = conversions.map(craft => !unitCosts.some(Boolean) && craft.recipe.vendorCopper > 0 && craft.profit >= 0 &&
+  const exclusive = conversions.map(craft => craft.needed.every((quantity, i) => !quantity || !unitCosts[i]) &&
+    craft.recipe.vendorCopper > 0 && craft.profit >= 0 &&
     !conversions.some(other => craft.needed[other.output]) &&
     candidates.every(other => other === craft || !other.needed.some((n, i) => n && craft.needed[i])));
   function convert(index, stock, produced, owned, cost, steps) {

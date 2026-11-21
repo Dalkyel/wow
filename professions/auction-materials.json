@@ -203,6 +203,10 @@
     "vendorCopper": 50
   },
   {
+    "name": "Scorpid Stinger",
+    "itemId": 5466
+  },
+  {
     "name": "Shiny Red Apple",
     "itemId": 4536,
     "vendorCopper": 5
