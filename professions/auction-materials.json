@@ -9,6 +9,10 @@
     "itemId": 2677
   },
   {
+    "name": "Bolt of Woolen Cloth",
+    "itemId": 2997
+  },
+  {
     "name": "Bottle of Dalaran Noir",
     "itemId": 2723,
     "vendorCopper": 50
@@ -49,6 +53,10 @@
   {
     "name": "Cured Medium Hide",
     "itemId": 4233
+  },
+  {
+    "name": "Elemental Earth",
+    "itemId": 7067
   },
   {
     "name": "Elixir of Lesser Defense",

@@ -1,5 +1,13 @@
 const knownRecipes = [
   {
+    recipeId: "leatherworking:heavy-earthen-gloves",
+    name: "Heavy Earthen Gloves",
+    unitsPerCraft: 1,
+    vendorCopper: 978,
+    materials: [["Medium Leather", 12, 96], ["Elemental Earth", 2, 2433], ["Bolt of Woolen Cloth", 2, 560], ["Fine Thread", 2, 100]],
+    sourceUrl: "https://pricewatchforever.com/items/7359?region=us&ruleset=normal&house=horde",
+  },
+  {
     recipeId: "leatherworking:heavy-leather-ball",
     name: "Heavy Leather Ball",
     unitsPerCraft: 1,
@@ -12,7 +20,7 @@ const knownRecipes = [
     name: "Dark Leather Tunic",
     unitsPerCraft: 1,
     vendorCopper: 689,
-    materials: [["Medium Leather", 6, 98], ["Fine Thread", 1, 100], ["Gray Dye", 1, 350]],
+    materials: [["Medium Leather", 6, 96], ["Fine Thread", 1, 100], ["Gray Dye", 1, 350]],
     sourceUrl: "https://db.icy-veins.com/wow-forever/items/2317",
   },
   {
@@ -20,7 +28,7 @@ const knownRecipes = [
     name: "Hillman's Belt",
     unitsPerCraft: 1,
     vendorCopper: 705,
-    materials: [["Medium Leather", 8, 98], ["Elixir of Wisdom", 1, null], ["Fine Thread", 2, 100]],
+    materials: [["Medium Leather", 8, 96], ["Elixir of Wisdom", 1, null], ["Fine Thread", 2, 100]],
     sourceUrl: "https://db.icy-veins.com/wow-forever/items/4250",
   },
   {
@@ -60,7 +68,7 @@ const knownRecipes = [
     name: "Heavy Leather",
     unitsPerCraft: 1,
     vendorCopper: 150,
-    materials: [["Medium Leather", 5, 98]],
+    materials: [["Medium Leather", 5, 96]],
     sourceUrl: "https://db.icy-veins.com/wow-forever/items/4234",
   },
   {
@@ -108,7 +116,7 @@ const knownRecipes = [
     name: "Hillman's Leather Gloves",
     unitsPerCraft: 1,
     vendorCopper: 1049,
-    materials: [["Medium Leather", 14, 98], ["Fine Thread", 4, 100]],
+    materials: [["Medium Leather", 14, 96], ["Fine Thread", 4, 100]],
     sourceUrl: "https://db.icy-veins.com/wow-forever/items/4247",
   },
   {
@@ -156,7 +164,7 @@ const knownRecipes = [
     name: "Medium Armor Kit",
     unitsPerCraft: 1,
     vendorCopper: 200,
-    materials: [["Medium Leather", 4, 98], ["Coarse Thread", 1, 10]],
+    materials: [["Medium Leather", 4, 96], ["Coarse Thread", 1, 10]],
     sourceUrl: "https://pricewatchforever.com/items/2313?region=us&ruleset=normal&house=horde",
   },
   {
@@ -212,7 +220,7 @@ const knownRecipes = [
     name: "Dark Leather Cloak",
     unitsPerCraft: 1,
     vendorCopper: 408,
-    materials: [["Medium Leather", 8, 98], ["Fine Thread", 1, 100], ["Gray Dye", 1, 350]],
+    materials: [["Medium Leather", 8, 96], ["Fine Thread", 1, 100], ["Gray Dye", 1, 350]],
     sourceUrl: "https://pricewatchforever.com/items/2316?region=us&ruleset=normal&house=horde",
   },
   {
@@ -244,7 +252,7 @@ const knownRecipes = [
     name: "Hillman's Shoulders",
     unitsPerCraft: 1,
     vendorCopper: 659,
-    materials: [["Cured Medium Hide", 1, 410], ["Medium Leather", 4, 98], ["Fine Thread", 1, 100]],
+    materials: [["Cured Medium Hide", 1, 410], ["Medium Leather", 4, 96], ["Fine Thread", 1, 100]],
     sourceUrl: "https://pricewatchforever.com/items/4251?region=us&ruleset=normal&house=horde",
   },
   {
@@ -252,7 +260,7 @@ const knownRecipes = [
     name: "Toughened Leather Armor",
     unitsPerCraft: 1,
     vendorCopper: 743,
-    materials: [["Medium Leather", 10, 98], ["Cured Light Hide", 2, 172], ["Fine Thread", 2, 100]],
+    materials: [["Medium Leather", 10, 96], ["Cured Light Hide", 2, 172], ["Fine Thread", 2, 100]],
     sourceUrl: "https://pricewatchforever.com/items/2314?region=us&ruleset=normal&house=horde",
   },
   {
@@ -284,7 +292,7 @@ const knownRecipes = [
     name: "Toughened Leather Gloves",
     unitsPerCraft: 1,
     vendorCopper: 962,
-    materials: [["Medium Leather", 4, 98], ["Cured Medium Hide", 2, 410], ["Elixir of Lesser Defense", 2, 476], ["Spider's Silk", 2, 888], ["Fine Thread", 2, 100]],
+    materials: [["Medium Leather", 4, 96], ["Cured Medium Hide", 2, 410], ["Elixir of Lesser Defense", 2, 476], ["Spider's Silk", 2, 888], ["Fine Thread", 2, 100]],
     sourceUrl: "https://bootybaybroker.com/forever/item/4253/toughened-leather-gloves",
   },
   {
@@ -292,7 +300,7 @@ const knownRecipes = [
     name: "Fletcher's Gloves",
     unitsPerCraft: 1,
     vendorCopper: 690,
-    materials: [["Medium Leather", 8, 98], ["Long Tail Feather", 4, 302], ["Fine Thread", 2, 100]],
+    materials: [["Medium Leather", 8, 96], ["Long Tail Feather", 4, 302], ["Fine Thread", 2, 100]],
     sourceUrl: "https://db.icy-veins.com/wow-forever/items/7348",
   },
   {
@@ -300,7 +308,7 @@ const knownRecipes = [
     name: "Nimble Leather Gloves",
     unitsPerCraft: 1,
     vendorCopper: 588,
-    materials: [["Elixir of Minor Agility", 1, 455], ["Medium Leather", 6, 98], ["Fine Thread", 1, 100]],
+    materials: [["Elixir of Minor Agility", 1, 455], ["Medium Leather", 6, 96], ["Fine Thread", 1, 100]],
     sourceUrl: "https://forevermastery.com/en/recipes/9074-nimble-leather-gloves",
   },
   {
@@ -332,7 +340,7 @@ const knownRecipes = [
     name: "Dark Leather Pants",
     unitsPerCraft: 1,
     vendorCopper: 1089,
-    materials: [["Medium Leather", 12, 98], ["Gray Dye", 1, 350], ["Fine Thread", 1, 100]],
+    materials: [["Medium Leather", 12, 96], ["Gray Dye", 1, 350], ["Fine Thread", 1, 100]],
     sourceUrl: "https://raiddex.com/en/wow-forever/items/dark-leather-pants",
   },
   {
@@ -364,7 +372,7 @@ const knownRecipes = [
     name: "Gray Leather Boots",
     unitsPerCraft: 1,
     vendorCopper: 307,
-    materials: [["Medium Leather", 4, 98], ["Fine Thread", 2, 100], ["Gray Dye", 1, 350]],
+    materials: [["Medium Leather", 4, 96], ["Fine Thread", 2, 100], ["Gray Dye", 1, 350]],
     sourceUrl: "https://guide.wow4ever.se/en/items/2315",
   },
   {
