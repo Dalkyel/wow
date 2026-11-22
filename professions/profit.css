@@ -159,3 +159,17 @@
   background: var(--bg2);
   color: var(--gold-lt);
 }
+
+.material-profit-table th:first-child { min-width: 180px; white-space: normal; }
+.material-profit-table small { display: block; color: #c2bfd0; font-size: 12px; font-weight: 400; }
+.material-profit-table details { margin-top: 8px; font-size: 13px; font-weight: 400; }
+.material-profit-table summary { cursor: pointer; color: var(--gold-lt); }
+.material-profit-table details p { margin: 8px 0 0; }
+.material-profit-table td:last-child { min-width: 160px; text-align: left; white-space: normal; color: var(--parch); font-weight: 400; }
+.material-profit-table td.material-gain { color: #b3ddab; }
+.material-profit-table td.material-loss { color: #f0aaa4; }
+
+.material-profit-table .material-best-recipe { margin: 10px 0; color: var(--gold-lt); font-size: 13px; font-weight: 400; }
+.material-profit-table .material-use-comparison { margin-top: 12px; padding-top: 10px; border-top: 1px solid #37394a; }
+.material-profit-table .material-use-comparison p { margin: 6px 0; }
+.material-profit-table th:first-child:has(.material-best-recipe) { min-width: 250px; }

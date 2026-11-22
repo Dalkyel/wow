@@ -672,3 +672,33 @@ test("each material comparison filters positive current profits and keeps its se
   assert.equal(filter().checked, false);
   assert.equal(body().children.length, 3);
 });
+
+test('material profit filters distinguish crafting savings from resale and respond to price updates', () => {
+  const { context, document } = page({ materials: {
+    'Cured Medium Hide': {auctionCopper:390,quantity:100,status:'available'},
+    Salt: {vendorCopper:50},
+  }});
+  document.querySelector('#material-profit-search').value = '';
+  document.querySelector('#material-profit-opportunities-only').checked = true;
+  vm.runInContext('materialValues.get("Medium Hide").price = 330', context);
+  vm.runInContext(readFileSync(join(__dirname, '../professions/material-profit.js'), 'utf8'), context);
+  const body = document.querySelector('#material-profit-rows');
+  const hide = () => body.children.find(row => row.children[0].children[0]?.textContent === 'Cured Medium Hide');
+  assert.equal(hide().children[4].textContent, '10c');
+  assert.match(hide().children[0].children[2].textContent, /Best recipe to vendor: Hillman's Shoulders/);
+  assert.equal(hide().children[5].textContent, '−9c');
+  assert.equal(hide().children[5].children[0].textContent, 'AH selling fee (5%): 19c');
+  assert.equal(hide().children[5].children[1].textContent, 'Craft + selling fee: 3s 99c');
+  assert.equal(hide().children[7].textContent, 'Craft instead of buying');
+  vm.runInContext('materialValues.get("Medium Hide").price = 400', context);
+  document.dispatchEvent({type:'materialvalueschange'});
+  assert.equal(hide(), undefined);
+  const filter = document.querySelector('#material-profit-opportunities-only');
+  filter.checked = false;
+  filter.listeners.change();
+  assert.equal(hide().children[7].textContent, 'Buy ready-made');
+  const search = document.querySelector('#material-profit-search');
+  search.value = 'no such material';
+  search.listeners.input();
+  assert.equal(body.children[0].children[0].textContent, 'No material recipes match your search.');
+});

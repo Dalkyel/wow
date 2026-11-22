@@ -12,6 +12,7 @@
   <script src="profit.js" defer></script>
   <script src="known-recipes.js" defer></script>
   <script src="materials-reference.js" defer></script>
+  <script src="material-profit.js" defer></script>
   <script src="auction-client.js" defer></script>
   <script src="profession-tabs.js" defer></script>
 </head>
@@ -31,6 +32,7 @@
       <button type="button" id="cooking-tab" role="tab" aria-controls="cooking" aria-selected="false" tabindex="-1">Cooking</button>
       <button type="button" id="first-aid-tab" role="tab" aria-controls="first-aid" aria-selected="false" tabindex="-1">First Aid</button>
       <button type="button" id="materials-tab" role="tab" aria-controls="materials" aria-selected="false" tabindex="-1">Materials</button>
+      <button type="button" id="material-profit-tab" role="tab" aria-controls="material-profit" aria-selected="false" tabindex="-1">Material profit</button>
     </div>
     <div id="leatherworking" role="tabpanel" aria-labelledby="leatherworking-tab">
       <section class="profit-recipes" aria-labelledby="known-title">
@@ -142,6 +144,29 @@
         <p>Choose how you obtained your inventory. Gathered materials cost 0c. Bought materials use the purchase price. Crafted materials include their ingredients’ costs. Extra supplies in the shopping list use purchase prices.</p>
         <div id="first-aid-material-values"></div>
       </details>
+    </div>
+    <div id="material-profit" role="tabpanel" aria-labelledby="material-profit-tab" hidden>
+      <section class="materials-reference" aria-labelledby="material-profit-title">
+        <h2 id="material-profit-title">Craft materials for profit</h2>
+        <p>Compare buying ingredients and crafting a material with buying it ready-made. Includes known recipes that produce leather, hides, or inputs for another known recipe. All costs assume purchased ingredients, using the purchase prices in your profession’s material settings, even when their source is Gathered or Crafted. Each material names its best recipe to vendor, ranked by profit per final craft. Expand the comparison for costs, purchases, and crafting steps.</p>
+        <label class="recipe-filter"><input type="checkbox" id="material-profit-opportunities-only" checked> Opportunities only (savings or sale profit)</label>
+        <label class="material-search" for="material-profit-search">Find material
+          <input type="search" id="material-profit-search" placeholder="Search materials or ingredients" autocomplete="off">
+        </label>
+        <p id="material-profit-summary" role="status" aria-live="polite"></p>
+        <div class="profit-table material-profit-table" tabindex="0" role="region" aria-labelledby="material-profit-title">
+          <table>
+            <thead><tr>
+              <th scope="col">Material</th><th scope="col">Purchases per craft</th>
+              <th scope="col">Craft cost / item</th><th scope="col">AH buy / item</th>
+              <th scope="col">Save by crafting / item</th><th scope="col">AH profit after fee / item</th>
+              <th scope="col">Vendor profit / item</th><th scope="col">Decision</th>
+            </tr></thead>
+            <tbody id="material-profit-rows"></tbody>
+          </table>
+        </div>
+        <p>Savings are a lower material cost, not sale income. Horde AH sales include a 5% selling fee on the sale price: total sale cost = crafting cost + selling fee; profit = sale price − total sale cost. The fee and total cost appear below each AH profit. Purchase prices do not receive an extra fee, and vendor sales have no AH fee. AH profit assumes selling at the snapshot minimum. Listing deposits are refunded on a successful sale; lost deposits from expired or canceled listings are not included. <a href="https://auctionhouse.tk.gg/calculator/">Auction fee reference</a>. Listings do not guarantee a sale or enough stock at the minimum price. Missing prices stay Unknown. A cheaper material does not guarantee profit on the final item; check its recipe before buying. Material cost columns buy each ingredient directly. Recipe comparisons craft this material and any intermediate steps needed to reach the final item, buy the remaining ingredients, and include whole crafting batches. Leftovers are not counted as income.</p>
+      </section>
     </div>
     <div id="materials" role="tabpanel" aria-labelledby="materials-tab" hidden>
       <section class="materials-reference" aria-labelledby="materials-title">
