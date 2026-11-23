@@ -223,6 +223,7 @@ function renderMaterialReference() {
       unavailableTitle: "No reachable recipe can profit by vendoring",
       scopeTitle: "Craft this material through any number of further crafting steps until something sells to an NPC vendor.",
     });
+    chainBlock.classList.add("info-item-wide");
     const comparisons = allKnownRecipes.map(recipe => {
       const limit = recipePurchaseLimitBestPath(recipe, name);
       return { recipe, limit, quantity: limit?.quantity ?? requiredMaterialQuantityBestPath(recipe, name) };

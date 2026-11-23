@@ -161,10 +161,12 @@ function renderMaterialProfit() {
     const total = document.createElement('small');
     total.textContent = `Craft + selling fee: ${formatPrice(item.auctionTotalCost)}`;
     auctionProfit.block.append(fee, total);
+    auctionProfit.block.classList.add('info-item-wide');
     const vendorProfit = renderInfoBlock(economics, 'Vendor profit / item');
     vendorProfit.value.textContent = formatPrice(item.vendorProfit);
     applyGainLoss(vendorProfit.value, item.vendorProfit);
     const decision = renderInfoBlock(economics, 'Decision');
+    decision.block.classList.add('info-item-wide');
     const actions = [];
     if (item.savings > 0) actions.push('Craft instead of buying');
     if (item.auctionProfit > 0) actions.push('Potential AH profit');
