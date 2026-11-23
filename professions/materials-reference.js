@@ -3,17 +3,6 @@ const materialSearch = document.querySelector("#material-search");
 const openMaterialComparisons = new Set();
 const unfilteredMaterialComparisons = new Set();
 
-function requiredMaterialQuantity(recipe, target, chain = new Set()) {
-  if (chain.has(recipe.name)) return 0;
-  const visited = new Set([...chain, recipe.name]);
-  return recipe.materials.reduce((sum, [name, quantity]) => {
-    if (name === target) return sum + quantity;
-    const supplier = materialSuppliers.get(name);
-    return sum + (supplier && materialValues.get(name)?.source === "crafted"
-      ? quantity * requiredMaterialQuantity(supplier, target, visited) / supplier.unitsPerCraft : 0);
-  }, 0);
-}
-
 function appendRecipeComparison(cell, name, comparisons) {
   if (!comparisons.length) return;
   const details = document.createElement("details");
@@ -146,6 +135,34 @@ function appendRecipeComparison(cell, name, comparisons) {
   cell.append(details);
 }
 
+// Renders one profit scenario's block: the whole-copper ceiling, the lowest–highest recipe range
+// beneath it, and (for the cascading scenario) the recipe name plus its comparison expand.
+function renderScenarioBlock(container, labelText, range, { unavailableTitle, scopeTitle }) {
+  const { limits, count, highest: best, lowest } = range;
+  const { block, value } = renderInfoBlock(container, labelText);
+  value.classList.add("info-value-highlight");
+  if (!best) value.classList.add("info-value-unavailable");
+  value.textContent = best ? coins(best.maximum) : limits.length ? "None" : "Unknown";
+  if (best) {
+    const rangeLine = document.createElement("small");
+    rangeLine.textContent = lowest.maximum === best.maximum
+      ? `Recipe ceiling ${coins(best.maximum)}`
+      : `Recipe ceilings ${coins(lowest.maximum)} – ${coins(best.maximum)}`;
+    block.append(rangeLine);
+    const recipeLine = document.createElement("small");
+    const link = document.createElement(best.recipe.sourceUrl ? "a" : "span");
+    link.textContent = best.recipe.name;
+    if (best.recipe.sourceUrl) link.href = best.recipe.sourceUrl;
+    recipeLine.append(link);
+    block.append(recipeLine);
+  }
+  block.title = best
+    ? `${scopeTitle} At ${coins(lowest.maximum)} or less, all ${count} recipes in this scenario can profit. ` +
+      `The highest ceiling is ${coins(best.maximum)} with ${best.recipe.name}. Other ingredients use their cheapest available cost.`
+    : limits.length ? `${unavailableTitle} even if this material is free.` : unavailableTitle;
+  return block;
+}
+
 function renderMaterialReference() {
   const query = (materialSearch.value ?? "").trim().toLocaleLowerCase();
   const names = [...materialValues.keys()].sort((a, b) => a.localeCompare(b))
@@ -153,64 +170,70 @@ function renderMaterialReference() {
   materialReference.replaceChildren();
   for (const name of names) {
     const quote = auctionQuotes[name];
-    const comparisons = allKnownRecipes.map(recipe => {
-      const limit = recipePurchaseLimit(recipe, name);
-      return { recipe, limit, quantity: limit?.quantity ?? requiredMaterialQuantity(recipe, name) };
-    }).filter(comparison => comparison.quantity > 0)
-      .sort((a, b) => (b.limit?.maximum ?? -Infinity) - (a.limit?.maximum ?? -Infinity) ||
-        (b.limit?.breakEven ?? -Infinity) - (a.limit?.breakEven ?? -Infinity) || a.recipe.name.localeCompare(b.recipe.name));
-    const { limits, count, highest: best, lowest } = materialPurchaseRange(name);
     const row = materialReference.insertRow();
     const label = document.createElement("th");
     label.scope = "row";
     label.textContent = name;
-    const bestBuy = bestMaterialPurchase(name);
-    const recommendation = document.createElement("small");
-    recommendation.className = "material-best-buy";
-    recommendation.textContent = `Best buy: ${bestBuy.source} ${formatPrice(bestBuy.price)} each`;
-    label.append(recommendation);
+    const self = selfCraftProfit(name);
+    if (self) {
+      const note = document.createElement("small");
+      note.className = "material-self-craft";
+      const outcomes = [];
+      if (self.vendorProfit !== null) outcomes.push(`vendor ${formatPrice(self.vendorProfit)} profit`);
+      if (self.auctionProfit !== null) outcomes.push(`AH ${formatPrice(self.auctionProfit)} profit after fee`);
+      const ingredients = self.recipe.materials.map(([ingredient]) => ingredient).join(" + ");
+      note.textContent = `Crafted from ${ingredients} for ${coins(self.cost)}` +
+        (outcomes.length ? ` → ${outcomes.join(" · ")}` : "");
+      note.title = `${name} can itself be crafted (from its own ingredients at their cheapest available cost), separately from ` +
+        "anything made further from it. Vendor profit compares that cost to its own vendor sale price; AH profit compares it " +
+        "to its own live auction price after the 5% selling fee.";
+      label.append(note);
+    }
     row.append(label);
-    row.insertCell().textContent = formatPrice(quote?.vendorCopper ?? null);
-    const auction = row.insertCell();
+
+    const info = row.insertCell();
+    info.className = "info-stack";
+
+    const { value: vendorValue } = renderInfoBlock(info, "Vendor buy price");
+    vendorValue.textContent = formatPrice(quote?.vendorCopper ?? null);
+
+    const { block: auctionBlock, value: auctionValue } = renderInfoBlock(info, "AH minimum buyout");
     if (quote?.auctionCopper != null) {
       const source = document.createElement("a");
       source.href = quote.sourceUrl;
       source.textContent = coins(quote.auctionCopper);
       source.title = auctionQuoteLabel(quote);
-      auction.append(source);
+      auctionValue.append(source);
       const provenance = document.createElement("small");
       provenance.textContent = "AH snapshot";
-      auction.append(provenance);
+      auctionBlock.append(provenance);
     } else {
-      auction.textContent = quote?.status === "unlisted" ? "Not listed" : "Unknown";
+      auctionValue.textContent = quote?.status === "unlisted" ? "Not listed" : "Unknown";
     }
-    const maximum = row.insertCell();
-    if (!best) maximum.className = "material-price-unavailable";
-    maximum.textContent = materialMaximumBuyLabel(name);
-    if (best && lowest.maximum !== best.maximum) {
-      const range = document.createElement("small");
-      range.textContent = `Recipe ceilings ${coins(lowest.maximum)} – ${coins(best.maximum)}`;
-      maximum.append(range);
-    }
-    maximum.title = best ? `Recipe purchase ceilings, not a minimum purchase price. ` +
-      `At ${coins(lowest.maximum)} or less, all ${count} recipes with a nonnegative ceiling can profit. ` +
-      `The highest ceiling is ${coins(best.maximum)} with ${best.recipe.name}. ` +
-      "Other selected costs stay fixed; unknown limits and recipes that cannot profit even with a free material are excluded."
-      : limits.length ? "Other ingredient costs leave no profit even if this material is free" : "Other material prices are missing";
-    const recipe = row.insertCell();
-    if (best) {
-      const link = document.createElement(best.recipe.sourceUrl ? "a" : "span");
-      link.textContent = best.recipe.name;
-      if (best.recipe.sourceUrl) link.href = best.recipe.sourceUrl;
-      recipe.append(link);
-    } else {
-      recipe.textContent = "—";
-    }
-    appendRecipeComparison(recipe, name, comparisons);
+
+    renderScenarioBlock(info, "Craft → vendor", materialDirectRange(name, "vendor"), {
+      unavailableTitle: "No known recipe crafts directly from this material and sells to a vendor, or none can profit",
+      scopeTitle: "Craft this material once, directly into a known recipe, and sell that recipe to an NPC vendor.",
+    });
+    renderScenarioBlock(info, "Craft → AH resale", materialDirectRange(name, "auction"), {
+      unavailableTitle: "No known recipe crafts directly from this material with a live auction listing, or none can profit after the 5% fee",
+      scopeTitle: "Craft this material once, directly into a known recipe, and resell that recipe on the auction house after the 5% selling fee.",
+    });
+    const chainBlock = renderScenarioBlock(info, "Craft into a recipe → vendor", materialPurchaseRangeBestPath(name), {
+      unavailableTitle: "No reachable recipe can profit by vendoring",
+      scopeTitle: "Craft this material through any number of further crafting steps until something sells to an NPC vendor.",
+    });
+    const comparisons = allKnownRecipes.map(recipe => {
+      const limit = recipePurchaseLimitBestPath(recipe, name);
+      return { recipe, limit, quantity: limit?.quantity ?? requiredMaterialQuantityBestPath(recipe, name) };
+    }).filter(comparison => comparison.quantity > 0)
+      .sort((a, b) => (b.limit?.maximum ?? -Infinity) - (a.limit?.maximum ?? -Infinity) ||
+        (b.limit?.breakEven ?? -Infinity) - (a.limit?.breakEven ?? -Infinity) || a.recipe.name.localeCompare(b.recipe.name));
+    appendRecipeComparison(chainBlock, name, comparisons);
   }
   if (!names.length) {
     const cell = materialReference.insertRow().insertCell();
-    cell.colSpan = 5;
+    cell.colSpan = 2;
     cell.textContent = "No materials match your search.";
   }
 }

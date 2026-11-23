@@ -44,9 +44,7 @@
               <tr>
                 <th scope="col">Recipe</th>
                 <th scope="col">Materials per craft</th>
-                <th scope="col">Craft cost</th>
-                <th scope="col">Vendor pays per craft</th>
-                <th scope="col">Profit per craft</th>
+                <th scope="col">Cost, vendor pay &amp; profit</th>
               </tr>
             </thead>
             <tbody id="recipes"></tbody>
@@ -81,9 +79,7 @@
               <tr>
                 <th scope="col">Recipe</th>
                 <th scope="col">Materials per craft</th>
-                <th scope="col">Craft cost</th>
-                <th scope="col">Vendor pays per craft</th>
-                <th scope="col">Profit per craft</th>
+                <th scope="col">Cost, vendor pay &amp; profit</th>
               </tr>
             </thead>
             <tbody id="cooking-recipes"></tbody>
@@ -118,9 +114,7 @@
               <tr>
                 <th scope="col">Recipe</th>
                 <th scope="col">Materials per craft</th>
-                <th scope="col">Craft cost</th>
-                <th scope="col">Vendor pays per craft</th>
-                <th scope="col">Profit per craft</th>
+                <th scope="col">Cost, vendor pay &amp; profit</th>
               </tr>
             </thead>
             <tbody id="first-aid-recipes"></tbody>
@@ -158,9 +152,7 @@
           <table>
             <thead><tr>
               <th scope="col">Material</th><th scope="col">Purchases per craft</th>
-              <th scope="col">Craft cost / item</th><th scope="col">AH buy / item</th>
-              <th scope="col">Save by crafting / item</th><th scope="col">AH profit after fee / item</th>
-              <th scope="col">Vendor profit / item</th><th scope="col">Decision</th>
+              <th scope="col">Cost, savings &amp; profit</th>
             </tr></thead>
             <tbody id="material-profit-rows"></tbody>
           </table>
@@ -171,7 +163,7 @@
     <div id="materials" role="tabpanel" aria-labelledby="materials-tab" hidden>
       <section class="materials-reference" aria-labelledby="materials-title">
         <h2 id="materials-title">Materials for my known recipes</h2>
-        <p>Prices are per item. Max buy shows the highest profitable purchase ceiling across all known recipes using that material, keeping other selected costs fixed. For example, recipe ceilings of 30c and 45c give a shared max buy of 45c. The recipe ceiling range is shown underneath; only the recipe with the highest ceiling can profit at the maximum. Limits update when ingredient prices or sources change. Expand a comparison to see all purchases against one shared budget. Individual maximum prices cannot be combined. Unknown limits and recipes that cannot profit even with this material free are excluded.</p>
+        <p>Prices are per item. These are hypothetical purchase ceilings, not live price checks — go to a profession tab to see what's profitable at today's prices. Three scenarios per material: craft it once and sell the result to a vendor; craft it once and resell the result on the auction house (after the 5% fee); or craft it into something deeper that eventually sells to a vendor (any number of crafting steps). Each scenario keeps other ingredients at their cheapest available cost (bought, crafted, or gathered) regardless of what you've selected elsewhere. The recipe ceiling range is shown underneath each one; only the recipe with the highest ceiling can profit at the maximum. Expand the third scenario's comparison to see all purchases against one shared budget. Unknown limits and recipes that cannot profit even with this material free are excluded.</p>
         <label class="material-search" for="material-search">Find material
           <input type="search" id="material-search" placeholder="Search material names" autocomplete="off">
         </label>
@@ -180,10 +172,7 @@
             <thead>
               <tr>
                 <th scope="col">Material</th>
-                <th scope="col">Vendor buy price</th>
-                <th scope="col">AH minimum buyout</th>
-                <th scope="col">Max buy / item</th>
-                <th scope="col">Recipes &amp; combined budgets</th>
+                <th scope="col">Prices &amp; scenarios</th>
               </tr>
             </thead>
             <tbody id="materials-reference"></tbody>

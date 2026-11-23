@@ -98,24 +98,27 @@
 
 .profit-table td:nth-child(2) { min-width: 220px; text-align: left; white-space: normal; }
 .profit-table thead th:nth-child(2) { text-align: left; }
-.profit-table .recipe-loss td:last-child { color: #f0aaa4; }
+.profit-table .recipe-loss .recipe-profit .info-value { color: #f0aaa4; }
+.info-stack { display: grid; gap: 10px; }
+.info-item { padding-top: 10px; border-top: 1px solid #37394a; }
+.info-item:first-child { padding-top: 0; border-top: none; }
+.info-label { display: block; color: #c2bfd0; font-size: 12px; }
+.info-value { display: block; font-size: 15px; font-weight: 600; color: var(--parch); }
+.info-value.info-value-highlight { color: #b3ddab; }
+.info-value.info-value-unavailable { font-weight: 400; color: #c2bfd0; }
 .recipe-ingredient + .recipe-ingredient { margin-top: 10px; }
 .recipe-buy-limit { display: block; color: #c2bfd0; font-size: 12px; font-weight: 400; }
 .recipe-tradeoff { margin-top: 10px; max-width: 320px; padding: 10px 12px; border-left: 2px solid var(--gold); background: #c9933a0d; color: #e0d3b5; white-space: normal; font-size: 13px; font-weight: 400; line-height: 1.5; }
 .recipe-tradeoff p + p { margin-top: 6px; color: #c2bfd0; }
 
 .materials-reference { margin-top: 28px; }
-.material-best-buy { display: block; color: #c2bfd0; font-size: 12px; font-weight: 400; }
 .materials-reference p { margin-bottom: 18px; color: #c2bfd0; }
 .material-search { display: grid; gap: 6px; width: min(100%, 360px); margin-bottom: 16px; }
 .material-search input { padding: 9px 12px; border: 1px solid #6c7288; border-radius: 4px; background: var(--bg2); color: var(--parch); font: inherit; color-scheme: dark; }
-.materials-table td:nth-child(2) { min-width: 0; text-align: right; white-space: nowrap; }
-.materials-table thead th:nth-child(2) { text-align: right; }
-.materials-table td:nth-child(4) { color: #b3ddab; font-weight: 600; }
-.materials-table td.material-price-unavailable { color: #c2bfd0; font-weight: 400; }
-.materials-table td:last-child { color: var(--parch); font-weight: 400; text-align: left; white-space: normal; min-width: 160px; }
-.materials-table thead th:last-child { text-align: left; }
-.materials-table > table > thead th:last-child { white-space: normal; }
+.materials-table th:first-child { white-space: normal; max-width: 220px; }
+.material-self-craft { display: block; margin-top: 4px; color: #c2bfd0; font-size: 12px; font-weight: 400; white-space: normal; }
+.materials-table td { color: var(--parch); font-weight: 400; text-align: left; white-space: normal; min-width: 260px; }
+.materials-table thead th:nth-child(2) { text-align: left; }
 .material-comparison { margin-top: 8px; font-size: 14px; }
 .material-comparison summary { cursor: pointer; color: var(--gold-lt); }
 .material-comparison p { margin: 8px 0; font-size: 13px; }
@@ -165,9 +168,9 @@
 .material-profit-table details { margin-top: 8px; font-size: 13px; font-weight: 400; }
 .material-profit-table summary { cursor: pointer; color: var(--gold-lt); }
 .material-profit-table details p { margin: 8px 0 0; }
-.material-profit-table td:last-child { min-width: 160px; text-align: left; white-space: normal; color: var(--parch); font-weight: 400; }
-.material-profit-table td.material-gain { color: #b3ddab; }
-.material-profit-table td.material-loss { color: #f0aaa4; }
+.material-profit-table td:last-child { min-width: 240px; text-align: left; white-space: normal; }
+.material-profit-table .info-value.material-gain { color: #b3ddab; }
+.material-profit-table .info-value.material-loss { color: #f0aaa4; }
 
 .material-profit-table .material-best-recipe { margin: 10px 0; color: var(--gold-lt); font-size: 13px; font-weight: 400; }
 .material-profit-table .material-use-comparison { margin-top: 12px; padding-top: 10px; border-top: 1px solid #37394a; }

@@ -141,30 +141,41 @@ function renderMaterialProfit() {
       line.textContent = `${input.quantity} × ${input.name} at ${formatPrice(input.price)} each`;
       ingredients.append(line);
     }
-    for (const [index, value] of [item.cost, item.auction, item.savings, item.auctionProfit, item.vendorProfit].entries()) {
-      const cell = row.insertCell();
-      cell.textContent = formatPrice(value);
-      if (index === 3) {
-        const fee = document.createElement('small');
-        fee.textContent = `AH selling fee (${factionAuctionCutPercent}%): ${formatPrice(item.auctionFee)}`;
-        const total = document.createElement('small');
-        total.textContent = `Craft + selling fee: ${formatPrice(item.auctionTotalCost)}`;
-        cell.append(fee, total);
-      }
-      if (index >= 2 && value !== null) cell.className = value > 0 ? 'material-gain' : value < 0 ? 'material-loss' : '';
+    function applyGainLoss(valueEl, value) {
+      if (value === null) return;
+      if (value > 0) valueEl.classList.add('material-gain');
+      else if (value < 0) valueEl.classList.add('material-loss');
     }
-    const decision = row.insertCell();
+    const economics = row.insertCell();
+    economics.className = 'info-stack';
+    renderInfoBlock(economics, 'Craft cost / item').value.textContent = formatPrice(item.cost);
+    renderInfoBlock(economics, 'AH buy / item').value.textContent = formatPrice(item.auction);
+    const savings = renderInfoBlock(economics, 'Save by crafting / item');
+    savings.value.textContent = formatPrice(item.savings);
+    applyGainLoss(savings.value, item.savings);
+    const auctionProfit = renderInfoBlock(economics, 'AH profit after fee / item');
+    auctionProfit.value.textContent = formatPrice(item.auctionProfit);
+    applyGainLoss(auctionProfit.value, item.auctionProfit);
+    const fee = document.createElement('small');
+    fee.textContent = `AH selling fee (${factionAuctionCutPercent}%): ${formatPrice(item.auctionFee)}`;
+    const total = document.createElement('small');
+    total.textContent = `Craft + selling fee: ${formatPrice(item.auctionTotalCost)}`;
+    auctionProfit.block.append(fee, total);
+    const vendorProfit = renderInfoBlock(economics, 'Vendor profit / item');
+    vendorProfit.value.textContent = formatPrice(item.vendorProfit);
+    applyGainLoss(vendorProfit.value, item.vendorProfit);
+    const decision = renderInfoBlock(economics, 'Decision');
     const actions = [];
     if (item.savings > 0) actions.push('Craft instead of buying');
     if (item.auctionProfit > 0) actions.push('Potential AH profit');
     if (item.vendorProfit > 0) actions.push('Vendor profit');
     if (item.bestUse?.profit > 0) actions.push(`Craft for ${item.bestUse.recipe.name}`);
-    decision.textContent = actions.join(' · ') || (item.cost === null ? 'Ingredient price missing'
+    decision.value.textContent = actions.join(' · ') || (item.cost === null ? 'Ingredient price missing'
       : item.auction === null ? 'AH price missing' : item.savings < 0 ? 'Buy ready-made' : 'No positive margin');
   }
   if (!rows.length) {
     const cell = table.insertRow().insertCell();
-    cell.colSpan = 8;
+    cell.colSpan = 3;
     cell.textContent = only ? 'No matching opportunities. Turn off Opportunities only to compare all material recipes.'
       : 'No material recipes match your search.';
   }

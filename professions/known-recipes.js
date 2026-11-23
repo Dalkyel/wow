@@ -88,14 +88,20 @@ function renderRecipeTable(table, recipes, profitableOnly = false) {
       ingredient.append(selected, buying);
       ingredientCell.append(ingredient);
     }
-    row.insertCell().textContent = formatPrice(cost);
-    row.insertCell().textContent = payout === 0 ? "Can't be sold" : formatPrice(payout);
-    row.insertCell().textContent = payout === 0 ? "—" : formatPrice(net);
+    const economics = row.insertCell();
+    economics.className = "info-stack";
+    renderInfoBlock(economics, "Craft cost").value.textContent = formatPrice(cost);
+    renderInfoBlock(economics, "Vendor pays per craft").value.textContent =
+      payout === 0 ? "Can't be sold" : formatPrice(payout);
+    const profit = renderInfoBlock(economics, "Profit per craft");
+    profit.block.classList.add("recipe-profit");
+    profit.value.classList.add("info-value-highlight");
+    profit.value.textContent = payout === 0 ? "—" : formatPrice(net);
     if (net < 0) row.classList.add("recipe-loss");
   }
   if (!recipeRows.length && profitableOnly) {
     const cell = table.insertRow().insertCell();
-    cell.colSpan = 5;
+    cell.colSpan = 3;
     cell.textContent = "No recipes have a positive profit at the selected costs.";
   }
 }

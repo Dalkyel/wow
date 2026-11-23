@@ -70,8 +70,8 @@ test("material source controls update the table and inventory plan together", ()
   assert.equal(document.querySelector("#result").children[0].textContent, "82c profit");
   const pants = document.querySelector("#recipes").children.find(row =>
     row.children[0].children[0].textContent === "Rugged Leather Pants");
-  assert.equal(pants.children[2].textContent, "1s 50c");
-  assert.equal(pants.children[4].textContent, "12c");
+  assert.equal(pants.children[2].children[0].children[1].textContent, "1s 50c");
+  assert.equal(pants.children[2].children[2].children[1].textContent, "12c");
   assert.match(document.querySelector("#result").children[4].children[1].children[0].textContent,
     /Materials 3s 20c.*Profit 70c/);
 });
@@ -87,7 +87,7 @@ test("recipe rows show auction quotes and the shared highest purchase limit alon
   assert.match(tail.children[0].textContent, /bought at 2s 1c each/);
   assert.equal(tail.children[1].textContent, "AH snapshot 1s 70c · Max buy 2s 9c each");
   assert.match(tail.children[1].title, /Each ingredient limit applies separately/);
-  assert.equal(cookingRow().children[4].textContent, "9c");
+  assert.equal(cookingRow().children[2].children[2].children[1].textContent, "9c");
 
   vm.runInContext('materialValues.get("Hot Spices").source = "gathered"', context);
   document.dispatchEvent({type:"materialvalueschange"});
@@ -116,23 +116,19 @@ test("a vendor-sold material always prices recipes and hide limits, even when th
   const recipe = () => document.querySelector("#recipes").children.find(row =>
     row.children[0].children[0]?.textContent === "Light Leather Pants");
   assert.equal(vm.runInContext('materialUnitCost("Fine Thread")',context),100);
-  assert.equal(recipe().children[2].textContent,"3s 30c");
+  assert.equal(recipe().children[2].children[0].children[1].textContent,"3s 30c");
   assert.equal(recipe().children[1].children[2].children[0].textContent,
     "1 × Fine Thread · vendor at 1s 0c each");
   assert.match(recipe().children[1].children[2].children[1].textContent,/^Vendor 1s 0c/);
-  const thread = () => document.querySelector("#materials-reference").children.find(row =>
-    row.children[0].textContent === "Fine Thread");
-  assert.equal(thread().children[0].children[0].textContent,"Best buy: vendor 1s 0c each");
   assert.equal(vm.runInContext('recipePurchaseLimit(knownRecipes.find(r=>r.name==="Light Leather Pants"),"Cured Light Hide").maximum',context),298);
   const hide = document.querySelector("#materials-reference").children.find(row=>row.children[0].textContent==="Cured Light Hide");
-  const details = hide.children[4].children.find(child=>child.className==="material-comparison");
+  const details = hide.children[1].children[4].children.find(child=>child.className==="material-comparison");
   const pants = details.children[2].children[0].children[1].children.find(row=>
     row.children[0].children[0].textContent==="Light Leather Pants");
   assert.ok(pants.children[3].children.some(child=>child.textContent==="1 × Fine Thread at 1s 0c each (vendor)"));
   context.incoming={materials:{"Fine Thread":{auctionCopper:80,purchaseCopper:80,vendorCopper:100,status:"available"}}};
   vm.runInContext('applyAuctionPrices(incoming,"live")',context);
-  assert.equal(recipe().children[2].textContent,"3s 30c");
-  assert.equal(thread().children[0].children[0].textContent,"Best buy: vendor 1s 0c each");
+  assert.equal(recipe().children[2].children[0].children[1].textContent,"3s 30c");
   vm.runInContext('materialValues.get("Fine Thread").manual=true; materialValues.get("Fine Thread").price=200; incoming.materials["Fine Thread"].auctionCopper=150; incoming.materials["Fine Thread"].purchaseCopper=150; applyAuctionPrices(incoming,"live")',context);
   assert.equal(vm.runInContext('materialUnitCost("Fine Thread")',context),200);
   assert.match(recipe().children[1].children[2].children[0].textContent,/manual purchase at 2s 0c/);
@@ -193,14 +189,14 @@ test("a 210c bought lizard tail breaks even with 40c spices, while a gathered ta
   source.listeners.change();
   const recipe = () => document.querySelector("#cooking-recipes").children.find(row =>
     row.children[0].children[0].textContent === "Crispy Lizard Tail");
-  assert.equal(recipe().children[2].textContent, "2s 50c");
-  assert.equal(recipe().children[3].textContent, "2s 50c");
-  assert.equal(recipe().children[4].textContent, "0c");
+  assert.equal(recipe().children[2].children[0].children[1].textContent, "2s 50c");
+  assert.equal(recipe().children[2].children[1].children[1].textContent, "2s 50c");
+  assert.equal(recipe().children[2].children[2].children[1].textContent, "0c");
   assert.equal(document.querySelector("#cooking-result").textContent,
     "This inventory cannot make a profitable recipe at the listed prices.");
   source.value = "gathered";
   source.listeners.change();
-  assert.equal(recipe().children[4].textContent, "2s 10c");
+  assert.equal(recipe().children[2].children[2].children[1].textContent, "2s 10c");
   assert.equal(document.querySelector("#cooking-result").children[0].textContent, "2s 10c profit");
 });
 
@@ -313,17 +309,18 @@ test("the materials reference lists all unique ingredients and separates vendor,
   assert.deepEqual(names, expected);
   assert.equal(new Set(names).size, names.length);
   const tail = () => table.children.find(row => row.children[0].textContent === "Thunder Lizard Tail");
-  assert.equal(tail().children[1].textContent, "Unknown");
-  assert.equal(tail().children[2].children[0].textContent, "2s 10c");
-  assert.equal(tail().children[3].textContent, "2s 9c");
-  assert.equal(tail().children[4].children[0].textContent, "Crispy Lizard Tail");
+  assert.equal(tail().children[1].children[0].children[1].textContent, "Unknown");
+  assert.equal(tail().children[1].children[1].children[1].children[0].textContent, "2s 10c");
+  assert.equal(tail().children[1].children[2].children[1].textContent, "2s 9c");
+  assert.equal(tail().children[1].children[4].children[1].textContent, "2s 9c");
+  assert.equal(tail().children[1].children[4].children[3].children[0].textContent, "Crispy Lizard Tail");
   const spices = table.children.find(row => row.children[0].textContent === "Hot Spices");
-  assert.equal(spices.children[1].textContent, "40c");
-  assert.equal(spices.children[2].children[0].textContent, "49c");
+  assert.equal(spices.children[1].children[0].children[1].textContent, "40c");
+  assert.equal(spices.children[1].children[1].children[1].children[0].textContent, "49c");
 
   vm.runInContext('materialValues.get("Hot Spices").source = "gathered"', context);
   document.dispatchEvent({ type: "materialvalueschange" });
-  assert.equal(tail().children[3].textContent, "2s 49c");
+  assert.equal(tail().children[1].children[2].children[1].textContent, "2s 49c");
   const search = document.querySelector("#material-search");
   search.value = "  LIZARD  ";
   search.listeners.input();
@@ -340,10 +337,10 @@ test("a shared material shows every known recipe's distinct quantity, purchase l
   document.dispatchEvent({ type: "materialvalueschange" });
   const materialRow = () => document.querySelector("#materials-reference").children.find(row =>
     row.children[0].textContent === "Wool Cloth");
-  assert.equal(materialRow().children[3].textContent, "28c");
-  assert.equal(materialRow().children[3].children[0].textContent, "Recipe ceilings 27c – 28c");
-  assert.equal(materialRow().children[4].children[0].textContent, "Heavy Wool Bandage");
-  const details = materialRow().children[4].children[1];
+  assert.equal(materialRow().children[1].children[2].children[1].textContent, "28c");
+  assert.equal(materialRow().children[1].children[2].children[2].textContent, "Recipe ceilings 27c – 28c");
+  assert.equal(materialRow().children[1].children[4].children[3].children[0].textContent, "Heavy Wool Bandage");
+  const details = materialRow().children[1].children[4].children[4];
   const filter = details.children[1].children[0].children[0];
   assert.equal(filter.checked, true);
   filter.checked = false;
@@ -363,7 +360,7 @@ test("a shared material shows every known recipe's distinct quantity, purchase l
   details.listeners.toggle();
   vm.runInContext('materialValues.get("Wool Cloth").price = 21', context);
   document.dispatchEvent({ type: "materialvalueschange" });
-  assert.equal(materialRow().children[4].children[1].open, true);
+  assert.equal(materialRow().children[1].children[4].children[4].open, true);
 });
 
 test("material ranges include zero ceilings, exclude unknown and impossible limits, and recalculate", () => {
@@ -384,16 +381,16 @@ test("material ranges include zero ceilings, exclude unknown and impossible limi
   `, context);
   document.dispatchEvent({type:"materialvalueschange"});
   const range = () => document.querySelector("#materials-reference").children.find(row =>
-    row.children[0].textContent === "Test Material").children[3];
-  assert.equal(range().textContent, "10c");
-  assert.equal(range().children[0].textContent, "Recipe ceilings 0c – 10c");
-  assert.match(range().title, /all 2 recipes/);
+    row.children[0].textContent === "Test Material").children[1].children[2];
+  assert.equal(range().children[1].textContent, "10c");
+  assert.equal(range().children[2].textContent, "Recipe ceilings 0c – 10c");
+  assert.match(range().title, /all 2 recipes in this scenario can profit/);
   vm.runInContext('materialValues.get("Test Other").price = 20', context);
   document.dispatchEvent({type:"materialvalueschange"});
-  assert.equal(range().textContent, "0c");
+  assert.equal(range().children[1].textContent, "0c");
   vm.runInContext('materialValues.get("Test Other").price = 21', context);
   document.dispatchEvent({type:"materialvalueschange"});
-  assert.equal(range().textContent, "None");
+  assert.equal(range().children[1].textContent, "None");
 });
 
 test("30c and 45c recipe ceilings give one shared 45c maximum that updates with live ingredient prices", () => {
@@ -414,7 +411,7 @@ test("30c and 45c recipe ceilings give one shared 45c maximum that updates with 
   const material = () => document.querySelector("#materials-reference").children.find(row =>
     row.children[0].textContent === "Shared Leather");
   function assertSharedMaximum(expected) {
-    assert.equal(material().children[3].textContent, expected);
+    assert.equal(material().children[1].children[2].children[1].textContent, expected);
     const recipes = document.querySelector("#recipes").children.filter(row =>
       ["Thirty recipe", "Forty-five recipe"].includes(row.children[0].children[0]?.textContent));
     assert.equal(recipes.length, 2);
@@ -424,13 +421,13 @@ test("30c and 45c recipe ceilings give one shared 45c maximum that updates with 
     }
   }
   assertSharedMaximum("45c");
-  assert.equal(material().children[3].children[0].textContent, "Recipe ceilings 30c – 45c");
-  assert.equal(material().children[4].children[0].textContent, "Forty-five recipe");
+  assert.equal(material().children[1].children[2].children[2].textContent, "Recipe ceilings 30c – 45c");
+  assert.equal(material().children[1].children[4].children[3].children[0].textContent, "Forty-five recipe");
   vm.runInContext(`applyAuctionPrices({ materials: {
     "Shared Thread": { auctionCopper: 20, purchaseCopper: 20, vendorCopper: null, status: "available" }
   } }, "live")`, context);
   assertSharedMaximum("35c");
-  assert.equal(material().children[3].children[0].textContent, "Recipe ceilings 20c – 35c");
+  assert.equal(material().children[1].children[2].children[2].textContent, "Recipe ceilings 20c – 35c");
   vm.runInContext('materialValues.get("Shared Thread").source = "gathered"', context);
   document.dispatchEvent({ type: "materialvalueschange" });
   assertSharedMaximum("55c");
@@ -562,7 +559,7 @@ test("a single-recipe material shows one shared purchase budget for all quantiti
   `, context);
   document.dispatchEvent({type:"materialvalueschange"});
   const details = () => document.querySelector("#materials-reference").children.find(row =>
-    row.children[0].textContent === "Budget A").children[4].children.find(child =>
+    row.children[0].textContent === "Budget A").children[1].children[4].children.find(child =>
       child.className === "material-comparison");
   const budget = () => details().children[2].children[0].children[1].children[0].children[3];
   assert.equal(details().children[0].textContent, "Compare 1 profitable recipe");
@@ -588,14 +585,16 @@ test("a single-recipe material shows one shared purchase budget for all quantiti
 
 test("the highest purchase limit can come from a recipe with a lower profit per craft", () => {
   const { context, document } = page();
-  vm.runInContext('materialValues.get("Cured Light Hide").price = 10000', context);
+  // Fine Thread has no crafting recipe of its own, so pricing it out of reach can't be routed
+  // around the way a crafted ingredient (like Cured Light Hide) could under the best-path search.
+  vm.runInContext('materialValues.get("Fine Thread").price = 10000', context);
   document.dispatchEvent({ type: "materialvalueschange" });
   const row = document.querySelector("#materials-reference").children.find(row =>
     row.children[0].textContent === "Light Leather");
-  assert.equal(row.children[3].textContent, "24c");
-  assert.equal(row.children[3].children[0].textContent, "Recipe ceilings 1c – 24c");
-  assert.equal(row.children[4].children[0].textContent, "Fine Leather Boots");
-  const comparisons = row.children[4].children[1].children[2].children[0].children[1].children;
+  assert.equal(row.children[1].children[2].children[1].textContent, "27c");
+  assert.equal(row.children[1].children[2].children[2].textContent, "Recipe ceilings 1c – 27c");
+  assert.equal(row.children[1].children[4].children[3].children[0].textContent, "Embossed Leather Pants");
+  const comparisons = row.children[1].children[4].children[4].children[2].children[0].children[1].children;
   const pants = comparisons.find(row => row.children[0].children[0].textContent === "Rugged Leather Pants");
   const boots = comparisons.find(row => row.children[0].children[0].textContent === "Embossed Leather Boots");
   assert.equal(pants.children[1].textContent, "22c");
@@ -644,7 +643,7 @@ test("each material comparison filters positive current profits and keeps its se
   const { context, document } = page();
   const materialRow = name => document.querySelector("#materials-reference").children.find(row =>
     row.children[0].textContent === name);
-  const details = () => materialRow("Wool Cloth").children[4].children[1];
+  const details = () => materialRow("Wool Cloth").children[1].children[4].children[4];
   const body = () => details().children[2].children[0].children[1];
   const filter = () => details().children[1].children[0].children[0];
   vm.runInContext('materialValues.get("Wool Cloth").price = 20', context);
@@ -653,7 +652,7 @@ test("each material comparison filters positive current profits and keeps its se
   filter().listeners.change();
   assert.equal(body().children.length, 2);
   assert.equal(details().children[0].textContent, "Compare 2 profitable recipes");
-  assert.equal(materialRow("Light Leather").children[4].children[1].children[1].children[0].children[0].checked, true);
+  assert.equal(materialRow("Light Leather").children[1].children[4].children[4].children[1].children[0].children[0].checked, true);
 
   vm.runInContext('materialValues.get("Wool Cloth").price = 28', context);
   document.dispatchEvent({ type: "materialvalueschange" });
@@ -684,19 +683,19 @@ test('material profit filters distinguish crafting savings from resale and respo
   vm.runInContext(readFileSync(join(__dirname, '../professions/material-profit.js'), 'utf8'), context);
   const body = document.querySelector('#material-profit-rows');
   const hide = () => body.children.find(row => row.children[0].children[0]?.textContent === 'Cured Medium Hide');
-  assert.equal(hide().children[4].textContent, '10c');
+  assert.equal(hide().children[2].children[2].children[1].textContent, '10c');
   assert.match(hide().children[0].children[2].textContent, /Best recipe to vendor: Hillman's Shoulders/);
-  assert.equal(hide().children[5].textContent, '−9c');
-  assert.equal(hide().children[5].children[0].textContent, 'AH selling fee (5%): 19c');
-  assert.equal(hide().children[5].children[1].textContent, 'Craft + selling fee: 3s 99c');
-  assert.equal(hide().children[7].textContent, 'Craft instead of buying');
+  assert.equal(hide().children[2].children[3].children[1].textContent, '−9c');
+  assert.equal(hide().children[2].children[3].children[2].textContent, 'AH selling fee (5%): 19c');
+  assert.equal(hide().children[2].children[3].children[3].textContent, 'Craft + selling fee: 3s 99c');
+  assert.equal(hide().children[2].children[5].children[1].textContent, 'Craft instead of buying');
   vm.runInContext('materialValues.get("Medium Hide").price = 400', context);
   document.dispatchEvent({type:'materialvalueschange'});
   assert.equal(hide(), undefined);
   const filter = document.querySelector('#material-profit-opportunities-only');
   filter.checked = false;
   filter.listeners.change();
-  assert.equal(hide().children[7].textContent, 'Buy ready-made');
+  assert.equal(hide().children[2].children[5].children[1].textContent, 'Buy ready-made');
   const search = document.querySelector('#material-profit-search');
   search.value = 'no such material';
   search.listeners.input();
