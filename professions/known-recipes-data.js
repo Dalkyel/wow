@@ -419,6 +419,15 @@ const knownRecipes = [
 
 const cookingRecipes = [
   {
+    recipeId: "cooking:spider-sausage",
+    name: "Spider Sausage",
+    unitsPerCraft: 1,
+    vendorCopper: 300,
+    materials: [["White Spider Meat", 2, 144]],
+    stockMaterials: ["White Spider Meat"],
+    sourceUrl: "https://forevermastery.com/en/recipes/21175-spider-sausage",
+  },
+  {
     recipeId: "cooking:sagefish-delight",
     name: "Sagefish Delight",
     unitsPerCraft: 1,

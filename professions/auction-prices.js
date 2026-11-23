@@ -666,6 +666,17 @@ const auctionPriceSnapshot = {
       "scannedAt": "2026-11-21T14:25:03.000Z",
       "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/thunder-lizard-tail-5470"
     },
+    "White Spider Meat": {
+      "name": "White Spider Meat",
+      "itemId": 12205,
+      "auctionCopper": 144,
+      "quantity": 320,
+      "vendorCopper": null,
+      "purchaseCopper": 144,
+      "status": "available",
+      "scannedAt": "2026-11-23T21:25:07.000Z",
+      "sourceUrl": "https://www.wowauctions.net/auctionHouse/forever-us/pve-forever-us/horde/white-spider-meat-12205"
+    },
     "Wool Cloth": {
       "name": "Wool Cloth",
       "itemId": 2592,

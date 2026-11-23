@@ -621,7 +621,7 @@ test("each profession can filter positive profits independently and react to cha
   document.dispatchEvent({ type: "materialvalueschange" });
   assert.ok(!names("#cooking-recipes").includes("Crispy Lizard Tail"));
   assert.ok(names("#cooking-recipes").includes("Smoked Sagefish"));
-  vm.runInContext('materialValues.get("Raw Sagefish").price = null', context);
+  vm.runInContext('materialValues.get("Raw Sagefish").price = null; materialValues.get("White Spider Meat").price = null', context);
   document.dispatchEvent({ type: "materialvalueschange" });
   assert.equal(document.querySelector("#cooking-recipes").children[0].children[0].textContent,
     "No recipes have a positive profit at the selected costs.");

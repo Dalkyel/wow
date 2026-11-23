@@ -21,7 +21,7 @@ This project started from a bulk import of the WoWTBC.GG **All Recipes** tables 
 | Profession | Recipes tracked | Guide |
 | --- | ---: | --- |
 | Leatherworking | 50 | [WoWTBC.GG Leatherworking](https://wowtbc.gg/warcraftforever/professions/leatherworking/) |
-| Cooking | 21 | [WoWTBC.GG Cooking](https://wowtbc.gg/warcraftforever/professions/cooking/) |
+| Cooking | 22 | [WoWTBC.GG Cooking](https://wowtbc.gg/warcraftforever/professions/cooking/) |
 | First Aid | 11 | [WoWTBC.GG First Aid](https://wowtbc.gg/warcraftforever/professions/first-aid/) |
 
 For cross-checking reagents, skill thresholds, and where recipes are learned, see the [ConquestCapped WoW Forever Recipe Database](https://conquestcapped.com/guides/wow-forever/wow-forever-recipes/). It covers all eight crafting professions, including the three tracked here.
