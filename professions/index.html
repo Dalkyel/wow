@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Crafting Profit | Orken Stonewalker's Journal</title>
   <link rel="stylesheet" href="../styles.css">
-  <link rel="stylesheet" href="planner.css?v=searchable-calculator-recipes-1">
+  <link rel="stylesheet" href="planner.css?v=visible-mobile-recipes-1">
   <script src="known-recipes-data.js" defer></script>
   <script src="auction-prices.js" defer></script>
-  <script src="recipe-buying-plan.js?v=searchable-calculator-recipes-1" defer></script>
-  <script src="planner-core.js?v=searchable-calculator-recipes-1" defer></script>
-  <script src="planner-ui.js?v=searchable-calculator-recipes-1" defer></script>
-  <script src="price-calculator.js?v=searchable-calculator-recipes-1" defer></script>
+  <script src="recipe-buying-plan.js?v=visible-mobile-recipes-1" defer></script>
+  <script src="planner-core.js?v=visible-mobile-recipes-1" defer></script>
+  <script src="planner-ui.js?v=visible-mobile-recipes-1" defer></script>
+  <script src="price-calculator.js?v=visible-mobile-recipes-1" defer></script>
   <script src="auction-client.js" defer></script>
   <script src="profession-tabs.js" defer></script>
 </head>
@@ -35,7 +35,7 @@
     <section id="recipe-view" role="tabpanel" aria-labelledby="recipes-tab">
       <div class="desk-layout">
         <aside class="selection-panel" aria-label="Choose a recipe">
-          <details id="recipe-drawer" class="selection-drawer" open><summary>Choose a recipe</summary>
+          <div id="recipe-drawer" class="recipe-picker">
           <div class="selection-controls">
             <label for="recipe-search">Find a recipe<input id="recipe-search" type="search" placeholder="Light Leather Pants…"></label>
             <label for="recipe-profession">Profession<select id="recipe-profession"><option value="all">All professions</option><option value="Leatherworking">Leatherworking</option><option value="Cooking">Cooking</option><option value="First Aid">First Aid</option></select></label>
@@ -43,7 +43,7 @@
             <p id="recipe-count" class="quiet" aria-live="polite"></p>
           </div>
           <div id="recipe-list" class="selection-list"></div>
-          </details>
+          </div>
         </aside>
         <article id="recipe-detail" class="detail-panel" aria-label="Recipe buying plan"></article>
       </div>

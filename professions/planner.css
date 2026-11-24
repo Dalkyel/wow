@@ -147,3 +147,5 @@
 .calculator-recipe-option.selected strong { color:#edce91; }
 @media(max-width:850px) { .calculator-controls>.calculator-recipe-field { grid-column:1 / -1; } }
 @media(max-width:640px) { .calculator-picker-panel { width:100%; max-width:none; } }
+
+@media(max-width:640px) { #recipe-list { max-height:none; overflow:visible; } }

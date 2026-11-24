@@ -80,7 +80,7 @@ function renderRecipes() {
     button.type='button';button.setAttribute('aria-pressed',String(recipe.recipeId===selectedRecipe));
     button.append(node('strong',recipe.name),node('span',`${recipe.profession} · ${view.destination==='auction' ? `AH ${money(view.gross)}` : recipe.vendorCopper>0 ? `Vendor ${money(recipe.vendorCopper*recipe.unitsPerCraft)}` : 'Cannot vendor'}`,'quiet'),
       node('span',recipeStatus(view),view.status==='profitable' ? 'positive' : 'quiet'));
-    button.addEventListener('click',()=>{selectedRecipe=recipe.recipeId;saleDestination='vendor';selectedKeepMaterial=null;ingredientChoices={};closeMobileDrawer('#recipe-drawer');renderRecipes();});
+    button.addEventListener('click',()=>{selectedRecipe=recipe.recipeId;saleDestination='vendor';selectedKeepMaterial=null;ingredientChoices={};renderRecipes();});
     list.append(button);
   }
   if (!recipes.length) list.append(node('p','No recipes match these filters.','empty-state'));
@@ -270,7 +270,7 @@ $('#recipe-available-only').addEventListener('change',renderRecipes);
 $('#material-search').addEventListener('input',renderMaterials);
 if (typeof window!=='undefined') {
   const mobile=window.matchMedia('(max-width:640px)');
-  const syncDrawers=()=>{ $('#recipe-drawer').open=!mobile.matches;$('#material-drawer').open=!mobile.matches; };
+  const syncDrawers=()=>{ $('#material-drawer').open=!mobile.matches; };
   mobile.addEventListener('change',syncDrawers);syncDrawers();
 }
 renderPlanner();
