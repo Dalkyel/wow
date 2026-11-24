@@ -145,3 +145,31 @@ test('calculator link copies the selected recipe route and Clear my prices resto
   document.querySelector('#calculator-clear').listeners.click();
   assert.match(document.querySelector('#calculator-status').textContent,/blank material prices share/);
 });
+
+test('calculator recipe picker filters by name and profession and selects a match',()=>{
+  const {document}=page();
+  const search=document.querySelector('#calculator-recipe-search');
+  search.value='cured';search.listeners.input();
+  assert.equal(document.querySelector('#calculator-recipe-count').textContent,'1 recipe found');
+  const results=document.querySelector('#calculator-recipe-results');
+  assert.match(text(results),/Cured Light Hide/);
+  assert.doesNotMatch(text(results),/Light Leather Pants/);
+  const profession=document.querySelector('#calculator-recipe-profession');
+  profession.value='Cooking';profession.listeners.change();
+  assert.match(text(results),/No recipes match/);
+  profession.value='all';profession.listeners.change();
+  results.children[0].listeners.click();
+  assert.equal(document.querySelector('#calculator-selected-recipe').textContent,'Cured Light Hide · Leatherworking');
+  assert.equal(document.querySelector('#calculator-recipe-picker').open,false);
+  assert.doesNotMatch(text(document.querySelector('#calculator-inputs')),/10 × Light Leather/);
+});
+test('calculator picker Enter selects a result and reopening a recipe retains its entered purchase prices',()=>{
+  const {document}=page();
+  const input=find(document.querySelector('#calculator-inputs'),e=>e.attributes['aria-label']==='Light Hide calculator price in copper');
+  input.value='90';input.listeners.input();
+  const search=document.querySelector('#calculator-recipe-search');
+  search.value='cured';search.listeners.input();search.listeners.keydown({key:'Enter',preventDefault(){}});
+  search.value='pants';search.listeners.input();search.listeners.keydown({key:'Enter',preventDefault(){}});
+  assert.equal(document.querySelector('#calculator-selected-recipe').textContent,'Light Leather Pants · Leatherworking');
+  assert.match(document.querySelector('#calculator-status').textContent,/35c each or less/);
+});

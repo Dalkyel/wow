@@ -16,11 +16,13 @@ function openPriceCalculator(recipeId,view=null) {
     calculatorState.destination=view.destination;
     calculatorState.choices.set(recipeId,Object.fromEntries((view.plan.decisions ?? []).map(item=>[item.name,item.craft?'craft':'buy'])));
   }
-  $('#calculator-recipe').value=recipeId;$('#calculator-destination').value=calculatorState.destination;
+  $('#calculator-destination').value=calculatorState.destination;
+  $('#calculator-recipe-search').value='';$('#calculator-recipe-profession').value='all';renderCalculatorRecipePicker();
   selectProfession($('#calculator-tab'));renderPriceCalculator();
 }
 function renderPriceCalculator() {
   const view=calculatorView();
+  $('#calculator-selected-recipe').textContent=`${view.recipe.name} · ${view.recipe.profession}`;
   $('#calculator-sale-label').hidden=calculatorState.destination!=='auction';
   const route=$('#calculator-route');route.replaceChildren(plannerRouteControls(view,choices=>{
     calculatorState.choices.set(calculatorState.recipeId,choices);renderPriceCalculator();
@@ -100,13 +102,44 @@ function renderCalculatorResult() {
   if (result.status==='shared-budget') example.append(node('p','This is one combined example, not independent maximum prices. Paying more for one blank material requires spending less on another.','quiet'));
   output.append(example);
 }
-for (const recipe of [...plannerRecipes].sort((a,b)=>a.name.localeCompare(b.name))) {
-  const option=node('option',`${recipe.name} · ${recipe.profession}`);option.value=recipe.recipeId;$('#calculator-recipe').append(option);
+let calculatorRecipeMatches=[];
+function chooseCalculatorRecipe(recipeId) {
+  if (calculatorState.recipeId!==recipeId) {calculatorState.salePrice=null;$('#calculator-sale-price').value='';}
+  calculatorState.recipeId=recipeId;
+  $('#calculator-recipe-picker').open=false;
+  renderCalculatorRecipePicker();renderPriceCalculator();
+  $('#calculator-selected-recipe').focus?.();
 }
-$('#calculator-recipe').value=calculatorState.recipeId;
+function renderCalculatorRecipePicker() {
+  const query=$('#calculator-recipe-search').value.trim().toLowerCase();
+  const profession=$('#calculator-recipe-profession').value;
+  calculatorRecipeMatches=plannerRecipes.filter(recipe=>(profession==='all'||recipe.profession===profession) && recipe.name.toLowerCase().includes(query))
+    .sort((a,b)=>a.name.localeCompare(b.name));
+  $('#calculator-recipe-count').textContent=`${calculatorRecipeMatches.length} ${calculatorRecipeMatches.length===1?'recipe':'recipes'} found`;
+  const results=$('#calculator-recipe-results');results.replaceChildren();
+  for (const recipe of calculatorRecipeMatches) {
+    const button=node('button',undefined,`calculator-recipe-option${recipe.recipeId===calculatorState.recipeId?' selected':''}`);
+    button.type='button';button.setAttribute('aria-pressed',String(recipe.recipeId===calculatorState.recipeId));
+    button.append(node('strong',recipe.name),node('span',recipe.profession,'quiet'));
+    button.addEventListener('click',()=>chooseCalculatorRecipe(recipe.recipeId));results.append(button);
+  }
+  if (!calculatorRecipeMatches.length) results.append(node('p','No recipes match. Try another name or profession.','empty-state'));
+}
+$('#calculator-recipe-profession').value='all';
+$('#calculator-recipe-picker').open=false;
+$('#calculator-recipe-search').addEventListener('input',renderCalculatorRecipePicker);
+$('#calculator-recipe-profession').addEventListener('change',renderCalculatorRecipePicker);
+$('#calculator-recipe-picker').addEventListener('toggle',()=>{
+  if ($('#calculator-recipe-picker').open) $('#calculator-recipe-search').focus?.();
+});
+$('#calculator-recipe-search').addEventListener('keydown',event=>{
+  if (event.key==='Enter' && calculatorRecipeMatches.length) {event.preventDefault();chooseCalculatorRecipe(calculatorRecipeMatches[0].recipeId);}
+  if (event.key==='ArrowDown') {event.preventDefault();$('#calculator-recipe-results').children[0]?.focus?.();}
+  if (event.key==='Escape') {event.preventDefault();$('#calculator-recipe-picker').open=false;$('#calculator-selected-recipe').focus?.();}
+});
+renderCalculatorRecipePicker();
 $('#calculator-destination').value=calculatorState.destination;
 $('#calculator-min-profit').value='1';
-$('#calculator-recipe').addEventListener('change',()=>{calculatorState.recipeId=$('#calculator-recipe').value;calculatorState.salePrice=null;$('#calculator-sale-price').value='';renderPriceCalculator();});
 $('#calculator-destination').addEventListener('change',()=>{calculatorState.destination=$('#calculator-destination').value;renderPriceCalculator();});
 $('#calculator-min-profit').addEventListener('input',()=>{calculatorState.minimumProfit=Number($('#calculator-min-profit').value);renderCalculatorResult();});
 $('#calculator-sale-price').addEventListener('input',()=>{calculatorState.salePrice=$('#calculator-sale-price').value==='' ? null : Number($('#calculator-sale-price').value);renderCalculatorResult();});

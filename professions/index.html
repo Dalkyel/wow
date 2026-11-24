@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Crafting Profit | Orken Stonewalker's Journal</title>
   <link rel="stylesheet" href="../styles.css">
-  <link rel="stylesheet" href="planner.css?v=price-calculator-1">
+  <link rel="stylesheet" href="planner.css?v=searchable-calculator-recipes-1">
   <script src="known-recipes-data.js" defer></script>
   <script src="auction-prices.js" defer></script>
-  <script src="recipe-buying-plan.js?v=price-calculator-1" defer></script>
-  <script src="planner-core.js?v=price-calculator-1" defer></script>
-  <script src="planner-ui.js?v=price-calculator-1" defer></script>
-  <script src="price-calculator.js?v=price-calculator-1" defer></script>
+  <script src="recipe-buying-plan.js?v=searchable-calculator-recipes-1" defer></script>
+  <script src="planner-core.js?v=searchable-calculator-recipes-1" defer></script>
+  <script src="planner-ui.js?v=searchable-calculator-recipes-1" defer></script>
+  <script src="price-calculator.js?v=searchable-calculator-recipes-1" defer></script>
   <script src="auction-client.js" defer></script>
   <script src="profession-tabs.js" defer></script>
 </head>
@@ -65,7 +65,18 @@
         <div class="detail-heading"><p class="eyebrow">YOUR PURCHASE SCENARIO</p><h2>What can the other materials cost?</h2>
           <p class="quiet">Set the prices you know. Leave other AH material prices blank to solve for them. These inputs do not change the AH quotes.</p></div>
         <div class="calculator-controls">
-          <label for="calculator-recipe">Recipe<select id="calculator-recipe"></select></label>
+          <div class="calculator-recipe-field">
+            <span class="metric-label">Recipe</span>
+            <details id="calculator-recipe-picker" class="calculator-recipe-picker">
+              <summary id="calculator-selected-recipe">Choose a recipe</summary>
+              <div class="calculator-picker-panel">
+                <label for="calculator-recipe-search">Search recipes<input id="calculator-recipe-search" type="search" placeholder="Type a recipe name…" autocomplete="off"></label>
+                <label for="calculator-recipe-profession">Filter by profession<select id="calculator-recipe-profession"><option value="all">All professions</option><option value="Leatherworking">Leatherworking</option><option value="Cooking">Cooking</option><option value="First Aid">First Aid</option></select></label>
+                <p id="calculator-recipe-count" class="quiet" role="status" aria-live="polite"></p>
+                <div id="calculator-recipe-results" class="calculator-recipe-results" aria-label="Matching recipes"></div>
+              </div>
+            </details>
+          </div>
           <label for="calculator-destination">Sell the finished item to<select id="calculator-destination"><option value="vendor">Vendor</option><option value="auction">Auction House (5% fee)</option></select></label>
           <label for="calculator-min-profit">Minimum profit per craft (copper)<input id="calculator-min-profit" type="number" min="1" step="1" value="1"></label>
           <label id="calculator-sale-label" for="calculator-sale-price" hidden>AH sale price per item (copper)<input id="calculator-sale-price" type="number" min="1" step="1" placeholder="Blank uses the output AH quote"></label>
