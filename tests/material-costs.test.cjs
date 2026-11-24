@@ -37,14 +37,15 @@ function page(snapshot, browser) {
       });
     },
   };
-  const html = readFileSync(join(__dirname, "../professions/index.html"), "utf8");
+  // Preserve coverage of the retired renderer and its shared calculation helpers.
+  const html = readFileSync(join(__dirname, "fixtures/legacy-profit.html"), "utf8");
   for (const input of html.matchAll(/<input\b[^>]*id="([^"]+-profitable-only)"[^>]*>/g)) {
     document.querySelector(`#${input[1]}`).checked = /\bchecked\b/.test(input[0]);
   }
   const context = vm.createContext({ document, Event: class { constructor(type) { this.type = type; } },
     ...browser });
   if (snapshot) context.auctionPriceSnapshot = snapshot;
-  for (const file of ["known-recipes-data.js", "material-costs.js", "profit.js", "known-recipes.js", "materials-reference.js"]) {
+  for (const file of ["auction-sales.js", "known-recipes-data.js", "material-costs.js", "inventory-valuation.js", "profit.js", "recipe-buying-plan.js", "known-recipes.js", "materials-reference.js"]) {
     vm.runInContext(readFileSync(join(__dirname, "../professions", file), "utf8"), context);
   }
   if (browser) vm.runInContext(readFileSync(join(__dirname, "../professions/auction-client.js"), "utf8"), context);
@@ -672,32 +673,90 @@ test("each material comparison filters positive current profits and keeps its se
   assert.equal(body().children.length, 3);
 });
 
-test('material profit filters distinguish crafting savings from resale and respond to price updates', () => {
-  const { context, document } = page({ materials: {
-    'Cured Medium Hide': {auctionCopper:390,quantity:100,status:'available'},
-    Salt: {vendorCopper:50},
-  }});
-  document.querySelector('#material-profit-search').value = '';
-  document.querySelector('#material-profit-opportunities-only').checked = true;
-  vm.runInContext('materialValues.get("Medium Hide").price = 330', context);
-  vm.runInContext(readFileSync(join(__dirname, '../professions/material-profit.js'), 'utf8'), context);
-  const body = document.querySelector('#material-profit-rows');
-  const hide = () => body.children.find(row => row.children[0].children[0]?.textContent === 'Cured Medium Hide');
-  assert.equal(hide().children[2].children[2].children[1].textContent, '10c');
-  assert.match(hide().children[0].children[2].textContent, /Best recipe to vendor: Hillman's Shoulders/);
-  assert.equal(hide().children[2].children[3].children[1].textContent, '−9c');
-  assert.equal(hide().children[2].children[3].children[2].textContent, 'AH selling fee (5%): 19c');
-  assert.equal(hide().children[2].children[3].children[3].textContent, 'Craft + selling fee: 3s 99c');
-  assert.equal(hide().children[2].children[5].children[1].textContent, 'Craft instead of buying');
-  vm.runInContext('materialValues.get("Medium Hide").price = 400', context);
+test('material tabs always use recipe limits without manual purchase forms', () => {
+  const {context,document}=page({materials:{Salt:{vendorCopper:50},
+    'Cured Light Hide':{auctionCopper:310,quantity:10,status:'available'}}});
+  const materialRow=()=>document.querySelector('#materials-reference').children
+    .find(row=>row.children[0].textContent==='Cured Light Hide');
+  const minimum=()=>materialRow().children[1].children
+    .find(block=>block.children[0]?.textContent==='Minimum AH sale price / item');
+  const before=minimum().children[1].textContent;
+  vm.runInContext('materialValues.get("Light Hide").price=4900',context);
   document.dispatchEvent({type:'materialvalueschange'});
-  assert.equal(hide(), undefined);
-  const filter = document.querySelector('#material-profit-opportunities-only');
-  filter.checked = false;
-  filter.listeners.change();
-  assert.equal(hide().children[2].children[5].children[1].textContent, 'Buy ready-made');
-  const search = document.querySelector('#material-profit-search');
-  search.value = 'no such material';
+  assert.equal(minimum().children[1].textContent,before);
+  assert.match(minimum().children[3].textContent,/Assumed inventory cost/);
+  assert.ok(!materialRow().children[1].children.some(block=>block.children[0]?.textContent==='Your inventory purchase price'));
+  const html=readFileSync(join(__dirname,'../professions/index.html'),'utf8');
+  assert.doesNotMatch(html,/id="(?:materials|material-profit)-cost-mode"/);
+  const source=readFileSync(join(__dirname,'../professions/materials-reference.js'),'utf8');
+  assert.doesNotMatch(source,/Save price paid|Use live purchase estimate|price paid in copper/);
+  document.querySelector('#material-profit-search').value='';
+  vm.runInContext(readFileSync(join(__dirname,'../professions/material-profit.js'),'utf8'),context);
+  const search=document.querySelector('#material-profit-search');
+  search.value='no such material';
   search.listeners.input();
-  assert.equal(body.children[0].children[0].textContent, 'No material recipes match your search.');
+  assert.equal(document.querySelector('#material-profit-rows').children[0].children[0].textContent,'No material recipes match your search.');
+});
+
+test('inventory valuation carries the lowest supported recipe buy limit through a crafting chain', () => {
+  const {context,document}=page({materials:{Salt:{vendorCopper:50},'Fine Thread':{vendorCopper:100}}});
+  vm.runInContext(`materialValues.get('Light Leather').price=20;
+    materialValues.get('Ruined Leather Scraps').price=10;
+    materialValues.get('Light Hide').price=4900;
+    materialValues.get('Cured Light Hide').price=310;
+`,context);
+  document.dispatchEvent({type:'materialvalueschange'});
+  const scenario=vm.runInContext('materialCeilingScenario("Cured Light Hide")',context);
+  assert.equal(scenario.anchor,'Light Hide');
+  assert.equal(scenario.maximum,30);
+  assert.equal(scenario.recipe.name,'Fine Leather Gloves');
+  assert.equal(scenario.cost,80);
+  assert.equal(scenario.costFor('Salt'),50);
+  const hide=document.querySelector('#materials-reference').children.find(row=>row.children[0].textContent==='Cured Light Hide');
+  const minimum=hide.children[1].children.find(block=>block.children[0]?.textContent==='Minimum AH sale price / item');
+  assert.equal(minimum.children[1].textContent,'85c');
+  assert.match(minimum.children[5].textContent,/Light Hide bought at 30c, the lowest recipe buy limit \(Fine Leather Gloves\)/);
+  assert.equal(vm.runInContext('materialValues.get("Light Hide").price',context),4900);
+  assert.equal(vm.runInContext('auctionQuotes["Cured Light Hide"]?.auctionCopper',context),undefined);
+  context.scenario=scenario;
+  document.querySelector('#material-profit-search').value='';
+  vm.runInContext(readFileSync(join(__dirname,'../professions/material-profit.js'),'utf8'),context);
+  const row=vm.runInContext(`materialProfitRows(allKnownRecipes,materialValues,auctionQuotes,materialCeilingScenario)
+    .find(row=>row.recipe.name==='Cured Light Hide')`,context);
+  assert.equal(row.cost,80);
+  assert.equal(row.bestUse.recipe.name,'Light Leather Pants');
+  assert.equal(row.bestUse.cost,380);
+  assert.equal(row.bestUse.profit,219);
+});
+
+test('inventory assumption never combines the independent maximum prices of two ingredients', () => {
+  const {context,document}=page();
+  vm.runInContext(`
+    const blend={name:'Test Blend',unitsPerCraft:1,vendorCopper:100,materials:[['Test A',1],['Test B',1]]};
+    allKnownRecipes.push(blend); materialSuppliers.set(blend.name,blend);
+    materialValues.set('Test A',{price:10,source:'bought'});
+    materialValues.set('Test B',{price:20,source:'bought'});
+  `,context);
+  document.dispatchEvent({type:'materialvalueschange'});
+  const scenario=vm.runInContext('materialCeilingScenario("Test Blend")',context);
+  assert.equal(scenario.cost,99);
+  assert.equal(scenario.anchor,'Test A');
+  assert.equal(scenario.maximum,79);
+  assert.equal(scenario.costFor('Test B'),20);
+});
+
+test('recipe and Materials tables show the same complete pants buying budget', () => {
+  const {document}=page({materials:{Salt:{vendorCopper:50},'Fine Thread':{vendorCopper:100}}});
+  const filter=document.querySelector('#leatherworking-profitable-only');
+  filter.checked=false;
+  filter.listeners.change();
+  const pants=document.querySelector('#recipes').children.find(row=>row.children[0].children[0]?.textContent==='Light Leather Pants');
+  const recipePlan=pants.children[2].children.find(child=>child.className==='recipe-purchase-budget');
+  assert.match(recipePlan.children[1].textContent,/Vendor pays 5s 99c.*spend at most 5s 98c/);
+  assert.match(recipePlan.children[2].textContent,/Salt at 50c.*Fine Thread at 1s 0c.*Total 1s 50c/);
+  assert.match(recipePlan.children[3].textContent,/10 × Light Leather price.*1 × Light Hide price ≤ 4s 48c together/);
+  const hide=document.querySelector('#materials-reference').children.find(row=>row.children[0].textContent==='Light Hide');
+  const plans=hide.children[1].children.find(child=>child.className==='material-buying-plans');
+  const materialPlan=plans.children.find(child=>child.className==='recipe-purchase-budget' && child.children[0].textContent.startsWith('Light Leather Pants:'));
+  assert.deepEqual(materialPlan.children.map(child=>child.textContent),recipePlan.children.map(child=>child.textContent));
 });

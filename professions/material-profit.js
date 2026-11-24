@@ -1,15 +1,5 @@
 // Purchase comparisons deliberately ignore inventory source selections: gathered is not free
 // when deciding whether to buy ingredients, and an input's crafting cost is a separate row.
-const factionAuctionCutPercent = 5;
-
-function auctionSaleCosts(craftCost, salePrice, quantity = 1) {
-  if (salePrice === null) return { fee: null, totalCost: null, profit: null };
-  const revenue = salePrice * quantity;
-  const fee = Math.floor(revenue * factionAuctionCutPercent / 100);
-  const totalCost = craftCost === null ? null : craftCost + fee;
-  return { fee, totalCost, profit: totalCost === null ? null : revenue - totalCost };
-}
-
 function materialRecipeUses(target, recipes, purchasePrice) {
   const suppliers = new Map(recipes.map(recipe => [recipe.name, recipe]));
   function reaches(name, visited = new Set()) {
@@ -48,13 +38,15 @@ function materialRecipeUses(target, recipes, purchasePrice) {
     }).sort((a, b) => (b.profit ?? -Infinity) - (a.profit ?? -Infinity) || a.recipe.name.localeCompare(b.recipe.name));
 }
 
-function materialProfitRows(recipes, prices, quotes) {
+function materialProfitRows(recipes, prices, quotes, scenarioFor = null) {
   const inputs = new Set(recipes.flatMap(recipe => recipe.materials.map(([name]) => name)));
-  const purchasePrice = name => quotes[name]?.vendorCopper ?? prices.get(name)?.price ?? null;
+  const purchasePrice = name => purchaseUnitCost(name, prices, quotes);
   return recipes.filter(recipe => inputs.has(recipe.name) || /\b(?:Leather|Hide)$/.test(recipe.name))
     .map(recipe => {
+      const scenario = scenarioFor?.(recipe.name) ?? null;
+      const inputCost = scenarioFor ? name => scenario?.costFor(name) ?? null : purchasePrice;
       const ingredients = recipe.materials.map(([name, quantity]) => ({
-        name, quantity, price: purchasePrice(name),
+        name, quantity, price: inputCost(name),
       }));
       const cost = ingredients.some(item => item.price === null) ? null
         : ingredients.reduce((sum, item) => sum + item.quantity * item.price, 0) / recipe.unitsPerCraft;
@@ -65,13 +57,14 @@ function materialProfitRows(recipes, prices, quotes) {
       const sale = auctionSaleCosts(cost, auction);
       const auctionProfit = sale.profit;
       const vendorProfit = cost === null || !(recipe.vendorCopper > 0) ? null : recipe.vendorCopper - cost;
-      const downstream = materialRecipeUses(recipe, recipes, purchasePrice);
+      const downstream = materialRecipeUses(recipe, recipes, inputCost);
       const bestUse = downstream.find(use => use.profit !== null) ?? null;
       const best = Math.max(savings ?? -Infinity, auctionProfit ?? -Infinity, vendorProfit ?? -Infinity,
         bestUse?.profit ?? -Infinity);
       const uses = recipes.filter(other => other.materials.some(([name]) => name === recipe.name)).map(other => other.name);
       return { recipe, ingredients, cost, auction, savings, auctionProfit, auctionFee: sale.fee,
-        auctionTotalCost: sale.totalCost, vendorProfit, best, uses, downstream, bestUse };
+        auctionTotalCost: sale.totalCost, minimumSale: minimumProfitableAuctionPrice(cost),
+        vendorProfit, best, uses, downstream, bestUse, scenario };
     }).sort((a, b) => b.best - a.best || a.recipe.name.localeCompare(b.recipe.name));
 }
 
@@ -79,7 +72,7 @@ function renderMaterialProfit() {
   const table = document.querySelector('#material-profit-rows');
   const only = document.querySelector('#material-profit-opportunities-only').checked;
   const search = document.querySelector('#material-profit-search').value.trim().toLowerCase();
-  const all = materialProfitRows(allKnownRecipes, materialValues, auctionQuotes);
+  const all = materialProfitRows(allKnownRecipes, materialValues, auctionQuotes, materialCeilingScenario);
   const rows = all.filter(row => (!only || row.best > 0) &&
     [row.recipe.name, ...row.ingredients.map(item => item.name), ...row.downstream.map(use => use.recipe.name)]
       .some(name => name.toLowerCase().includes(search)));
@@ -97,6 +90,16 @@ function renderMaterialProfit() {
     const yieldLabel = document.createElement('small');
     yieldLabel.textContent = `${item.recipe.unitsPerCraft} produced per craft`;
     name.append(yieldLabel);
+    {
+      const assumption = document.createElement('small');
+      assumption.textContent = materialValuationExplanation(item.scenario);
+      name.append(assumption);
+    }
+    const sellAt = document.createElement('p');
+    sellAt.className = 'material-minimum-sale';
+    sellAt.textContent = item.minimumSale === null ? 'Minimum AH sale price unknown: ingredient price missing.'
+      : `${auctionSaleVerdict(item.cost, item.auction)} Your cost-based minimum is ${formatPrice(item.minimumSale)} each; this is not a suggested listing price.`;
+    name.append(sellAt);
     const bestUse = document.createElement('p');
     bestUse.className = 'material-best-recipe';
     bestUse.textContent = item.bestUse
@@ -168,12 +171,24 @@ function renderMaterialProfit() {
     const decision = renderInfoBlock(economics, 'Decision');
     decision.block.classList.add('info-item-wide');
     const actions = [];
-    if (item.savings > 0) actions.push('Craft instead of buying');
+    if (item.savings > 0) actions.push('Craft from assumed inventory');
     if (item.auctionProfit > 0) actions.push('Potential AH profit');
     if (item.vendorProfit > 0) actions.push('Vendor profit');
     if (item.bestUse?.profit > 0) actions.push(`Craft for ${item.bestUse.recipe.name}`);
     decision.value.textContent = actions.join(' · ') || (item.cost === null ? 'Ingredient price missing'
       : item.auction === null ? 'AH price missing' : item.savings < 0 ? 'Buy ready-made' : 'No positive margin');
+    const minimum = renderInfoBlock(economics, 'Minimum AH sale price / item');
+    minimum.block.classList.add('info-item-wide');
+    minimum.block.classList.add('material-minimum-sale');
+    minimum.value.textContent = formatPrice(item.minimumSale);
+    const explanation = document.createElement('small');
+    if (item.minimumSale === null) explanation.textContent = 'Enter every ingredient purchase price to calculate a minimum.';
+    else {
+      const sale = auctionSaleCosts(item.cost, item.minimumSale);
+      explanation.textContent = `Sell for ${formatPrice(item.minimumSale)} − AH fee ${formatPrice(sale.fee)} − ingredients ${formatPrice(item.cost)} = ${formatPrice(sale.profit)} profit per item. ` +
+        'Calculated for one item per auction; excludes lost deposits.';
+    }
+    minimum.block.append(explanation);
   }
   if (!rows.length) {
     const cell = table.insertRow().insertCell();

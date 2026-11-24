@@ -1,53 +1,53 @@
-# WoW Forever recipe profit tracker
+# Crafting Profit
 
-Open the [Crafting Profit calculator](index.html) to plan vendor sales with the leather and hides you have. The planner gives each leather or hide in your known recipes its own inventory field. Enter 0 if you have none.
+Open [Crafting Profit](index.html) to compare current purchase quotes with a complete buying plan that leaves at least 1 copper profit.
 
-[known-recipes-data.js](known-recipes-data.js) is the source of truth for every recipe, yield, and material price — nothing else in the project is read by the page. To add a recipe to **My recipes**, ask Codex to use the [add-crafting-recipe skill](../.claude/skills/add-crafting-recipe/SKILL.md) with the recipe name or item link. The skill records it in the project and the page ranks it by vendor profit per craft.
+## Recipes
 
-## Refresh auction prices
+Choose a recipe, a sale destination, and an ingredient route. The three top figures are the sale proceeds, selling fee, and maximum total ingredient spend. **Purchase budget = sale proceeds − selling fee − 1c.** A vendor sale has no AH fee. An AH sale uses a 5% cut on the whole output sale and needs an output quote; otherwise its sale price and budget stay unknown.
 
-The planner reads [Auction House's public API](https://auctionhouse.tk.gg/data/) directly in your browser every time the page opens, so prices are always a fresh live fetch rather than a cached copy. The US Normal Horde market is `us-2-114`. The provider permits cross-origin requests and requires no key. Prices come from hourly auction snapshots.
+**At current purchase quotes** prices the exact chosen ingredients using their AH snapshot minimums or curated vendor purchase prices. Missing quotes stay unknown. No gathered or hypothetical inventory cost is substituted.
 
-The page recalculates recipes, purchase limits, and vendor plans when quotes arrive. Manual price edits and material source selections are preserved during a request. A failed request falls back to the last successful fetch saved in browser storage, or the bundled snapshot, and labels that fallback. The displayed scan time identifies the age of the data.
+**Buying plan** is one complete, hypothetical allocation of that same budget. It reserves fixed vendor supplies, divides the remaining budget across purchased units, and assigns leftover whole copper. Ingredient prices in a single example work together. Many other combinations can satisfy the same budget; no example target is a universal material price or a promise of AH availability. Plans requiring free purchased inputs are rejected.
 
-Bought materials use the cheaper of the auction minimum and a known vendor price. Gathered materials cost 0c and crafted inputs use their ingredient costs. Listed quantities cover all price levels, so a larger purchase may cost more than the minimum.
+For example, Light Leather Pants vendor for 599c. Keeping 1c leaves 598c for all purchases. Salt at 50c plus Fine Thread at 100c leave **448c for 10 Light Leather and 1 Light Hide together**. One complete example is 40c leather and 48c hide; another is 35c leather and 90c hide, which leaves 9c profit.
 
-For an offline fallback snapshot, ask Codex to use [refresh-auction-prices](../.claude/skills/refresh-auction-prices/SKILL.md), or run `npm run prices:refresh`. This optional local process saves WoWAuctions quotes in [auction-prices.csv](auction-prices.csv) and [auction-prices.js](auction-prices.js). Add verified item IDs for newly introduced materials to [auction-materials.json](auction-materials.json), which both refresh processes read.
+Every craftable ingredient has independent Buy and Craft buttons, including base leather conversions. Each row compares its quoted purchase price with its ingredient cost to craft. Defaults buy base leather and craft other intermediates; you can change any ingredient without resetting the others. Choosing Craft reveals deeper known conversions. Whole intermediate crafting batches are charged; no income is credited for leftovers. The crafting order appears below the buying plan.
 
-## Sources
+## Materials
 
-This project started from a bulk import of the WoWTBC.GG **All Recipes** tables on November 17, 2026, but [known-recipes-data.js](known-recipes-data.js) now holds only the curated **known recipes** list — recipes actually added one at a time via the [add-crafting-recipe skill](../.claude/skills/add-crafting-recipe/SKILL.md), not every recipe in a profession. Each ingredient quantity is for one craft. A recipe's yield defaults to one unless its source shows a different quantity.
+The Materials view lists purchase quotes and the known recipes using each material, including indirect uses. Opening a raw material such as Ruined Leather Scraps forces the conversions needed to reach that material, so its price limit is shown even when the default route would buy Light Leather. Each recipe card has its own shared spending budget and clearly labeled example target. **Open buying plan** takes you to that exact recipe and ingredient route, preserving the material as a purchased input so its target matches the card.
 
-| Profession | Recipes tracked | Guide |
-| --- | ---: | --- |
-| Leatherworking | 50 | [WoWTBC.GG Leatherworking](https://wowtbc.gg/warcraftforever/professions/leatherworking/) |
-| Cooking | 22 | [WoWTBC.GG Cooking](https://wowtbc.gg/warcraftforever/professions/cooking/) |
-| First Aid | 11 | [WoWTBC.GG First Aid](https://wowtbc.gg/warcraftforever/professions/first-aid/) |
+For a material you know how to craft, **Open craft-and-sell plan** opens its recipe with an AH sale selected. This uses the actual quoted ingredient costs and a 5% AH selling cut. Refunded deposits are not an expense; lost deposits and relisting costs are excluded.
 
-For cross-checking reagents, skill thresholds, and where recipes are learned, see the [ConquestCapped WoW Forever Recipe Database](https://conquestcapped.com/guides/wow-forever/wow-forever-recipes/). It covers all eight crafting professions, including the three tracked here.
+Recipes and Materials have no manual price forms, global profitable material prices, or inferred historical inventory costs. Trial prices belong in the separate Price Calculator.
 
-## Track profit
+## Quotes and data
 
-The calculator tracks profit live — there's no manual spreadsheet step. For each material, pick a source (Gathered, Bought, or Crafted) and, for bought materials, a purchase price; the recipe tables and the vendor plan recalculate immediately from your selections. Bought materials default to the cheaper of the live auction minimum and a known vendor price (see [Refresh auction prices](#refresh-auction-prices) above), gathered materials cost 0c, and crafted materials use their own ingredients' cost recursively. **Profit per craft = units per craft × vendor sale price − material cost per craft.**
+[known-recipes-data.js](known-recipes-data.js) is the recipe source of truth. To add a known recipe, use [add-crafting-recipe](../.claude/skills/add-crafting-recipe/SKILL.md). Ingredient item IDs and curated vendor prices are in [auction-materials.json](auction-materials.json).
 
-For example, Simple Poultice uses one Spider Ichor, one Mild Spices, and one Bottle of Dalaran Noir to produce three poultices. At the bundled guide prices, material cost is 72 copper per craft, or 24 copper per poultice.
+The page fetches [Auction House’s US Normal Horde market](https://auctionhouse.tk.gg/api/m/us-2-114) when opened. Minimum listings are snapshot observations, not guaranteed purchase prices or quantities at the minimum. The status shows the scan time. A failed refresh uses older browser-cached or bundled quotes and labels the fallback. Output AH prices are available only for items included in the mappings; unsupported output prices stay unknown.
 
-## Shared material max buy
+To refresh the offline [auction-prices.js](auction-prices.js) and [auction-prices.csv](auction-prices.csv) snapshot, use [refresh-auction-prices](../.claude/skills/refresh-auction-prices/SKILL.md), or `npm run prices:refresh`. Newly introduced ingredients need verified item IDs in the mapping file.
 
-Max buy is the highest whole-copper purchase ceiling across all known recipes that use a material, with positive vendor profit and current selected costs for other ingredients. If two recipes allow 30c and 45c, the shared maximum is 45c everywhere that material appears. The Materials tab also shows the smallest and largest eligible recipe ceilings and the recipe supporting the maximum. Filters and inventory do not affect the shared limit. Live price updates, manual price edits, and source changes recalculate it.
+## Implementation and verification
 
-Individual recipe comparisons retain their own ceilings. A shared maximum only supports the recipe with that ceiling; check current recipe profit before crafting. Other ingredient costs must stay at their selected values, and individual maximum prices cannot all be combined. Unknown and negative ceilings are excluded; 0c is valid.
+The live page uses [planner-core.js](planner-core.js) for a shared price projection and [planner-ui.js](planner-ui.js) for both views. [recipe-buying-plan.js](recipe-buying-plan.js) builds complete ingredient targets and routes. [auction-client.js](auction-client.js) handles live quotes and fallback caching. The older UI modules are not loaded by the redesigned page; their existing regression coverage uses a legacy markup fixture.
 
-Recipes also include purchase tradeoff side notes for every pair of their priced ingredients (including ones reached through a currently-crafted sub-chain), each shown in both directions: the highest whole-copper price for one material when buying the other at its selected purchase price, and vice versa. Other ingredient costs stay fixed and each scenario leaves positive profit. They show the quantities, achievable profit, and how each 1c saved on one material changes the allowance for the other. Both target materials are treated as purchases in the scenario, even if currently selected as gathered or crafted; other crafted ingredients follow selected crafting chains. Missing prices, unsupported vendor payouts, and scenarios impossible even with the discounted material free produce no note for that direction. A recipe with several priced ingredients can show many notes, one per pair. Turn off Profitable only to see alternatives for recipes currently making a loss. Notes recalculate with price and source changes.
+Run `npm test` for the data, quote, core calculation, UI, and existing regression checks. The new UI is additionally checked in a real browser at desktop and mobile widths.
 
-A material with a known vendor price is never the one a note solves a ceiling for — a vendor is always there to undercut a pricier auction listing, so that ceiling would never be worth bidding up to. It can still anchor the other side of a note (e.g. "buy Light Leather at ≤34c to afford Fine Thread at its 1s 0c vendor price").
+## Ready-made ingredients and buying alternatives
 
-## Material profit
+Recipes with intermediate inputs offer explicit **Craft [ingredient]** and **Buy [ingredient] ready-made** buttons. Choosing the ready-made route purchases that item directly and removes its raw ingredients from the budget. For pants, buying cured hide means no separate Salt or Light Hide purchase: 100c Fine Thread leaves 498c for 10 Light Leather plus 1 Cured Light Hide.
 
-The **Material profit** tab compares known recipes producing leather, hides, or ingredients used by another known recipe. It shows purchased ingredients per craft, cost per output item, the output's AH minimum, savings versus buying it, potential AH sale profit after a 5% cut, and vendor profit. **Opportunities only** includes either positive savings or positive sale profit; switch it off to inspect losing conversions. Search matches outputs and ingredients. Expand an output to see the known recipes that use it.
+**What price should I look for?** solves a separate buy limit for every AH ingredient while holding all other purchases at their quoted prices. Every alternative lists those other prices, the combined spend, and final profit. Limits from different alternatives must not be combined. Missing other quotes stay unknown; if no positive purchase price can leave 1c profit, the option says so. Materials cards show the same conditional limits and open the matching recipe route.
 
-This is a purchase comparison: ingredient costs use the purchase prices in the profession material settings, with curated vendor prices for vendor supplies, regardless of Gathered/Crafted source selections. Each row buys its inputs directly; it does not automatically combine crafting steps. Prices and manual purchase edits update the comparison immediately. Missing or unlisted output quotes remain unknown. AH returns assume a sale at the snapshot minimum and exclude deposits and relisting costs; crafting savings alone do not establish profit for a downstream item.
+For pants, choosing **Craft Light Leather** requires 30 Ruined Leather Scraps for 10 leather. Cured Light Hide can independently remain a ready-made purchase. At 220c cured hide and 100c thread, the 598c purchase budget leaves 278c for all 30 scraps: buy scraps at 9c each or less, giving at least 9c vendor profit. No Salt or raw Light Hide is charged in that route. Crafting the hide instead replaces that ready-made purchase with its own inputs, and every purchased raw material gets a new conditional buy limit.
 
-Each material also identifies its **best recipe to vendor**, ranked by profit per final craft after all purchases. Expand the comparison to inspect every reachable known recipe, including indirect uses, purchase quantities, total cost, vendor payout, and crafting order. These comparisons craft the selected material and intervening recipes; other ingredients are bought. Whole batches are charged in full and leftovers have no assumed income. Negative results are labeled, and missing costs or vendor payouts cannot win the ranking. Profitable downstream uses also qualify for the Opportunities only filter.
+## Price Calculator
 
-Horde auction sales use a 5% selling cut, calculated in whole copper as `floor(sale price × 5 / 100)`. The AH profit cell explicitly shows this fee and the total crafting-plus-selling cost. The cut is charged once on selling, not on purchases or vendor sales. Successful listing deposits are returned; lost deposits and relisting costs remain excluded. Rule reference: [Auction House calculator](https://auctionhouse.tk.gg/calculator/), which documents 5% faction and 15% neutral presets; exact Forever rules are not officially published there.
+Choose a recipe in the **Price Calculator** tab, or select **Try your own purchase prices** from a recipe to copy its ingredient route. Buy/Craft choices remain independent for all known intermediate inputs, including scraps-to-leather conversions. Enter known AH purchase prices per item in copper; leave prices to solve blank. Fixed vendor supplies are reserved automatically. Set the minimum profit per craft (1c by default). AH selling includes the 5% fee; when the output quote is unavailable, you can enter a proposed AH sale price per output item.
+
+One blank price produces its highest whole-copper buy price for the desired profit. Multiple blanks share the remaining purchase budget and get one complete example; independent maximums are never combined. All filled prices show the resulting profit directly. Over-budget or invalid entries are labeled and cannot appear as a profitable plan. **Use AH quotes** fills available ingredient prices; **Clear my prices** restores blank AH inputs.
+
+Trial inputs are isolated from quotes and other views, are preserved during live quote updates and route changes in this page session, and reset when the page reloads. Each recipe has its own trial purchase prices; a proposed output sale price is cleared when changing recipes.

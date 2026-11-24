@@ -5,181 +5,83 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Crafting Profit | Orken Stonewalker's Journal</title>
   <link rel="stylesheet" href="../styles.css">
-  <link rel="stylesheet" href="profit.css">
+  <link rel="stylesheet" href="planner.css?v=price-calculator-1">
   <script src="known-recipes-data.js" defer></script>
   <script src="auction-prices.js" defer></script>
-  <script src="material-costs.js" defer></script>
-  <script src="profit.js" defer></script>
-  <script src="known-recipes.js" defer></script>
-  <script src="materials-reference.js" defer></script>
-  <script src="material-profit.js" defer></script>
+  <script src="recipe-buying-plan.js?v=price-calculator-1" defer></script>
+  <script src="planner-core.js?v=price-calculator-1" defer></script>
+  <script src="planner-ui.js?v=price-calculator-1" defer></script>
+  <script src="price-calculator.js?v=price-calculator-1" defer></script>
   <script src="auction-client.js" defer></script>
   <script src="profession-tabs.js" defer></script>
 </head>
-<body class="profit-page">
-  <header>
-    <a class="header-title" href="../index.html">Orken Stonewalker's Journal</a>
-    <a href="README.md">Recipe data &amp; sources</a>
+<body class="crafting-workspace">
+  <header class="workspace-header">
+    <a href="../index.html">Orken Stonewalker's Journal</a>
+    <a href="README.md">How prices work</a>
   </header>
   <main>
-    <div class="profit-intro">
-      <h1>Crafting Profit</h1>
-      <p>Find what to craft and sell to a vendor with the materials you already have.</p>
-      <p id="auction-price-status" role="status" aria-live="polite"></p>
+    <div class="workspace-intro">
+      <div><p class="eyebrow">THE CRAFTING DESK</p><h1>Know what you can spend.</h1>
+        <p>Start with the sale price. Keep at least 1c profit. Buy every ingredient within one shared budget.</p></div>
+      <div class="market-state"><span class="market-tag">US · Normal · Horde</span>
+        <p id="auction-price-status" role="status" aria-live="polite">Loading auction quotes…</p></div>
     </div>
-    <div class="profession-tabs" role="tablist" aria-label="Crafting planner tabs">
-      <button type="button" id="leatherworking-tab" role="tab" aria-controls="leatherworking" aria-selected="true">Leatherworking</button>
-      <button type="button" id="cooking-tab" role="tab" aria-controls="cooking" aria-selected="false" tabindex="-1">Cooking</button>
-      <button type="button" id="first-aid-tab" role="tab" aria-controls="first-aid" aria-selected="false" tabindex="-1">First Aid</button>
-      <button type="button" id="materials-tab" role="tab" aria-controls="materials" aria-selected="false" tabindex="-1">Materials</button>
-      <button type="button" id="material-profit-tab" role="tab" aria-controls="material-profit" aria-selected="false" tabindex="-1">Material profit</button>
+    <div class="profession-tabs" role="tablist" aria-label="Crafting views">
+      <button id="recipes-tab" role="tab" aria-controls="recipe-view" aria-selected="true" type="button">Recipes</button>
+      <button id="materials-tab" role="tab" aria-controls="material-view" aria-selected="false" tabindex="-1" type="button">Materials</button>
+      <button id="calculator-tab" role="tab" aria-controls="calculator-view" aria-selected="false" tabindex="-1" type="button">Price Calculator</button>
     </div>
-    <div id="leatherworking" role="tabpanel" aria-labelledby="leatherworking-tab">
-      <section class="profit-recipes" aria-labelledby="known-title">
-        <h2 id="known-title">My recipes</h2>
-        <label class="recipe-filter"><input type="checkbox" id="leatherworking-profitable-only" checked> Profitable only</label>
-        <div class="profit-table" tabindex="0" role="region" aria-labelledby="known-title">
-          <table>
-            <thead>
-              <tr>
-                <th scope="col">Recipe</th>
-                <th scope="col">Materials per craft</th>
-                <th scope="col">Cost, vendor pay &amp; profit</th>
-              </tr>
-            </thead>
-            <tbody id="recipes"></tbody>
-          </table>
-        </div>
-        <p>Per-craft profit uses your selected material sources and prices. Max buy is the highest current per-item purchase ceiling across all known recipes using that material. It is the same in every recipe; check this recipe’s profit before crafting. Leather-and-hide side notes show both ways to profit: cheaper leather with the selected hide price, or cheaper hide with the selected leather price. Uncheck Profitable only to see these alternatives for recipes that currently lose money. The plan also accounts for inventory limits and ingredient crafting steps.</p>
-      </section>
-      <div class="profit-planner">
-        <section aria-labelledby="inventory-title">
-          <h2 id="inventory-title">Your inventory</h2>
-          <div id="inventory-fields"></div>
-          <p id="cost-assumption">Enter the quantities you own, then set their sources and prices below. Profit subtracts their value and any purchases or ingredient crafts needed by the plan.</p>
-        </section>
-        <section class="profit-result" aria-labelledby="plan-title">
-          <h2 id="plan-title">Best vendor plan</h2>
-          <div id="result" aria-live="polite" aria-atomic="true"></div>
-        </section>
+    <section id="recipe-view" role="tabpanel" aria-labelledby="recipes-tab">
+      <div class="desk-layout">
+        <aside class="selection-panel" aria-label="Choose a recipe">
+          <details id="recipe-drawer" class="selection-drawer" open><summary>Choose a recipe</summary>
+          <div class="selection-controls">
+            <label for="recipe-search">Find a recipe<input id="recipe-search" type="search" placeholder="Light Leather Pants…"></label>
+            <label for="recipe-profession">Profession<select id="recipe-profession"><option value="all">All professions</option><option value="Leatherworking">Leatherworking</option><option value="Cooking">Cooking</option><option value="First Aid">First Aid</option></select></label>
+            <label class="checkbox-label"><input id="recipe-available-only" type="checkbox" checked>Profitable at current quotes only</label>
+            <p id="recipe-count" class="quiet" aria-live="polite"></p>
+          </div>
+          <div id="recipe-list" class="selection-list"></div>
+          </details>
+        </aside>
+        <article id="recipe-detail" class="detail-panel" aria-label="Recipe buying plan"></article>
       </div>
-      <details class="material-settings">
-        <summary>Material sources and prices</summary>
-        <p>Choose how you obtained your inventory. Gathered materials cost 0c. Bought materials use the purchase price. Crafted materials include their ingredients’ costs. Extra supplies in the shopping list use purchase prices.</p>
-        <div id="leatherworking-material-values"></div>
-      </details>
-    </div>
-    <div id="cooking" role="tabpanel" aria-labelledby="cooking-tab" hidden>
-      <section class="profit-recipes" aria-labelledby="cooking-recipes-title">
-        <h2 id="cooking-recipes-title">My cooking recipes</h2>
-        <label class="recipe-filter"><input type="checkbox" id="cooking-profitable-only" checked> Profitable only</label>
-        <div class="profit-table" tabindex="0" role="region" aria-labelledby="cooking-recipes-title">
-          <table>
-            <thead>
-              <tr>
-                <th scope="col">Recipe</th>
-                <th scope="col">Materials per craft</th>
-                <th scope="col">Cost, vendor pay &amp; profit</th>
-              </tr>
-            </thead>
-            <tbody id="cooking-recipes"></tbody>
-          </table>
-        </div>
-        <p>Per-craft profit uses your selected material sources and prices. Max buy is the highest current per-item purchase ceiling across all known recipes using that material. It is the same in every recipe; check this recipe’s profit before crafting. The plan also accounts for the quantities you enter.</p>
-      </section>
-      <div class="profit-planner">
-        <section aria-labelledby="cooking-inventory-title">
-          <h2 id="cooking-inventory-title">Your inventory</h2>
-          <div id="cooking-inventory-fields"></div>
-          <p id="cooking-cost-assumption">Enter the ingredients you have and set their sources below. Profit includes their costs and any extra water or spices to buy.</p>
-        </section>
-        <section class="profit-result" aria-labelledby="cooking-plan-title">
-          <h2 id="cooking-plan-title">Best vendor plan</h2>
-          <div id="cooking-result" aria-live="polite" aria-atomic="true"></div>
-        </section>
+    </section>
+    <section id="material-view" role="tabpanel" aria-labelledby="materials-tab" hidden>
+      <div class="desk-layout">
+        <aside class="selection-panel" aria-label="Choose a material">
+          <details id="material-drawer" class="selection-drawer" open><summary>Choose a material</summary>
+          <div class="selection-controls"><label for="material-search">Find a material<input id="material-search" type="search" placeholder="Light Hide…"></label>
+            <p id="material-count" class="quiet" aria-live="polite"></p></div>
+          <div id="material-list" class="selection-list"></div>
+          </details>
+        </aside>
+        <article id="material-detail" class="detail-panel" aria-label="Material prices and recipe plans"></article>
       </div>
-      <details class="material-settings">
-        <summary>Material sources and prices</summary>
-        <p>Choose how you obtained your inventory. Gathered materials cost 0c. Bought materials use the purchase price. Crafted materials include their ingredients’ costs. Extra supplies in the shopping list use purchase prices.</p>
-        <div id="cooking-material-values"></div>
-      </details>
-    </div>
-    <div id="first-aid" role="tabpanel" aria-labelledby="first-aid-tab" hidden>
-      <section class="profit-recipes" aria-labelledby="first-aid-recipes-title">
-        <h2 id="first-aid-recipes-title">My First Aid recipes</h2>
-        <label class="recipe-filter"><input type="checkbox" id="first-aid-profitable-only" checked> Profitable only</label>
-        <div class="profit-table" tabindex="0" role="region" aria-labelledby="first-aid-recipes-title">
-          <table>
-            <thead>
-              <tr>
-                <th scope="col">Recipe</th>
-                <th scope="col">Materials per craft</th>
-                <th scope="col">Cost, vendor pay &amp; profit</th>
-              </tr>
-            </thead>
-            <tbody id="first-aid-recipes"></tbody>
-          </table>
+    </section>
+    <section id="calculator-view" role="tabpanel" aria-labelledby="calculator-tab" hidden>
+      <article class="detail-panel calculator-panel" aria-label="Material price calculator">
+        <div class="detail-heading"><p class="eyebrow">YOUR PURCHASE SCENARIO</p><h2>What can the other materials cost?</h2>
+          <p class="quiet">Set the prices you know. Leave other AH material prices blank to solve for them. These inputs do not change the AH quotes.</p></div>
+        <div class="calculator-controls">
+          <label for="calculator-recipe">Recipe<select id="calculator-recipe"></select></label>
+          <label for="calculator-destination">Sell the finished item to<select id="calculator-destination"><option value="vendor">Vendor</option><option value="auction">Auction House (5% fee)</option></select></label>
+          <label for="calculator-min-profit">Minimum profit per craft (copper)<input id="calculator-min-profit" type="number" min="1" step="1" value="1"></label>
+          <label id="calculator-sale-label" for="calculator-sale-price" hidden>AH sale price per item (copper)<input id="calculator-sale-price" type="number" min="1" step="1" placeholder="Blank uses the output AH quote"></label>
         </div>
-        <p>Per-craft profit uses your selected material sources and prices. Max buy is the highest current per-item purchase ceiling across all known recipes using that material. It is the same in every recipe; check this recipe’s profit before crafting. The plan also accounts for the quantities you enter.</p>
-      </section>
-      <div class="profit-planner">
-        <section aria-labelledby="first-aid-inventory-title">
-          <h2 id="first-aid-inventory-title">Your inventory</h2>
-          <div id="first-aid-inventory-fields"></div>
-          <p id="first-aid-cost-assumption">Enter the materials you have and set their sources below. Profit includes their costs and any vendor supplies you still need to buy.</p>
+        <div id="calculator-route"></div>
+        <section class="calculator-input-section" aria-labelledby="calculator-input-title">
+          <div class="section-title"><h3 id="calculator-input-title">Set known purchase prices</h3>
+            <div class="calculator-actions"><button id="calculator-use-quotes" type="button" class="secondary-action">Use AH quotes</button><button id="calculator-clear" type="button" class="secondary-action">Clear my prices</button></div></div>
+          <p class="quiet">Prices are per item, in copper. 100 copper = 1 silver. Vendor supplies are reserved automatically.</p>
+          <div id="calculator-inputs" class="table-scroll"></div>
         </section>
-        <section class="profit-result" aria-labelledby="first-aid-plan-title">
-          <h2 id="first-aid-plan-title">Best vendor plan</h2>
-          <div id="first-aid-result" aria-live="polite" aria-atomic="true"></div>
-        </section>
-      </div>
-      <details class="material-settings">
-        <summary>Material sources and prices</summary>
-        <p>Choose how you obtained your inventory. Gathered materials cost 0c. Bought materials use the purchase price. Crafted materials include their ingredients’ costs. Extra supplies in the shopping list use purchase prices.</p>
-        <div id="first-aid-material-values"></div>
-      </details>
-    </div>
-    <div id="material-profit" role="tabpanel" aria-labelledby="material-profit-tab" hidden>
-      <section class="materials-reference" aria-labelledby="material-profit-title">
-        <h2 id="material-profit-title">Craft materials for profit</h2>
-        <p>Compare buying ingredients and crafting a material with buying it ready-made. Includes known recipes that produce leather, hides, or inputs for another known recipe. All costs assume purchased ingredients, using the purchase prices in your profession’s material settings, even when their source is Gathered or Crafted. Each material names its best recipe to vendor, ranked by profit per final craft. Expand the comparison for costs, purchases, and crafting steps.</p>
-        <label class="recipe-filter"><input type="checkbox" id="material-profit-opportunities-only" checked> Opportunities only (savings or sale profit)</label>
-        <label class="material-search" for="material-profit-search">Find material
-          <input type="search" id="material-profit-search" placeholder="Search materials or ingredients" autocomplete="off">
-        </label>
-        <p id="material-profit-summary" role="status" aria-live="polite"></p>
-        <div class="profit-table material-profit-table" tabindex="0" role="region" aria-labelledby="material-profit-title">
-          <table>
-            <thead><tr>
-              <th scope="col">Material</th><th scope="col">Purchases per craft</th>
-              <th scope="col">Cost, savings &amp; profit</th>
-            </tr></thead>
-            <tbody id="material-profit-rows"></tbody>
-          </table>
-        </div>
-        <p>Savings are a lower material cost, not sale income. Horde AH sales include a 5% selling fee on the sale price: total sale cost = crafting cost + selling fee; profit = sale price − total sale cost. The fee and total cost appear below each AH profit. Purchase prices do not receive an extra fee, and vendor sales have no AH fee. AH profit assumes selling at the snapshot minimum. Listing deposits are refunded on a successful sale; lost deposits from expired or canceled listings are not included. <a href="https://auctionhouse.tk.gg/calculator/">Auction fee reference</a>. Listings do not guarantee a sale or enough stock at the minimum price. Missing prices stay Unknown. A cheaper material does not guarantee profit on the final item; check its recipe before buying. Material cost columns buy each ingredient directly. Recipe comparisons craft this material and any intermediate steps needed to reach the final item, buy the remaining ingredients, and include whole crafting batches. Leftovers are not counted as income.</p>
-      </section>
-    </div>
-    <div id="materials" role="tabpanel" aria-labelledby="materials-tab" hidden>
-      <section class="materials-reference" aria-labelledby="materials-title">
-        <h2 id="materials-title">Materials for my known recipes</h2>
-        <p>Prices are per item. These are hypothetical purchase ceilings, not live price checks — go to a profession tab to see what's profitable at today's prices. Three scenarios per material: craft it once and sell the result to a vendor; craft it once and resell the result on the auction house (after the 5% fee); or craft it into something deeper that eventually sells to a vendor (any number of crafting steps). Each scenario keeps other ingredients at their cheapest available cost (bought, crafted, or gathered) regardless of what you've selected elsewhere. The recipe ceiling range is shown underneath each one; only the recipe with the highest ceiling can profit at the maximum. Expand the third scenario's comparison to see all purchases against one shared budget. Unknown limits and recipes that cannot profit even with this material free are excluded.</p>
-        <label class="material-search" for="material-search">Find material
-          <input type="search" id="material-search" placeholder="Search material names" autocomplete="off">
-        </label>
-        <div class="profit-table materials-table" tabindex="0" role="region" aria-labelledby="materials-title">
-          <table>
-            <thead>
-              <tr>
-                <th scope="col">Material</th>
-                <th scope="col">Prices &amp; scenarios</th>
-              </tr>
-            </thead>
-            <tbody id="materials-reference"></tbody>
-          </table>
-        </div>
-      </section>
-    </div>
+        <p id="calculator-status" role="status" aria-live="polite"></p>
+        <div id="calculator-results"></div>
+        <p class="footnote">These trial prices affect only this calculator. Vendor sales have no selling fee. AH sales include 5%; lost deposits and relisting costs are excluded.</p>
+      </article>
+    </section>
   </main>
 </body>
 </html>

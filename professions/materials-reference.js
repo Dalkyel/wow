@@ -174,7 +174,14 @@ function renderMaterialReference() {
     const label = document.createElement("th");
     label.scope = "row";
     label.textContent = name;
-    const self = selfCraftProfit(name);
+    const inventoryScenario = materialCeilingScenario(name);
+    const supplierForNote = materialSuppliers.get(name);
+    const self = supplierForNote && inventoryScenario ? {
+        recipe: supplierForNote, cost: inventoryScenario.cost,
+        vendorProfit: supplierForNote.vendorCopper > 0 ? supplierForNote.vendorCopper - inventoryScenario.cost : null,
+        auctionProfit: quote?.status === 'available' && quote.quantity > 0
+          ? auctionSaleCosts(inventoryScenario.cost, quote.auctionCopper ?? null).profit : null,
+      } : null;
     if (self) {
       const note = document.createElement("small");
       note.className = "material-self-craft";
@@ -182,11 +189,11 @@ function renderMaterialReference() {
       if (self.vendorProfit !== null) outcomes.push(`vendor ${formatPrice(self.vendorProfit)} profit`);
       if (self.auctionProfit !== null) outcomes.push(`AH ${formatPrice(self.auctionProfit)} profit after fee`);
       const ingredients = self.recipe.materials.map(([ingredient]) => ingredient).join(" + ");
-      note.textContent = `Crafted from ${ingredients} for ${coins(self.cost)}` +
+      note.textContent = `Crafted from ${ingredients} for ${coins(self.cost)}${inventoryScenario ? " (assumed inventory)" : ""}` +
         (outcomes.length ? ` → ${outcomes.join(" · ")}` : "");
       note.title = `${name} can itself be crafted (from its own ingredients at their cheapest available cost), separately from ` +
         "anything made further from it. Vendor profit compares that cost to its own vendor sale price; AH profit compares it " +
-        "to its own live auction price after the 5% selling fee.";
+        "to its own live auction price after the 5% selling fee. Uses the selected inventory cost rule.";
       label.append(note);
     }
     row.append(label);
@@ -231,6 +238,44 @@ function renderMaterialReference() {
       .sort((a, b) => (b.limit?.maximum ?? -Infinity) - (a.limit?.maximum ?? -Infinity) ||
         (b.limit?.breakEven ?? -Infinity) - (a.limit?.breakEven ?? -Infinity) || a.recipe.name.localeCompare(b.recipe.name));
     appendRecipeComparison(chainBlock, name, comparisons);
+
+    const scenario = inventoryScenario;
+    const saleCost = scenario?.cost ?? null;
+    const minimum = minimumProfitableAuctionPrice(saleCost);
+    const minimumBlock = renderInfoBlock(info, "Minimum AH sale price / item");
+    minimumBlock.block.classList.add("info-item-wide");
+    minimumBlock.block.classList.add("material-minimum-sale");
+    minimumBlock.value.textContent = formatPrice(minimum);
+    const verdict = document.createElement("small");
+    const currentSalePrice = quote?.status === "available" && quote.quantity > 0 ? quote.auctionCopper ?? null : null;
+    verdict.textContent = auctionSaleVerdict(saleCost, currentSalePrice);
+    minimumBlock.block.append(verdict);
+    const basis = document.createElement("small");
+    basis.textContent = `Assumed inventory cost: ${formatPrice(saleCost)} per item.`;
+    minimumBlock.block.append(basis);
+    const calculation = document.createElement("small");
+    if (minimum === null) calculation.textContent = "No supported recipe buy limit is available to calculate this cost.";
+    else {
+      const sale = auctionSaleCosts(saleCost, minimum);
+      calculation.textContent = `Sell for ${formatPrice(minimum)} − AH fee ${formatPrice(sale.fee)} − cost ${formatPrice(saleCost)} = ${formatPrice(sale.profit)} profit per item. ` +
+        "One item per auction; excludes lost deposits.";
+    }
+    minimumBlock.block.append(calculation);
+    const meaning = document.createElement("small");
+    meaning.textContent = materialValuationExplanation(scenario);
+    minimumBlock.block.append(meaning);
+    const buyingPlans = document.createElement('details');
+    buyingPlans.className = 'material-buying-plans';
+    buyingPlans.open = Boolean(query);
+    const planTitle = document.createElement('summary');
+    const usingRecipes = allKnownRecipes.filter(recipe => requiredMaterialQuantityBestPath(recipe,name)>0);
+    planTitle.textContent = `Complete recipe buying plans (${usingRecipes.length})`;
+    buyingPlans.append(planTitle);
+    for (const recipe of usingRecipes) renderRecipeBuyingPlan(buyingPlans,recipe);
+    if (usingRecipes.length) info.append(buyingPlans);
+
+
+
   }
   if (!names.length) {
     const cell = materialReference.insertRow().insertCell();

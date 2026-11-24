@@ -4,7 +4,9 @@ const vm = require('node:vm');
 const test = require('node:test');
 const path = require('node:path');
 const context = vm.createContext({});
-vm.runInContext(fs.readFileSync(path.join(__dirname, '../professions/material-profit.js'), 'utf8'), context);
+for (const file of ['auction-sales.js', 'material-profit.js']) {
+  vm.runInContext(fs.readFileSync(path.join(__dirname, '../professions', file), 'utf8'), context);
+}
 const calculate = context.materialProfitRows;
 const recipe = (name, materials, vendorCopper = 110, unitsPerCraft = 1) => ({name, materials, vendorCopper, unitsPerCraft});
 const prices = new Map([['Light Hide', {price:83, source:'gathered'}], ['Salt', {price:999, source:'crafted'}]]);
@@ -110,4 +112,26 @@ test('auction selling fee is charged once on revenue and included in total cost'
   assert.equal(row.auctionFee,7);
   assert.equal(row.auctionTotalCost,140);
   assert.equal(row.vendorProfit,-23);
+});
+
+test('minimum AH sale price leaves positive profit and one copper less cannot profit', () => {
+  for (const cost of [0, 1, 18.9, 19, 83, 133, 174, 335, 380, 1058, 1000000]) {
+    const minimum=context.minimumProfitableAuctionPrice(cost);
+    assert.ok(context.auctionSaleCosts(cost,minimum).profit>0);
+    assert.ok(context.auctionSaleCosts(cost,minimum-1).profit<=0);
+  }
+  assert.equal(context.minimumProfitableAuctionPrice(133),141);
+  assert.equal(context.minimumProfitableAuctionPrice(335),353);
+  assert.equal(context.minimumProfitableAuctionPrice(null),null);
+  const [unlisted]=calculate([recipe('Cured Light Hide',[['Light Hide',1],['Salt',1]])],prices,{Salt:{vendorCopper:50}});
+  assert.equal(unlisted.minimumSale,141);
+  assert.equal(unlisted.auctionProfit,null);
+});
+
+test('actual prices paid override live quotes and vendor defaults in crafting costs', () => {
+  const p=new Map([['Light Hide',{price:90,manual:true}],['Salt',{price:45,manual:true}]]);
+  const [row]=calculate([recipe('Cured Light Hide',[['Light Hide',1],['Salt',1]])],p,
+    {Salt:{vendorCopper:50},'Light Hide':{auctionCopper:4900}});
+  assert.equal(row.cost,135);
+  assert.equal(row.minimumSale,143);
 });

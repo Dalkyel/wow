@@ -97,6 +97,7 @@ function renderRecipeTable(table, recipes, profitableOnly = false) {
     profit.block.classList.add("recipe-profit");
     profit.value.classList.add("info-value-highlight");
     profit.value.textContent = payout === 0 ? "—" : formatPrice(net);
+    renderRecipeBuyingPlan(economics, recipe);
     if (net < 0) row.classList.add("recipe-loss");
   }
   if (!recipeRows.length && profitableOnly) {
